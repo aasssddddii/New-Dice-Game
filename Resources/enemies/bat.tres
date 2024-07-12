@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://pebv5ulhhobe"]
+
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_4dqja"]
+[ext_resource type="Texture2D" uid="uid://y2jd117gwsjs" path="res://Sprites/Dice/bleed dice.png" id="1_wwmri"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_f4gkn"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_wha0y"]
+[ext_resource type="Texture2D" uid="uid://bcm7fqqni5ed4" path="res://Sprites/enemies/bat_enemy.png" id="4_soinn"]
+
+[resource]
+script = ExtResource("1_4dqja")
+enemy_name = "bat"
+enemy_description = "generic bat deals bleed damage,attacks once per turn"
+max_health = 8
+health = 8
+heal_power = 0
+attack = 1
+defend = 1
+attacks = 1
+reward_gold = 5
+basic_attack_damage_type = 5
+weaknesses = {
+"fire": true,
+"ice": true,
+"lightning": true,
+"poison": false
+}
+resistantses = {
+"fire": false,
+"ice": false,
+"lightning": false,
+"poison": true
+}
+attack_texture = ExtResource("1_wwmri")
+defend_texture = ExtResource("3_wha0y")
+blank_texture = ExtResource("2_f4gkn")
+main_texture = ExtResource("4_soinn")
+possible_turn_actions = [0, 1, 3]

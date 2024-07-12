@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3o6pxge6txkt"]
+
+[ext_resource type="Script" path="res://Scripts/enemies/template_enemy.gd" id="1_2su1g"]
+[ext_resource type="Texture2D" uid="uid://bcm7fqqni5ed4" path="res://Sprites/enemies/bat_enemy.png" id="1_a3wxr"]
+
+[node name="enemy_template" type="TextureButton"]
+offset_right = 128.0
+offset_bottom = 128.0
+texture_normal = ExtResource("1_a3wxr")
+script = ExtResource("1_2su1g")
