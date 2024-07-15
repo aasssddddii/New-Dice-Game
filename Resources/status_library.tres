@@ -33,7 +33,7 @@ stun_status_data = {
 "name": "stun",
 "status_condition": 10,
 "texture": "res://Sprites/status_conditions/stun status.png",
-"turns": 0
+"turns": 1
 }
 poison_status_data = {
 "damage": 5,
@@ -79,13 +79,6 @@ defence_debuff_status_data = {
 "name": "def_debuff",
 "status_condition": 9,
 "texture": "res://Sprites/status_conditions/defence debuff status.png",
-"turns": 3
-}
-cure_status_data = {
-"is_positive": true,
-"name": "cure",
-"status_condition": 11,
-"texture": "res://Sprites/status_conditions/cure status.png",
 "turns": 3
 }
 burn_status_data = {

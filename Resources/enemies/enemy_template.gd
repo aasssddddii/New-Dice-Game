@@ -11,6 +11,7 @@ enum TurnActions {
 @export var enemy_description:String
 @export var max_health:int
 @export var health:int
+@export var shield:int 
 @export var heal_power:int
 @export var attack:int
 @export var defend:int
@@ -21,16 +22,18 @@ enum TurnActions {
 
 
 @export var weaknesses:Dictionary = {
-	"fire":false,
-	"ice":false,
-	"lightning":false,
-	"poison":false
+	Dice.DamageElement.FIRE:false,
+	Dice.DamageElement.ICE:false,
+	Dice.DamageElement.LIGHTNING:false,
+	Dice.DamageElement.POISON:false,
+	Dice.DamageElement.BLEED:false
 }
 @export var resistantses:Dictionary = {
-	"fire":false,
-	"ice":false,
-	"lightning":false,
-	"poison":false
+	Dice.DamageElement.FIRE:false,
+	Dice.DamageElement.ICE:false,
+	Dice.DamageElement.LIGHTNING:false,
+	Dice.DamageElement.POISON:false,
+	Dice.DamageElement.BLEED:false
 }
 
 
@@ -42,12 +45,16 @@ enum TurnActions {
 @export var main_texture:Texture
 
 
-@export var possible_turn_actions = [
+@export var possible_turn_actions:Array[TurnActions] = [
 	TurnActions.ATTACK,
 	TurnActions.DEFEND,
 	TurnActions.NONE
 ]
 
 
-func get_health():
-	return health
+
+
+	
+	
+	
+	

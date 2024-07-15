@@ -5,6 +5,7 @@ extends Node2D
 @onready var action_slots = $action_slots
 @onready var enemy_spawns = $enemy_spawns
 @onready var enemy_layer = $enemy_layer
+@onready var status_grid = $player_layer/player/status_conditions
 @onready var dice_lib = preload("res://Resources/dice_library.tres")
 var enemy_lib #= preload("res://Resources/enemies/enemy_library.tres")
 
@@ -20,6 +21,8 @@ var current_enemy_dmg:int
 
 var player_target:Enemy
 
+var spawned_statuses:Array[Status_Library.StatusCondition]
+
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
 @onready var ui_shield = $player_layer/player/VBoxContainer/ui_shield/ui_text
@@ -33,9 +36,9 @@ func _ready():
 	enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
 	battle_data = [
-		enemy_lib.get_enemy_resource("bat"),
-		enemy_lib.get_enemy_resource("slime"),
-		enemy_lib.get_enemy_resource("wolf")]
+		enemy_lib.get_enemy_resource("snake"),
+		enemy_lib.get_enemy_resource("wizard"),
+		enemy_lib.get_enemy_resource("ice_wolf")]
 		
 	for ui_slot in action_slots.get_children():
 		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
@@ -135,7 +138,7 @@ func use_dice(dice_array:Array[Dice]):
 		
 	set_player_hand()
 
-
+#Player ENDS turn here
 func _on_submit_button_down():
 	var send_dice:Array[Dice]
 	for slot in action_slots.get_children():
@@ -144,13 +147,22 @@ func _on_submit_button_down():
 			var dice_node = slot_area.filled_node
 			send_dice.append(dice_node)
 	use_dice(send_dice)
+	
+	do_positive_statuses()#does positive statuses
 	print("sending attack: ", player_attack)
+	#evaluate player specific data
+	
+	game_manager.player_resource.gold += player_attack["gold"]
+	print("player gained ", player_attack["gold"], " gold")
+	
+	
 	player_target.hit_enemy(player_attack)
 	reset_player_attack()
 	
 	
 	
-	
+	do_status_effects()
+	#clean_up_statuses()
 	take_enemy_turn()
 	current_enemy_dmg = calc_enemy_dmg()
 	calc_player_attack()
@@ -198,7 +210,7 @@ func calc_player_attack():
 		if die.up_face >= 1:
 			#print("calculating next die: ", die.name)
 			var die_data = die.dice_data
-			#still need to calculate enemy resistances/weaknesses
+			#still need to calculate enemy resistantses/weaknesses
 			#still need to add all same bonus
 			match die_data["type"]:
 				Dice.DiceType.ATTACK:
@@ -208,43 +220,121 @@ func calc_player_attack():
 				Dice.DiceType.REROLL:
 					pass
 				Dice.DiceType.BLEED:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.BLEED) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.BLEED)
+						
+					if player_target.current_enemy_resource.resistantses[Dice.DamageElement.BLEED]:
+						calculator_damage += (game_manager.player_resource.attack*.75)/2
+					else:
+						calculator_damage += (game_manager.player_resource.attack*.75)
 				Dice.DiceType.HEAL:
 					calculator_heal += game_manager.player_resource.heal_power
 				Dice.DiceType.GOLD:
-					pass
+					calculator_damage += 1
+					calculator_gold += 1
 				Dice.DiceType.REFLECT:
-					pass
+					calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
 				Dice.DiceType.LIFESTEAL:
-					pass
+					calculator_damage += game_manager.player_resource.attack
+					#need to take enemy HP into account
+					calculator_heal += game_manager.player_resource.attack/2
 				Dice.DiceType.POISON:
 					calculator_damage += (game_manager.player_resource.attack /2)
 					if calculator_statuses.find(Status_Library.StatusCondition.POISON) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.POISON)
+					if player_target.current_enemy_resource.resistantses[Dice.DamageElement.POISON]:
+						calculator_damage += (game_manager.player_resource.attack*.5)/2
+					elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.POISON]:
+						calculator_damage += game_manager.player_resource.attack
+					else:
+						calculator_damage += (game_manager.player_resource.attack*.5)
 				Dice.DiceType.CURE:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.CURE) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.CURE)
 				Dice.DiceType.DISARM:
-					pass
+					calculator_damage += 1
+					if calculator_statuses.find(Status_Library.StatusCondition.DISARM) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.DISARM)
 				Dice.DiceType.STUN:
 					calculator_damage += 1
 					if calculator_statuses.find(Status_Library.StatusCondition.STUN) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.STUN)
 				Dice.DiceType.ATKBUFF:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.ATKBUFF) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.ATKBUFF)
 				Dice.DiceType.DEFBUFF:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.DEFBUFF) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.DEFBUFF)
 				Dice.DiceType.ATKDEBUFF:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.ATKDEBUFF) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.ATKDEBUFF)
 				Dice.DiceType.DEFDEBUFF:
-					pass
+					if calculator_statuses.find(Status_Library.StatusCondition.DEFDEBUFF) == -1:
+						calculator_statuses.append(Status_Library.StatusCondition.DEFDEBUFF)
 				Dice.DiceType.FIRE:
-					calculator_damage += (game_manager.player_resource.attack /2)
+					var element_dmg:int
+					#calculator_damage += (game_manager.player_resource.attack /2)
 					if calculator_statuses.find(Status_Library.StatusCondition.BURN) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.BURN)
+						
+						
+					if player_target.current_enemy_resource.resistantses[Dice.DamageElement.FIRE]:
+						calculator_damage += (game_manager.player_resource.attack*.5)/2
+						element_dmg= (game_manager.player_resource.attack*.5)/2
+					elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.FIRE]:
+						calculator_damage += game_manager.player_resource.attack
+						element_dmg= game_manager.player_resource.attack
+					else:
+						calculator_damage += (game_manager.player_resource.attack*.5)
+						element_dmg= (game_manager.player_resource.attack*.5)
+						
+					if calculator_elements.find(Dice.DamageElement.FIRE) == -1:
+						calculator_elements.append(Dice.DamageElement.FIRE)
+						calculator_element_dmg.append(element_dmg)
+					else:
+						var index = calculator_elements.find(Dice.DamageElement.FIRE)
+						calculator_element_dmg[index] += element_dmg
 				Dice.DiceType.ICE:
-					pass
+					var element_dmg:int
+					
+					
+					if player_target.current_enemy_resource.resistantses[Dice.DamageElement.ICE]:
+						calculator_damage += (game_manager.player_resource.attack*.5)/2
+						element_dmg= (game_manager.player_resource.attack*.5)/2
+					elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.ICE]:
+						calculator_damage += game_manager.player_resource.attack
+						element_dmg= game_manager.player_resource.attack
+					else:
+						calculator_damage += (game_manager.player_resource.attack*.5)
+						element_dmg= (game_manager.player_resource.attack*.5)
+					
+					
+					if calculator_elements.find(Dice.DamageElement.ICE) == -1:
+						calculator_elements.append(Dice.DamageElement.ICE)
+						calculator_element_dmg.append(element_dmg)
+					else:
+						var index = calculator_elements.find(Dice.DamageElement.ICE)
+						calculator_element_dmg[index] += element_dmg
 				Dice.DiceType.LIGHTNING:
-					pass
+					var element_dmg:int
+					
+					if player_target.current_enemy_resource.resistantses[Dice.DamageElement.LIGHTNING]:
+						calculator_damage += (game_manager.player_resource.attack*.5)/2
+						element_dmg= (game_manager.player_resource.attack*.5)/2
+					elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.LIGHTNING]:
+						calculator_damage += game_manager.player_resource.attack
+						element_dmg= game_manager.player_resource.attack
+					else:
+						calculator_damage += (game_manager.player_resource.attack*.5)
+						element_dmg= (game_manager.player_resource.attack*.5)
+					
+					if calculator_elements.find(Dice.DamageElement.LIGHTNING) == -1:
+						calculator_elements.append(Dice.DamageElement.LIGHTNING)
+						calculator_element_dmg.append(element_dmg)
+					else:
+						var index = calculator_elements.find(Dice.DamageElement.LIGHTNING)
+						calculator_element_dmg[index] += element_dmg
+						
 	player_attack = {
 	"damage":calculator_damage,
 	"reflect":calculator_reflect,
@@ -290,10 +380,22 @@ func take_enemy_turn():
 		enemy.do_status_effects()
 		
 		#Do Enemy Attack
-		
+		var next_attack = enemy.get_attack_data()
+		hit_player(next_attack)
 		
 		#setup next enemy attack
 		enemy.setup_next_attack()
+
+
+func hit_player(attack_data:Dictionary):
+	print("player takes ", attack_data["damage"]," damage")
+	print("status effect: ", attack_data["status_effect"])
+	
+	if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
+		add_status_conditions(attack_data["status_effect"])
+	
+	
+
 
 func reset_player_attack():
 	player_attack = {
@@ -314,4 +416,128 @@ func update_player_target(new_target:Enemy):
 	player_target = new_target
 	player_target.show_arrow(true)
 	player_target.manage_current_player_dmg("set",player_attack["damage"])
+	calc_player_attack()
 	print("current target is: ", player_target.name)
+
+func do_positive_statuses():#also does positive effects
+	var manip_statuses:Array[Status_Library.StatusCondition] = player_attack["status_conditions"].duplicate()
+	for status in player_attack["status_conditions"]:
+		var status_ref = game_manager.status_lib.get_status_data(status)
+		if status_ref["is_positive"]:
+			print("status ", status, " is positive so doing NOW")
+			match status:
+				Status_Library.StatusCondition.CURE:
+					#cure all negitive effects
+					cure_negative_effects()
+				Status_Library.StatusCondition.REFLECT:
+					game_manager.player_resource.reflect += game_manager.player_resource.attack
+				_:
+					pass
+			add_status_conditions(status)
+			#remove from send attack
+			var status_index:int = manip_statuses.find(status)
+			manip_statuses.remove_at(status_index)
+	player_attack["status_conditions"] = manip_statuses
+	
+	
+	
+func add_status_conditions(value):
+	if typeof(value) != TYPE_ARRAY:
+		var status_ref = game_manager.status_lib.get_status_data(value)
+		status_conditions.append(value)
+		status_timeout.append(status_ref["turns"])
+		
+#		print("statuses is now: ",  status_conditions)
+#		print("status timeout is now: ",  status_timeouts)
+		
+		if spawned_statuses.find(value) == -1:
+			spawned_statuses.append(value)
+			var next_ui_status = game_manager.status_lib.status_prefab.instantiate()
+			status_grid.add_child(next_ui_status)
+			next_ui_status.setup_status(status_ref)
+			
+		print(name, " adding statuses is now: ",  status_conditions)
+		print(name, " adding status timeout is now: ",  status_timeout)
+		
+func do_status_effects():
+	var condition_index:int
+	for status in status_conditions:
+		#do status stuff
+		match status:
+			Status_Library.StatusCondition.BLEED:
+				pass
+			Status_Library.StatusCondition.REFLECT:
+				pass
+			Status_Library.StatusCondition.DISARM:
+				pass
+			Status_Library.StatusCondition.STUN:
+				pass
+			Status_Library.StatusCondition.POISON:
+				pass
+			Status_Library.StatusCondition.FROZEN:
+				pass
+			Status_Library.StatusCondition.ATKBUFF:
+				pass
+			Status_Library.StatusCondition.ATKDEBUFF:
+				pass
+			Status_Library.StatusCondition.DEFBUFF:
+				pass
+			Status_Library.StatusCondition.DEFDEBUFF:
+				pass
+			Status_Library.StatusCondition.CURE:
+				pass
+			Status_Library.StatusCondition.BURN:
+				pass
+				
+		#minus 1 from timeout 
+		if status_timeout[condition_index] > 1:
+			status_timeout[condition_index] -=1
+		elif status == Status_Library.StatusCondition.REFLECT:
+			pass
+		else:
+			#var remove_index = status_conditions.find(status)
+			#print("condition index sanity check it : ",condition_index)
+			status_conditions.pop_at(condition_index)
+			status_timeout.pop_at(condition_index)
+			status_conditions.insert(condition_index,-1)
+			status_timeout.insert(condition_index,0)
+			
+			
+			#print(name, ": statuses is now: ",  status_conditions)
+			#print(name, ": status timeout is now: ",  status_timeout)
+		condition_index+=1
+	
+	update_statuses()
+	clean_up_statuses()
+	
+	
+func clean_up_statuses():
+	#var status_index:int
+	var clean_status:Array[Status_Library.StatusCondition]
+	var clean_timeout:Array[int]
+	
+	for status in status_conditions:
+		print("sanity check status = ", status)
+		if status != -1:
+			clean_status.append(status)
+			clean_timeout.append(status_timeout[status_conditions.find(status)])
+	
+	status_conditions = clean_status
+	status_timeout = clean_timeout
+	
+	print(name, ": statuses is now: ",  status_conditions)
+	print(name, ": status timeout is now: ",  status_timeout)
+	
+func update_statuses():
+	for status_container in status_grid.get_children():
+		status_container.update_status()
+		
+func cure_negative_effects():
+	for status in status_conditions:
+		var status_ref = game_manager.status_lib.get_status_data(status)
+		if !status_ref["is_positive"]:
+			var status_index = status_conditions.find(status)
+			status_conditions[status_index] = -1
+			status_timeout[status_index] = 0
+			
+	clean_up_statuses()

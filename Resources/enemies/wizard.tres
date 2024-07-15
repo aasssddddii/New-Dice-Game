@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=7 format=3 uid="uid://mm3be2ftmrxd"]
+
+[ext_resource type="Texture2D" uid="uid://d3br60prmlc0w" path="res://Sprites/Dice/one attack face.png" id="1_2lotq"]
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_hw4w2"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_vmjfo"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_pfo2v"]
+[ext_resource type="Texture2D" uid="uid://bsruvfp46w0r5" path="res://Sprites/Dice/one heal face.png" id="4_etnvr"]
+[ext_resource type="Texture2D" uid="uid://tjuyi0nj01wc" path="res://Sprites/enemies/enemy wizard.png" id="5_gk4w0"]
+
+[resource]
+script = ExtResource("1_hw4w2")
+enemy_name = "wizard"
+enemy_description = "wizard who got lost in the dungeon, attacks twice per turn"
+max_health = 25
+health = 25
+shield = 0
+heal_power = 10
+attack = 5
+defend = 8
+attacks = 2
+reward_gold = 15
+basic_attack_damage_type = 6
+weaknesses = {
+0: false,
+1: false,
+2: false,
+3: true,
+5: false
+}
+resistantses = {
+0: true,
+1: true,
+2: true,
+3: false,
+5: false
+}
+attack_texture = ExtResource("1_2lotq")
+defend_texture = ExtResource("3_pfo2v")
+heal_texture = ExtResource("4_etnvr")
+blank_texture = ExtResource("2_vmjfo")
+main_texture = ExtResource("5_gk4w0")
+possible_turn_actions = Array[int]([0, 1, 2, 3])

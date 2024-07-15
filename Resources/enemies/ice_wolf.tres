@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://x63fpui5ixfe"]
+
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_7nw6m"]
+[ext_resource type="Texture2D" uid="uid://diqe3l1jf0n2j" path="res://Sprites/Dice/one ice dice.png" id="1_qu5mu"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_xackp"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_3dys5"]
+[ext_resource type="Texture2D" uid="uid://tplq7ftpaf68" path="res://Sprites/enemies/enemy ice wolf.png" id="4_nhade"]
+
+[resource]
+script = ExtResource("1_7nw6m")
+enemy_name = "ice wolf"
+enemy_description = "powerful wolf that attacks twice per turn dealing ice damage"
+max_health = 20
+health = 20
+shield = 0
+heal_power = 0
+attack = 4
+defend = 3
+attacks = 2
+reward_gold = 15
+basic_attack_damage_type = 1
+weaknesses = {
+0: true,
+1: false,
+2: false,
+3: false,
+5: false
+}
+resistantses = {
+0: false,
+1: true,
+2: false,
+3: false,
+5: false
+}
+attack_texture = ExtResource("1_qu5mu")
+defend_texture = ExtResource("3_3dys5")
+blank_texture = ExtResource("2_xackp")
+main_texture = ExtResource("4_nhade")
+possible_turn_actions = Array[int]([0, 1, 3])

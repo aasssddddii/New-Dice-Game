@@ -14,7 +14,7 @@ offset_bottom = 39.0
 texture_normal = ExtResource("1_phh5v")
 script = ExtResource("2_mjcnq")
 
-[node name="dice_area" type="Area2D" parent="."]
+[node name="dice_area" type="Area2D" parent="." groups=["dice_area"]]
 position = Vector2(39, 38)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="dice_area"]
@@ -22,3 +22,5 @@ shape = SubResource("RectangleShape2D_pgk6c")
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
 [connection signal="button_up" from="." to="." method="_on_button_up"]
+[connection signal="area_entered" from="dice_area" to="." method="_on_dice_area_area_entered"]
+[connection signal="area_exited" from="dice_area" to="." method="_on_dice_area_area_exited"]

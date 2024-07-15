@@ -74,30 +74,13 @@ var upgrade_level
 func _physics_process(delta):
 	if Input.is_action_just_released("mouse_click_up"):
 		is_grabbing = false
-	
 	if snap_area:
 		if !is_grabbing && global_position != snap_area.global_position:
 			global_position = snap_area.global_position + offset
 		
-
-
 	if is_grabbing:
 		global_position = get_global_mouse_position() + offset
-func overlapping_dice(on_dice:bool, parent:Node):
-	is_on_dice = on_dice
-	if parent:
-		var dice_node = parent
-		if !is_grabbing && on_dice && !dice_node.is_grabbing:
-			var up_face = dice_data["up_face"]
-			if up_face["amount"] == 1:
-				#reroll(self)
-				print("dice.gd: should reroll")
-				dice_node.reroll(dice_node)
-				
-			else:
-				print("no rerolls")
-
-
+		
 func get_current_snap_area():
 	area.area_entered.connect(func set_snap_area(entered_area:Area2D):
 		if entered_area.is_in_group("dice_snap"):
@@ -138,25 +121,14 @@ func roll():
 	
 	
 
-func _on_dice_area_area_entered(area):
-	print(name, " dice now overlapping area ", area)
-	if area.get_collision_layer() > 1 && dice_data["type"] == DiceType.REROLL:
-		overlap_dice = area
-		print("overlapping dice now ", overlap_dice)
-		overlapping_dice(true,overlap_dice.get_parent())
-	else:
-		if area.is_in_group("dice_snap"):
-			if !area.is_filled:
-				if last_snap_area != snap_area:
-					last_snap_area = snap_area
-				snap_area = area
-		
-
-
-func _on_dice_area_area_exited(area):
-	if area == overlap_dice:
-		overlap_dice = null
-	pass # Replace with function body.
+#func _on_dice_area_area_entered(area):
+#	print(name, " dice now overlapping area ", area)
+#	if area.is_in_group("dice_snap"):
+#			if !area.is_filled:
+#				if last_snap_area != snap_area:
+#					last_snap_area = snap_area
+#				snap_area = area
+#
 
 
 func _on_button_down():
@@ -172,18 +144,26 @@ func _on_button_down():
 
 func _on_button_up():
 	if get_current_snap_area():
-		
+		if dice_data["type"] == DiceType.REROLL && up_face >0:
+			if is_on_dice:
+				overlap_dice.roll()
+				roll()
+#		else:
+#			print("not reroll dice or no rerolls")
 		global_position = snap_area.global_position + offset
-		
-		if snap_area.name == "inventory" && is_grabbing:
-			var discard_event = get_node_or_null("..")
-			discard_event.import_dice_into_deck(dice_data["name"])
-			discard_event.update_deck()
-			queue_free()
-		else:
-			snap_area.filler(self)
-			if overlap_dice != null && dice_data["type"] == DiceType.REROLL:
-				overlapping_dice(true,overlap_dice.get_parent())
+		snap_area.filler(self)
 		is_grabbing = false
 	else:
 		go_to_last_snap()
+
+
+func _on_dice_area_area_entered(area):
+	if area.is_in_group("dice_area"):
+		overlap_dice = area.get_parent()
+		is_on_dice = true
+
+
+func _on_dice_area_area_exited(area):
+	if area.is_in_group("dice_area"):
+		overlap_dice = null
+		is_on_dice = false

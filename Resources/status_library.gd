@@ -14,7 +14,8 @@ enum StatusCondition{
 	DEFDEBUFF,
 	STUN,
 	CURE,
-	DISARM
+	DISARM,
+	NONE
 }
 
 var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn")
@@ -33,7 +34,8 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":true,
 	"texture":"res://Sprites/status_conditions/reflect status.png",
 	"status_condition":StatusCondition.REFLECT,
-	"turns":-1
+	"turns":-1,
+	"damage":0
 }
 @export var disarm_status_data:Dictionary = {
 	"name":"disarm",
@@ -48,7 +50,7 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":false,
 	"texture":"res://Sprites/status_conditions/stun status.png",
 	"status_condition":StatusCondition.STUN,
-	"turns":0,#maybe change to 0
+	"turns":1,
 	"damage":0
 }
 @export var poison_status_data:Dictionary = {
@@ -72,7 +74,8 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":true,
 	"texture":"res://Sprites/status_conditions/attack buff status.png",
 	"status_condition":StatusCondition.ATKBUFF,
-	"turns":3
+	"turns":3,
+	"damage":0
 }
 @export var attack_debuff_status_data:Dictionary = {
 	"name":"atk_debuff",
@@ -87,7 +90,8 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":true,
 	"texture":"res://Sprites/status_conditions/defence buff status.png",
 	"status_condition":StatusCondition.DEFBUFF,
-	"turns":3
+	"turns":3,
+	"damage":0
 }
 @export var defence_debuff_status_data:Dictionary = {
 	"name":"def_debuff",
@@ -102,7 +106,8 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":true,
 	"texture":"res://Sprites/status_conditions/cure status.png",
 	"status_condition":StatusCondition.CURE,
-	"turns":3
+	"turns":0,
+	"damage":0
 }
 @export var burn_status_data:Dictionary = {
 	"name":"fire",

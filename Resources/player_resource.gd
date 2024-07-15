@@ -6,6 +6,7 @@ class_name Player_Resource
 @export var max_health:int
 @export var health:int
 @export var attack:int
+@export var magic_power:int
 @export var defend:int
 @export var shield:int
 @export var heal_power:int
@@ -47,27 +48,35 @@ func battle_reset():
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"bld_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"bld_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"bld_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"bld_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"lig_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"poi_dice"
+	"dice_name":"lig_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"lig_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"lig_dice"
 	},
 	{
 	"default":true,
@@ -83,7 +92,23 @@ var dice_deck:Array[Dictionary] = [
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"dice_name":"fir_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"ice_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"ice_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"ice_dice"
+	},
+	{
+	"default":true,
+	"dice_name":"ice_dice"
 	}
 ]
 

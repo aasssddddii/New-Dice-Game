@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://cho4spvvtffh7"]
+
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_bn1o6"]
+[ext_resource type="Texture2D" uid="uid://dpw0bh1cnt3si" path="res://Sprites/Dice/one poison dice.png" id="1_h5qws"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_ytyb0"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_v84sm"]
+[ext_resource type="Texture2D" uid="uid://5rkhpprrk5gi" path="res://Sprites/enemies/snek.png" id="4_yhdot"]
+
+[resource]
+script = ExtResource("1_bn1o6")
+enemy_name = "snake"
+enemy_description = "Poisonous Snake that attacks once per turn"
+max_health = 15
+health = 15
+shield = 0
+heal_power = 0
+attack = 1
+defend = 3
+attacks = 1
+reward_gold = 10
+basic_attack_damage_type = 3
+weaknesses = {
+0: false,
+1: true,
+2: false,
+3: false,
+5: false
+}
+resistantses = {
+0: false,
+1: false,
+2: false,
+3: true,
+5: false
+}
+attack_texture = ExtResource("1_h5qws")
+defend_texture = ExtResource("3_v84sm")
+blank_texture = ExtResource("2_ytyb0")
+main_texture = ExtResource("4_yhdot")
+possible_turn_actions = Array[int]([0, 1, 3])

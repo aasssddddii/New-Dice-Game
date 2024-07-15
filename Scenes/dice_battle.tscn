@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://xq0naemtpvqa"]
+[gd_scene load_steps=12 format=3 uid="uid://xq0naemtpvqa"]
 
 [ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_5q77g"]
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="5_1gupk"]
 [ext_resource type="Texture2D" uid="uid://cn3k5tjrtrevh" path="res://Sprites/dice_game_ui/heart.png" id="6_ayl21"]
 [ext_resource type="Texture2D" uid="uid://ckef36t0aywc3" path="res://Sprites/dice_game_ui/download.png" id="7_0ngxd"]
+[ext_resource type="Script" path="res://Scripts/dice_game/player_node.gd" id="7_6vodb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ojoh0"]
 
@@ -163,9 +164,11 @@ color = Color(0.521569, 0.337255, 1, 1)
 [node name="player_layer" type="Node2D" parent="."]
 position = Vector2(177, 280)
 
-[node name="player" type="Sprite2D" parent="player_layer"]
+[node name="player" type="Sprite2D" parent="player_layer" node_paths=PackedStringArray("master")]
 scale = Vector2(0.7, 0.7)
 texture = ExtResource("5_1gupk")
+script = ExtResource("7_6vodb")
+master = NodePath("../..")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="player_layer/player"]
 offset_left = -134.286
@@ -233,7 +236,6 @@ offset_left = 67.1428
 offset_top = -58.5714
 offset_right = 172.143
 offset_bottom = 103.429
-scale = Vector2(0.8, 0.8)
 columns = 2
 
 [connection signal="button_down" from="player_ui/submit_button" to="." method="_on_submit_button_down"]
