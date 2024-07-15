@@ -17,10 +17,13 @@ enum StatusCondition{
 	DISARM
 }
 
+var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn")
+
+
 @export var bleed_status_data:Dictionary = {
 	"name":"bleed",
 	"is_positive":false,
-	"texture":"res://sprites/bleed status.png",
+	"texture":"res://Sprites/status_conditions/bleed status.png",
 	"status_condition":StatusCondition.BLEED,
 	"turns":3,
 	"damage":3
@@ -28,14 +31,14 @@ enum StatusCondition{
 @export var reflect_status_data:Dictionary = {
 	"name":"reflect",
 	"is_positive":true,
-	"texture":"res://sprites/reflect status.png",
+	"texture":"res://Sprites/status_conditions/reflect status.png",
 	"status_condition":StatusCondition.REFLECT,
 	"turns":-1
 }
 @export var disarm_status_data:Dictionary = {
 	"name":"disarm",
 	"is_positive":false,
-	"texture":"res://sprites/disarm status.png",
+	"texture":"res://Sprites/status_conditions/disarm status.png",
 	"status_condition":StatusCondition.DISARM,
 	"turns":3,
 	"damage":0
@@ -43,7 +46,7 @@ enum StatusCondition{
 @export var stun_status_data:Dictionary = {
 	"name":"stun",
 	"is_positive":false,
-	"texture":"res://sprites/stun status.png",
+	"texture":"res://Sprites/status_conditions/stun status.png",
 	"status_condition":StatusCondition.STUN,
 	"turns":0,#maybe change to 0
 	"damage":0
@@ -51,7 +54,7 @@ enum StatusCondition{
 @export var poison_status_data:Dictionary = {
 	"name":"poison",
 	"is_positive":false,
-	"texture":"res://sprites/poison status.png",
+	"texture":"res://Sprites/status_conditions/poison status.png",
 	"status_condition":StatusCondition.POISON,
 	"turns":3,
 	"damage":5
@@ -59,7 +62,7 @@ enum StatusCondition{
 @export var frozen_status_data:Dictionary = {
 	"name":"frozen",
 	"is_positive":false,
-	"texture":"res://sprites/frozen status.png",
+	"texture":"res://Sprites/status_conditions/frozen status.png",
 	"status_condition":StatusCondition.FROZEN,
 	"turns":1,
 	"damage":0
@@ -67,14 +70,14 @@ enum StatusCondition{
 @export var attack_buff_status_data:Dictionary = {
 	"name":"atk_buff",
 	"is_positive":true,
-	"texture":"res://sprites/attack buff status.png",
+	"texture":"res://Sprites/status_conditions/attack buff status.png",
 	"status_condition":StatusCondition.ATKBUFF,
 	"turns":3
 }
 @export var attack_debuff_status_data:Dictionary = {
 	"name":"atk_debuff",
 	"is_positive":false,
-	"texture":"res://sprites/attack debuff status.png",
+	"texture":"res://Sprites/status_conditions/attack debuff status.png",
 	"status_condition":StatusCondition.ATKDEBUFF,
 	"turns":3,
 	"damage":0
@@ -82,14 +85,14 @@ enum StatusCondition{
 @export var defence_buff_status_data:Dictionary = {
 	"name":"def_buff",
 	"is_positive":true,
-	"texture":"res://sprites/defence buff status.png",
+	"texture":"res://Sprites/status_conditions/defence buff status.png",
 	"status_condition":StatusCondition.DEFBUFF,
 	"turns":3
 }
 @export var defence_debuff_status_data:Dictionary = {
 	"name":"def_debuff",
 	"is_positive":false,
-	"texture":"res://sprites/defence debuff status.png",
+	"texture":"res://Sprites/status_conditions/defence debuff status.png",
 	"status_condition":StatusCondition.DEFDEBUFF,
 	"turns":3,
 	"damage":0
@@ -97,14 +100,14 @@ enum StatusCondition{
 @export var cure_status_data:Dictionary = {
 	"name":"cure",
 	"is_positive":true,
-	"texture":"res://sprites/cure status.png",
+	"texture":"res://Sprites/status_conditions/cure status.png",
 	"status_condition":StatusCondition.CURE,
 	"turns":3
 }
 @export var burn_status_data:Dictionary = {
 	"name":"fire",
 	"is_positive":false,
-	"texture":"res://sprites/fire status.png",
+	"texture":"res://Sprites/status_conditions/fire status.png",
 	"status_condition":StatusCondition.BURN,
 	"turns":3,
 	"damage":5

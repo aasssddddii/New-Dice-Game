@@ -1,10 +1,79 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3o6pxge6txkt"]
+[gd_scene load_steps=5 format=3 uid="uid://b3o6pxge6txkt"]
 
 [ext_resource type="Script" path="res://Scripts/enemies/template_enemy.gd" id="1_2su1g"]
 [ext_resource type="Texture2D" uid="uid://bcm7fqqni5ed4" path="res://Sprites/enemies/bat_enemy.png" id="1_a3wxr"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_aduwl"]
+[ext_resource type="Texture2D" uid="uid://bptx871bkg5r2" path="res://Sprites/dice_game_ui/target_arrow.png" id="4_0da1b"]
 
 [node name="enemy_template" type="TextureButton"]
 offset_right = 128.0
 offset_bottom = 128.0
 texture_normal = ExtResource("1_a3wxr")
 script = ExtResource("1_2su1g")
+
+[node name="ui_current" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 15.0
+offset_right = 192.0
+offset_bottom = 109.0
+
+[node name="ui_health" type="Label" parent="ui_current"]
+layout_mode = 2
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0"
+
+[node name="ui_shield" type="Label" parent="ui_current"]
+layout_mode = 2
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0"
+
+[node name="ui_calc" type="Node2D" parent="."]
+position = Vector2(152, -25)
+
+[node name="ui_shield" type="Label" parent="ui_calc"]
+offset_top = 127.0
+offset_right = 66.0
+offset_bottom = 172.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "+ 0"
+
+[node name="ui_health" type="Label" parent="ui_calc"]
+offset_right = 66.0
+offset_bottom = 45.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "+ 0"
+
+[node name="status_conditions" type="GridContainer" parent="."]
+layout_direction = 3
+layout_mode = 1
+offset_left = 109.0
+offset_right = 214.0
+offset_bottom = 162.0
+scale = Vector2(0.8, 0.8)
+columns = 2
+
+[node name="ui_turns" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 135.0
+offset_right = 264.0
+offset_bottom = 213.0
+scale = Vector2(0.4, 0.4)
+alignment = 1
+
+[node name="target_arrow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(65, -5)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("4_0da1b")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]

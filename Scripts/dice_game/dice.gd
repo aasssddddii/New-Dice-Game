@@ -64,14 +64,9 @@ var overlap_dice
 var snap_area
 var last_snap_area
 var is_on_dice:bool = false
-var blank_data: Dictionary
-var one_data:Dictionary
-var faces: Dictionary
-var face_sprites: Dictionary = {
-	"blank":null,
-	"one":null,
-	"two":null
-}
+
+
+var up_face:int
 var upgrade_level
 
 
@@ -125,9 +120,23 @@ func go_to_last_snap():
 
 func set_dice_data(data:Dictionary):
 	dice_data = data
-	texture_normal = load(dice_data["texture"])
+	name = dice_data["item_name"]
+	roll()
+	
 
-
+func roll():
+	#print("rolling dice: ", name)
+	
+	up_face = dice_data["faces"].pick_random()
+	match up_face:
+		0:
+			texture_normal = load(dice_data["none_texture"])
+		1:
+			texture_normal = load(dice_data["texture"])
+		_:
+			print("not implemented in faces: dice.gd")
+	
+	
 
 func _on_dice_area_area_entered(area):
 	print(name, " dice now overlapping area ", area)

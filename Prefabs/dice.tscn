@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bvxhfouxpepj5"]
 
 [ext_resource type="Texture2D" uid="uid://y2jd117gwsjs" path="res://Sprites/Dice/bleed dice.png" id="1_phh5v"]
-[ext_resource type="Script" path="res://Scripts/dice.gd" id="2_nphgf"]
+[ext_resource type="Script" path="res://Scripts/dice_game/dice.gd" id="2_mjcnq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pgk6c"]
 size = Vector2(66, 64)
@@ -12,7 +12,7 @@ offset_top = -39.0
 offset_right = 40.0
 offset_bottom = 39.0
 texture_normal = ExtResource("1_phh5v")
-script = ExtResource("2_nphgf")
+script = ExtResource("2_mjcnq")
 
 [node name="dice_area" type="Area2D" parent="."]
 position = Vector2(39, 38)

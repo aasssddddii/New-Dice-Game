@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="Status_Library" load_steps=2 format=3 uid="uid://btf3be01o1bdt"]
+
+[ext_resource type="Script" path="res://Resources/status_library.gd" id="1_vfxgq"]
+
+[resource]
+script = ExtResource("1_vfxgq")
+bleed_status_data = {
+"damage": 3,
+"is_positive": false,
+"name": "bleed",
+"status_condition": 0,
+"texture": "res://Sprites/status_conditions/bleed status.png",
+"turns": 3
+}
+reflect_status_data = {
+"is_positive": true,
+"name": "reflect",
+"status_condition": 4,
+"texture": "res://Sprites/status_conditions/reflect status.png",
+"turns": -1
+}
+disarm_status_data = {
+"damage": 0,
+"is_positive": false,
+"name": "disarm",
+"status_condition": 12,
+"texture": "res://Sprites/status_conditions/disarm status.png",
+"turns": 3
+}
+stun_status_data = {
+"damage": 0,
+"is_positive": false,
+"name": "stun",
+"status_condition": 10,
+"texture": "res://Sprites/status_conditions/stun status.png",
+"turns": 0
+}
+poison_status_data = {
+"damage": 5,
+"is_positive": false,
+"name": "poison",
+"status_condition": 2,
+"texture": "res://Sprites/status_conditions/poison status.png",
+"turns": 3
+}
+frozen_status_data = {
+"damage": 0,
+"is_positive": false,
+"name": "frozen",
+"status_condition": 5,
+"texture": "res://Sprites/status_conditions/frozen status.png",
+"turns": 1
+}
+attack_buff_status_data = {
+"is_positive": true,
+"name": "atk_buff",
+"status_condition": 6,
+"texture": "res://Sprites/status_conditions/attack buff status.png",
+"turns": 3
+}
+attack_debuff_status_data = {
+"damage": 0,
+"is_positive": false,
+"name": "atk_debuff",
+"status_condition": 8,
+"texture": "res://Sprites/status_conditions/attack debuff status.png",
+"turns": 3
+}
+defence_buff_status_data = {
+"is_positive": true,
+"name": "def_buff",
+"status_condition": 7,
+"texture": "res://Sprites/status_conditions/defence buff status.png",
+"turns": 3
+}
+defence_debuff_status_data = {
+"damage": 0,
+"is_positive": false,
+"name": "def_debuff",
+"status_condition": 9,
+"texture": "res://Sprites/status_conditions/defence debuff status.png",
+"turns": 3
+}
+cure_status_data = {
+"is_positive": true,
+"name": "cure",
+"status_condition": 11,
+"texture": "res://Sprites/status_conditions/cure status.png",
+"turns": 3
+}
+burn_status_data = {
+"damage": 5,
+"is_positive": false,
+"name": "fire",
+"status_condition": 1,
+"texture": "res://Sprites/status_conditions/fire status.png",
+"turns": 3
+}

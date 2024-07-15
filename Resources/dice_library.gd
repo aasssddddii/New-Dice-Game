@@ -18,6 +18,8 @@ var attack_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Attack Dice",
 	"description":"Basic attack dice"
 	}
@@ -31,6 +33,8 @@ var defend_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.DEFEND,
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Defence Dice",
 	"description":"Basic Defence Dice"
 	}
@@ -44,6 +48,8 @@ var reroll_dice_shop_data:Dictionary = {
 	"animation_target":"discard",
 	"type":Dice.DiceType.REROLL,
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Reroll Dice",
 	"description":"reroll dice, drop on top of another dice to reroll both"
 	}
@@ -57,6 +63,8 @@ var bleed_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.BLEED,
 	"effect":Status_Library.StatusCondition.BLEED,
+	"element":Dice.DamageElement.BLEED,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Bleed Dice",
 	"description":"bleed dice, inflicts bleed damage for 3 turns"
 	}
@@ -70,6 +78,8 @@ var heal_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.HEAL,
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Heal Dice",
 	"description":"Basic heal dice"
 	}
@@ -85,6 +95,8 @@ var gold_dice_shop_data:Dictionary = {
 	"animation_target":"discard",
 	"type":Dice.DiceType.GOLD,
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Gold Dice",
 	"description":"Gold dice, provides 1 gold upon use"
 	}
@@ -98,6 +110,8 @@ var reflect_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.REFLECT,
 	"effect":Status_Library.StatusCondition.REFLECT,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Reflect Dice",
 	"description":"reflect dice, reflects damage back to enemys. you still take damage"
 	}
@@ -110,7 +124,9 @@ var lifesteal_dice_shop_data:Dictionary = {
 	"upgrade_price":20,
 	"animation_target":"target",
 	"type":Dice.DiceType.LIFESTEAL,
+	"faces":[0,0,0,1,1,1],
 	"effect":false,
+	"element":Dice.DamageElement.NONE,
 	"long_name":"lifesteal Dice",
 	"description":"lifesteal dice, Heals you for the damage you deal"
 	}
@@ -125,6 +141,8 @@ var poison_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.POISON,
 	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Poison Dice",
 	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	}
@@ -138,6 +156,8 @@ var cure_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.CURE,
 	"effect":Status_Library.StatusCondition.CURE,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Cure Dice",
 	"description":"cures you of all negative status effects"
 	}
@@ -151,6 +171,8 @@ var stun_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.STUN,
 	"effect":Status_Library.StatusCondition.STUN,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Stun Dice",
 	"description":"Stuns an enemy for 2 turn"
 	}
@@ -164,6 +186,8 @@ var disarm_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.DISARM,
 	"effect":Status_Library.StatusCondition.DISARM,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Disarm Dice",
 	"description":"Disables the enemy from attacking for 3 turns"
 	}
@@ -177,6 +201,8 @@ var buff_attack_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.ATKBUFF,
 	"effect":Status_Library.StatusCondition.ATKBUFF,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Buff Attack Dice",
 	"description":"Buff your attack x1.5 for 3 turns"
 	}
@@ -190,6 +216,8 @@ var buff_defence_dice_shop_data:Dictionary = {
 	"animation_target":"self",
 	"type":Dice.DiceType.DEFBUFF,
 	"effect":Status_Library.StatusCondition.DEFBUFF,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Buff Defence Dice",
 	"description":"Buff your defence x1.5 for 3 turns"
 	}
@@ -203,6 +231,8 @@ var debuff_attack_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.ATKDEBUFF,
 	"effect":Status_Library.StatusCondition.ATKDEBUFF,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Debuff Attack Dice",
 	"description":"Debuff enemy attack x1.5 for 3 turns"
 	}
@@ -216,6 +246,8 @@ var debuff_defence_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.DEFDEBUFF,
 	"effect":Status_Library.StatusCondition.DEFDEBUFF,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Debuff Defence Dice",
 	"description":"Debuff enemy defence x1.5 for 3 turns"
 	}
@@ -230,6 +262,8 @@ var fire_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.FIRE,
 	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Fire Dice",
 	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
 	}
@@ -243,6 +277,8 @@ var ice_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.ICE,
 	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Ice Dice",
 	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	}
@@ -256,6 +292,8 @@ var lightning_dice_shop_data:Dictionary = {
 	"animation_target":"target",
 	"type":Dice.DiceType.LIGHTNING,
 	"effect":false,
+	"element":Dice.DamageElement.LIGHTNING,
+	"faces":[0,0,0,1,1,1],
 	"long_name":"Lightning Dice",
 	"description":"deal lightning type damage to an enemy, deals half damage to other enemies"
 	}

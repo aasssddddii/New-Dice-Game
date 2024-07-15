@@ -47,39 +47,39 @@ func battle_reset():
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"dice_name":"atk_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"atk_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"atk_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"atk_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"dice_name":"poi_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,

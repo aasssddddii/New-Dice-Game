@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bm0570vmsluwh"]
+
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="1_pdh7u"]
+[ext_resource type="Script" path="res://Scripts/enemies/enemy_turn_ui.gd" id="2_2374j"]
+
+[node name="turn_pattern_template" type="TextureRect"]
+offset_right = 43.0
+offset_bottom = 43.0
+texture = ExtResource("1_pdh7u")
+script = ExtResource("2_2374j")

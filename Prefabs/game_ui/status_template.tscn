@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0hx0fl0ikvi8"]
+
+[ext_resource type="Texture2D" uid="uid://dtaub1hqpg4gg" path="res://Sprites/status_conditions/reflect status.png" id="1_u0hih"]
+[ext_resource type="Script" path="res://Scripts/dice_game/status_template.gd" id="2_ex3mm"]
+[ext_resource type="FontFile" uid="uid://cw706bl4vj4uf" path="res://Fonts/Dungeon Depths.otf" id="2_f4862"]
+
+[sub_resource type="Theme" id="Theme_y6dyl"]
+default_font = ExtResource("2_f4862")
+default_font_size = 14
+
+[node name="status_template" type="TextureRect"]
+offset_right = 43.0
+offset_bottom = 43.0
+texture = ExtResource("1_u0hih")
+script = ExtResource("2_ex3mm")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 14.0
+offset_top = -8.0
+offset_right = 65.0
+offset_bottom = 21.0
+theme = SubResource("Theme_y6dyl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "_
+"
+horizontal_alignment = 1
