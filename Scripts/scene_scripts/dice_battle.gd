@@ -23,6 +23,7 @@ var player_target:Enemy
 
 var spawned_statuses:Array[Status_Library.StatusCondition]
 
+
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
 @onready var ui_shield = $player_layer/player/VBoxContainer/ui_shield/ui_text
@@ -30,6 +31,7 @@ var spawned_statuses:Array[Status_Library.StatusCondition]
 @onready var ui_calc_hp = $player_layer/player/calc_hp
 @onready var ui_calc_defend = $player_layer/player/calc_defend
 
+var can_attack:bool = true
 
 
 func _ready():
@@ -63,6 +65,7 @@ func setup_enemies():
 			next_enemy.setup_enemy(enemy)
 			
 			enemy_counter+=1
+		
 		current_enemy_dmg = calc_enemy_dmg()
 		calc_player_attack()
 		print("total enemy attack: ", current_enemy_dmg)
@@ -73,7 +76,7 @@ func setup_enemies():
 
 func set_player_hand():
 	#print("current dice deck: ", current_dice_deck)
-	
+
 	
 	var hand_slots_not_filled = player_hand.get_children().filter(func(slot):return !slot.get_child(0).is_filled)
 
@@ -110,7 +113,9 @@ func set_player_hand():
 			dice_layer.add_child(next_dice)
 			next_dice.global_position = slot.global_position + dice_lib.die_offset
 			next_dice.last_snap_area = slot.get_child(0)
-
+	
+	
+	display_player_calc()
 
 func shuffle_deck():
 	current_dice_deck += discard
@@ -140,34 +145,38 @@ func use_dice(dice_array:Array[Dice]):
 
 #Player ENDS turn here
 func _on_submit_button_down():
-	var send_dice:Array[Dice]
-	for slot in action_slots.get_children():
-		var slot_area = slot.get_child(0)
-		if slot_area.is_filled:
-			var dice_node = slot_area.filled_node
-			send_dice.append(dice_node)
-	use_dice(send_dice)
-	
-	do_positive_statuses()#does positive statuses
-	print("sending attack: ", player_attack)
-	#evaluate player specific data
-	
-	game_manager.player_resource.gold += player_attack["gold"]
-	print("player gained ", player_attack["gold"], " gold")
-	
-	
-	player_target.hit_enemy(player_attack)
-	reset_player_attack()
-	
-	
-	
-	do_status_effects()
-	#clean_up_statuses()
-	take_enemy_turn()
-	current_enemy_dmg = calc_enemy_dmg()
-	calc_player_attack()
-	#print("total enemy attack: ", current_enemy_dmg)
-
+	if can_attack:
+		can_attack = false
+		$player_ui/submit_button.modulate = Color.SADDLE_BROWN
+		var send_dice:Array[Dice]
+		for slot in action_slots.get_children():
+			var slot_area = slot.get_child(0)
+			if slot_area.is_filled:
+				var dice_node = slot_area.filled_node
+				send_dice.append(dice_node)
+		use_dice(send_dice)
+		
+		do_positive_statuses()#does positive statuses
+		print("sending attack: ", player_attack)
+		#evaluate player specific data
+		
+		game_manager.player_resource.gold += player_attack["gold"]
+		print("player gained ", player_attack["gold"], " gold")
+		
+		
+		player_target.hit_enemy(player_attack)
+		reset_player_attack()
+		
+		
+		
+		do_status_effects()
+		#clean_up_statuses()
+		take_enemy_turn()
+		current_enemy_dmg = calc_enemy_dmg()
+		calc_player_attack()
+		#print("total enemy attack: ", current_enemy_dmg)
+	else:
+		print("not player turn yet...")
 
 func calc_enemy_dmg():
 	var enemy_calc_attack:int
@@ -375,25 +384,43 @@ func display_player_calc():
 		ui_calc_hp.visible = true
 
 func take_enemy_turn():
-	for enemy in enemy_layer.get_children():
+	var enemies = enemy_layer.get_children()
+	for enemy in enemies:
 		#Do enemy Status
 		enemy.do_status_effects()
+		#Heal Enemies with heals
+		enemy.heal_enemy()
+		enemy.heal_amount = 0
+	
+	
 		
-		#Do Enemy Attack
-		var next_attack = enemy.get_attack_data()
+	#Do Enemy Attack
+	for enemy in enemies:
+		await enemy.do_attack_pattern()
+		var next_attack = enemy.send_attack
 		hit_player(next_attack)
-		
 		#setup next enemy attack
 		enemy.setup_next_attack()
+		
+	await get_tree().create_timer(.5).timeout
+	#calc_player_attack()
+	can_attack = true
+	$player_ui/submit_button.modulate = Color.WHITE
+#	#resets heal stat only befor enemy turn starts
+#	for enemy in enemies:
+#		enemy.heal_amount = 0
 
 
 func hit_player(attack_data:Dictionary):
 	print("player takes ", attack_data["damage"]," damage")
-	print("status effect: ", attack_data["status_effect"])
+	print("adding status effect to player: ", attack_data["status_effect"])
 	
 	if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
 		add_status_conditions(attack_data["status_effect"])
 	
+#	#heals Enemy from enemy attack data
+#	if attack_data["target_enemy"]!=null:
+#		attack_data["target_enemy"].current_enemy_resource.health += attack_data["heal_amount"]
 	
 
 

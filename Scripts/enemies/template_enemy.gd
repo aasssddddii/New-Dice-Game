@@ -12,12 +12,16 @@ var enemy_ui_turn = load("res://Prefabs/game_ui/enemy_turn_ui.tscn")
 var attack_pattern:Array[enemy_resource.TurnActions]
 
 var current_player_damage:int
-var enemy_heal:int
+#var enemy_heal:int
 var heal_calc
 
 var status_conditions:Array[Status_Library.StatusCondition]
 var status_timeouts:Array[int]
 var spawned_statuses:Array[Status_Library.StatusCondition]
+
+var target_enemy:Enemy
+var heal_amount:int
+
 
 @onready var status_grid = $status_conditions
 #DISPLAY TURN
@@ -54,7 +58,7 @@ func hit_enemy(attack_data:Dictionary):
 	print("hitting enemy- ", name, " with attack: ", attack_data)
 	
 	#deal Damage
-	current_enemy_resource.health -= attack_data["damage"]
+	#deal_damage(attack_data["damage"])
 	
 	
 	
@@ -69,13 +73,22 @@ func update_vitals():
 	ui_health.text = var_to_str(current_enemy_resource.health)
 	ui_shield.text = var_to_str(current_enemy_resource.shield)
 
-#func update_health():
-#	pass
+func deal_damage(amount:int):
+	var enemy_shield = current_enemy_resource.shield
+	if  enemy_shield > amount:
+		enemy_shield -= amount
+	else:
+		amount -= enemy_shield
+		enemy_shield = 0
+		current_enemy_resource.health -= amount
+	
+	
 
 func setup_next_attack():
 	attack_pattern.clear()
 	reset_ui_turn()
-	manage_enemy_heal("reset",null)
+	update_vitals()
+	#manage_enemy_heal("reset",null)
 	var remove_stun:bool = false
 	for attack_number in current_enemy_resource.attacks:
 
@@ -122,14 +135,18 @@ func display_turn_actions(attack_pattern:Array[enemy_resource.TurnActions]):
 		ui_turns.add_child(next_turn_ui)
 
 func reset_ui_turn():
+	#heal_calc = 0
+	
 	for turn_display in ui_turns.get_children():
 		turn_display.queue_free()
 
 func ui_calc_turn():
-	var calc_heal:int
+	#var calc_heal:int
 	var calc_shield:int
-	heal_calc = 0
+	
 	for attack in attack_pattern:
+		if name == "wizard":
+			print(name, " attack pattern check, ", attack_pattern)
 		match attack:
 			enemy_resource.TurnActions.ATTACK:
 				pass
@@ -138,17 +155,22 @@ func ui_calc_turn():
 			enemy_resource.TurnActions.HEAL:
 				var enemy_layer = get_parent()
 				var lowest_hp:int = 4775807
-				var target_enemy:Enemy
+				target_enemy=null
 				#find lowest target
 				for enemy in enemy_layer.get_children():
-					if lowest_hp > enemy.current_enemy_resource.health:
+					if lowest_hp >= enemy.current_enemy_resource.health:
 						target_enemy = enemy
 						lowest_hp = enemy.current_enemy_resource.health
-					
+				
+				#heal_amount += current_enemy_resource.heal_power
+				#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
+				
 				if target_enemy != self:
-					target_enemy.manage_enemy_heal("set",current_enemy_resource.heal_power)
+					print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
+					target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
 				else:
-					manage_enemy_heal("set",current_enemy_resource.heal_power)
+					print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
+					heal_amount += current_enemy_resource.heal_power
 				
 			enemy_resource.TurnActions.NONE:
 				pass
@@ -159,7 +181,7 @@ func ui_calc_turn():
 		calc_ui_shield.text ="+"+var_to_str(calc_shield)
 	else:
 		calc_ui_shield.visible = false
-	heal_calc = enemy_heal - (current_player_damage + get_status_dmg())
+	heal_calc = heal_amount - (current_player_damage + get_status_dmg())
 	if heal_calc > 0 :
 		calc_ui_heal.visible = true
 		calc_ui_heal.text ="+"+var_to_str(heal_calc)
@@ -168,7 +190,7 @@ func ui_calc_turn():
 		calc_ui_heal.text = var_to_str(heal_calc)
 	else:
 		calc_ui_heal.visible = false
-	print(name," heal calc: ", heal_calc)
+	print(name," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
 
 func show_arrow(choice:bool):
 	var arrow = $target_arrow
@@ -189,12 +211,16 @@ func manage_current_player_dmg(choice:String,value):
 			current_player_damage = value
 	ui_calc_turn()
 
-func manage_enemy_heal(choice:String,value):
+func manage_heal_amount(choice:String,value):
 	match choice:
 		"reset":
-			enemy_heal = 0
+			heal_amount = 0
 		"set":
-			enemy_heal = value
+			heal_amount = value
+		"add":
+			heal_amount += value
+
+	print(name, " enemy heal now: ", heal_amount)
 	ui_calc_turn()
 	
 
@@ -217,45 +243,45 @@ func add_status_conditions(value):
 		#print("adding status timeout is now: ",  status_timeouts)
 			
 func do_status_effects():
-	print(name, ": statuses is now: ",  status_conditions)
-	print(name, ": status timeout is now: ",  status_timeouts)
+#	print(name, ": statuses is now: ",  status_conditions)
+#	print(name, ": status timeout is now: ",  status_timeouts)
 	var condition_index:int
 	for status in status_conditions:
 		#do status damages
 
 		
-		match status:
-			Status_Library.StatusCondition.BLEED:
-				pass
-			Status_Library.StatusCondition.REFLECT:
-				pass
-			Status_Library.StatusCondition.DISARM:
-				pass
-			Status_Library.StatusCondition.STUN:
-				pass
-			Status_Library.StatusCondition.POISON:
-				pass
-			Status_Library.StatusCondition.FROZEN:
-				pass
-			Status_Library.StatusCondition.ATKBUFF:
-				pass
-			Status_Library.StatusCondition.ATKDEBUFF:
-				pass
-			Status_Library.StatusCondition.DEFBUFF:
-				pass
-			Status_Library.StatusCondition.DEFDEBUFF:
-				pass
-			Status_Library.StatusCondition.CURE:
-				pass
-			Status_Library.StatusCondition.BURN:
-				pass
+#		match status:
+#			Status_Library.StatusCondition.BLEED:
+#				pass
+#			Status_Library.StatusCondition.REFLECT:
+#				pass
+#			Status_Library.StatusCondition.DISARM:
+#				pass
+#			Status_Library.StatusCondition.STUN:
+#				pass
+#			Status_Library.StatusCondition.POISON:
+#				pass
+#			Status_Library.StatusCondition.FROZEN:
+#				pass
+#			Status_Library.StatusCondition.ATKBUFF:
+#				pass
+#			Status_Library.StatusCondition.ATKDEBUFF:
+#				pass
+#			Status_Library.StatusCondition.DEFBUFF:
+#				pass
+#			Status_Library.StatusCondition.DEFDEBUFF:
+#				pass
+#			Status_Library.StatusCondition.CURE:
+#				pass
+#			Status_Library.StatusCondition.BURN:
+#				pass
 				
 		#minus 1 from timeout 
 		if status_timeouts[condition_index] > 1:
 			status_timeouts[condition_index] -=1
 			if status != -1:
 				var status_ref = game_manager.status_lib.get_status_data(status)
-				current_enemy_resource.health -= status_ref["damage"]
+				deal_damage(status_ref["damage"])
 				print(name, " is taking damage from status DMG: ", status_ref["damage"])
 		elif status == Status_Library.StatusCondition.STUN:
 			pass
@@ -279,10 +305,16 @@ func update_statuses():
 	for status_container in status_grid.get_children():
 		status_container.update_status()
 		
-func get_attack_data():
-	var send_attack:Dictionary = {
+		
+var send_attack:Dictionary
+	#actually take enemy turn
+func do_attack_pattern():
+	send_attack = {
 		"damage":0,
 		"status_effect":Status_Library.StatusCondition.NONE,
+		#Maybe add a send Heal so the dice game can send it to the correct enemy
+		"target_enemy":null,
+		"heal_amount":0
 	}
 	for action in attack_pattern:
 		match action:
@@ -297,6 +329,38 @@ func get_attack_data():
 						_:
 							print("status not implemented template_enemy.gd")
 							
-					
-	return send_attack
+				await turn_tween("attack").finished
+			enemy_resource.TurnActions.DEFEND:
+				current_enemy_resource.shield += current_enemy_resource.defend
+				await turn_tween("defend").finished
+			enemy_resource.TurnActions.HEAL:
+				await turn_tween("heal").finished
+#				send_attack["target_enemy"] = target_enemy
+#				send_attack["heal_amount"] += current_enemy_resource.heal_power
+#
+	#ui_calc_turn()
+	#return send_attack
 
+func heal_enemy():
+	print("Healing enemy ", name, " current heal ", heal_calc)
+	current_enemy_resource.health += heal_calc
+	#manage_enemy_heal("reset",null)
+	
+func turn_tween(choice:String):
+	var tweener = get_tree().create_tween()
+	var reset_position = position
+	var move_direction
+	match choice:
+		"attack":
+			move_direction = Vector2(-80,0)
+		"defend":
+			move_direction = Vector2(0,-80)
+		"heal":
+			move_direction = Vector2(20,0)
+	
+	tweener.tween_property(self,"position",position + move_direction,.1)
+	tweener.tween_property(self,"position",reset_position,.2)
+	
+	return tweener
+	
+	
