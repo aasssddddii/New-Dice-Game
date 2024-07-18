@@ -37,13 +37,13 @@ var can_attack:bool = true
 func _ready():
 	enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
-#	battle_data = [
-#		enemy_lib.get_enemy_resource("snake"),
-#		enemy_lib.get_enemy_resource("wizard"),
-#		enemy_lib.get_enemy_resource("ice_wolf")]
-		
 	battle_data = [
+		enemy_lib.get_enemy_resource("snake"),
+		enemy_lib.get_enemy_resource("wizard"),
 		enemy_lib.get_enemy_resource("ice_wolf")]
+		
+#	battle_data = [
+#		enemy_lib.get_enemy_resource("ice_wolf")]
 	for ui_slot in action_slots.get_children():
 		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
 		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)

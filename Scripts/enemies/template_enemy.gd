@@ -295,6 +295,12 @@ func do_status_effects():
 		elif status == Status_Library.StatusCondition.STUN:
 			pass
 		else:
+			if status != -1:
+				var status_ref = game_manager.status_lib.get_status_data(status)
+				deal_damage(status_ref["damage"])
+				print(name, " is taking damage from status DMG: ", status_ref["damage"])
+				await turn_tween("status").finished
+				self_modulate = Color.WHITE
 			#var remove_index = status_conditions.find(status)
 			#print("condition index sanity check it : ",condition_index)
 			status_conditions.pop_at(condition_index)
@@ -307,9 +313,10 @@ func do_status_effects():
 			#print(name, ": status timeout is now: ",  status_timeouts)
 		condition_index+=1
 		
-		
-			
 	update_statuses()
+	
+	
+	
 func update_statuses():
 	for status_container in status_grid.get_children():
 		status_container.update_status()

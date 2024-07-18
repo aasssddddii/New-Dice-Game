@@ -9,6 +9,7 @@ default_font = ExtResource("2_f4862")
 default_font_size = 14
 
 [node name="status_template" type="TextureRect"]
+z_index = 1
 offset_right = 43.0
 offset_bottom = 43.0
 texture = ExtResource("1_u0hih")
@@ -26,3 +27,10 @@ theme_override_constants/outline_size = 4
 text = "_
 "
 horizontal_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+z_as_relative = false
+layout_mode = 0
+offset_right = 42.0
+offset_bottom = 44.0
