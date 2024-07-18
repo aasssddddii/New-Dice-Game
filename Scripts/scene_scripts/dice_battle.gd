@@ -37,11 +37,13 @@ var can_attack:bool = true
 func _ready():
 	enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
-	battle_data = [
-		enemy_lib.get_enemy_resource("snake"),
-		enemy_lib.get_enemy_resource("wizard"),
-		enemy_lib.get_enemy_resource("ice_wolf")]
+#	battle_data = [
+#		enemy_lib.get_enemy_resource("snake"),
+#		enemy_lib.get_enemy_resource("wizard"),
+#		enemy_lib.get_enemy_resource("ice_wolf")]
 		
+	battle_data = [
+		enemy_lib.get_enemy_resource("ice_wolf")]
 	for ui_slot in action_slots.get_children():
 		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
 		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
@@ -76,7 +78,6 @@ func setup_enemies():
 
 func set_player_hand():
 	#print("current dice deck: ", current_dice_deck)
-
 	
 	var hand_slots_not_filled = player_hand.get_children().filter(func(slot):return !slot.get_child(0).is_filled)
 
@@ -387,7 +388,7 @@ func take_enemy_turn():
 	var enemies = enemy_layer.get_children()
 	for enemy in enemies:
 		#Do enemy Status
-		enemy.do_status_effects()
+		#enemy.do_status_effects()
 		#Heal Enemies with heals
 		enemy.heal_enemy()
 		enemy.heal_amount = 0
@@ -400,15 +401,17 @@ func take_enemy_turn():
 		var next_attack = enemy.send_attack
 		hit_player(next_attack)
 		#setup next enemy attack
+		enemy.do_status_effects()
 		enemy.setup_next_attack()
 		
 	await get_tree().create_timer(.5).timeout
 	#calc_player_attack()
+	#calc_enemy_dmg()
 	can_attack = true
 	$player_ui/submit_button.modulate = Color.WHITE
-#	#resets heal stat only befor enemy turn starts
-#	for enemy in enemies:
-#		enemy.heal_amount = 0
+	
+	current_enemy_dmg = calc_enemy_dmg()
+	calc_player_attack()
 
 
 func hit_player(attack_data:Dictionary):

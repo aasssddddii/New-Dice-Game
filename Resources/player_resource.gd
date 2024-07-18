@@ -48,35 +48,35 @@ func battle_reset():
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"dice_name":"bld_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"bld_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"bld_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"bld_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"lig_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"lig_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"lig_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"lig_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
