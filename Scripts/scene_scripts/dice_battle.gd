@@ -1,5 +1,7 @@
 extends Node2D
 
+signal vitals_changed
+
 @onready var player_hand = $player_hand
 @onready var dice_layer = $dice_layer
 @onready var action_slots = $action_slots
@@ -27,6 +29,7 @@ var spawned_statuses:Array[Status_Library.StatusCondition]
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
 @onready var ui_shield = $player_layer/player/VBoxContainer/ui_shield/ui_text
+@onready var ui_damage = $player_ui/ui_damage
 #calc
 @onready var ui_calc_hp = $player_layer/player/calc_hp
 @onready var ui_calc_defend = $player_layer/player/calc_defend
@@ -37,20 +40,20 @@ var can_attack:bool = true
 func _ready():
 	enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
-	battle_data = [
-		enemy_lib.get_enemy_resource("snake"),
-		enemy_lib.get_enemy_resource("wizard"),
-		enemy_lib.get_enemy_resource("ice_wolf")]
-		
 #	battle_data = [
+#		enemy_lib.get_enemy_resource("snake"),
+#		enemy_lib.get_enemy_resource("wizard"),
 #		enemy_lib.get_enemy_resource("ice_wolf")]
+		
+	battle_data = [
+		enemy_lib.get_enemy_resource("snake")]
 	for ui_slot in action_slots.get_children():
 		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
 		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
 	
 	#setup player
-	ui_hp.text = var_to_str(game_manager.player_resource.health)
-	
+	update_vitals()
+	vitals_changed.connect(update_vitals)
 	
 	setup_enemies()
 	update_player_target(enemy_layer.get_child(0))
@@ -161,16 +164,18 @@ func _on_submit_button_down():
 		print("sending attack: ", player_attack)
 		#evaluate player specific data
 		
-		game_manager.player_resource.gold += player_attack["gold"]
-		print("player gained ", player_attack["gold"], " gold")
-		
-		
+#		game_manager.player_resource.gold += player_attack["gold"]
+#		print("player gained ", player_attack["gold"], " gold")
+#
+#		game_manager.player_resource.shield += player_attack["shield"]
+#		game_manager.player_resource.health += player_attack["heal"]
+		manage_positive_player_attack(player_attack["heal"],player_attack["shield"],player_attack["gold"])
 		player_target.hit_enemy(player_attack)
 		reset_player_attack()
 		
-		
-		
-		do_status_effects()
+		vitals_changed.emit()
+		await get_tree().create_timer(.7).timeout
+		#do_status_effects()
 		#clean_up_statuses()
 		take_enemy_turn()
 		current_enemy_dmg = calc_enemy_dmg()
@@ -189,6 +194,21 @@ func calc_enemy_dmg():
 				enemy_calc_attack += enemy.current_enemy_resource.attack
 	#print("total enemy attack: ", enemy_calc_attack)
 	return enemy_calc_attack
+
+func manage_positive_player_attack(heal:int,shield:int,gold:int):
+	game_manager.player_resource.gold += player_attack["gold"]
+	#print("player gained ", player_attack["gold"], " gold")
+	
+	game_manager.player_resource.shield += player_attack["shield"]
+	#max shield check
+	if game_manager.player_resource.shield > game_manager.player_resource.max_health:
+		game_manager.player_resource.shield = game_manager.player_resource.max_health
+	
+	game_manager.player_resource.health += player_attack["heal"]
+	#max heal check
+	if game_manager.player_resource.health > game_manager.player_resource.max_health:
+		game_manager.player_resource.health = game_manager.player_resource.max_health
+	
 
 
 func get_action_dice():
@@ -349,7 +369,7 @@ func calc_player_attack():
 	"damage":calculator_damage,
 	"reflect":calculator_reflect,
 	"shield":calculator_defend,
-	"heal":calculator_heal-current_enemy_dmg,
+	"heal":calculator_heal,
 	"gold":calculator_gold,
 	"status_conditions":calculator_statuses,
 	"elements":calculator_elements,
@@ -357,12 +377,13 @@ func calc_player_attack():
 	}
 	#print("preparing to send attack: ", player_attack)
 	display_player_calc()
+	update_damage()
+	
 
 
 func display_player_calc():
-	if player_target != null:
-		player_target.manage_current_player_dmg("set",player_attack["damage"])
-		
+	update_damage()
+	
 	if player_attack["heal"] > 0:
 		ui_calc_hp.text = "+"+var_to_str(player_attack["heal"])
 	else:
@@ -384,6 +405,14 @@ func display_player_calc():
 	else:
 		ui_calc_hp.visible = true
 
+func update_damage():
+	print("sanity check player damage: ",player_attack["damage"])
+	if player_attack["damage"] > 0:
+		ui_damage.text = var_to_str(player_attack["damage"])
+		ui_damage.visible = true
+	else:
+		ui_damage.visible = false
+
 func take_enemy_turn():
 	var enemies = enemy_layer.get_children()
 	for enemy in enemies:
@@ -398,20 +427,21 @@ func take_enemy_turn():
 	#Do Enemy Attack
 	for enemy in enemies:
 		await enemy.do_attack_pattern()
-		var next_attack = enemy.send_attack
-		hit_player(next_attack)
+		#var next_attack = enemy.send_attack
+		#hit_player(next_attack)
 		#setup next enemy attack
-		enemy.do_status_effects()
-		enemy.setup_next_attack()
+#		enemy.do_status_effects()
+#		enemy.setup_next_attack()
 		
-	await get_tree().create_timer(.5).timeout
-	#calc_player_attack()
-	#calc_enemy_dmg()
-	can_attack = true
-	$player_ui/submit_button.modulate = Color.WHITE
+		
+	do_status_effects()
 	
 	current_enemy_dmg = calc_enemy_dmg()
 	calc_player_attack()
+	can_attack = true
+	$player_ui/submit_button.modulate = Color.WHITE
+	
+
 
 
 func hit_player(attack_data:Dictionary):
@@ -421,11 +451,44 @@ func hit_player(attack_data:Dictionary):
 	if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
 		add_status_conditions(attack_data["status_effect"])
 	
-#	#heals Enemy from enemy attack data
-#	if attack_data["target_enemy"]!=null:
-#		attack_data["target_enemy"].current_enemy_resource.health += attack_data["heal_amount"]
+	damage_player(attack_data["damage"],attack_data["from_enemy"])
 	
 
+func damage_player(amount:int, from_enemy):
+	if game_manager.player_resource.reflect > 0:
+		#hit enemy back for amount
+		var reflect_amount:int
+		var current_reflect:int = game_manager.player_resource.reflect
+		if from_enemy != null:
+			if current_reflect > amount:
+				game_manager.player_resource.reflect -= amount
+				reflect_amount = amount
+			else:
+				game_manager.player_resource.reflect = 0
+				reflect_amount = game_manager.player_resource.reflect
+			from_enemy.deal_damage(reflect_amount)
+		
+	if game_manager.player_resource.shield > 0:
+		if game_manager.player_resource.shield > amount:
+			game_manager.player_resource.shield -= amount
+		else:
+			amount -= game_manager.player_resource.shield
+			game_manager.player_resource.shield = 0
+			game_manager.player_resource.health -= amount
+	else:
+		game_manager.player_resource.health -= amount
+	
+	
+	
+	vitals_changed.emit()
+
+
+func update_vitals():
+	
+	ui_hp.text = var_to_str(game_manager.player_resource.health)
+	ui_shield.text =var_to_str(game_manager.player_resource.shield)
+	
+	
 
 func reset_player_attack():
 	player_attack = {
@@ -442,10 +505,10 @@ func reset_player_attack():
 func update_player_target(new_target:Enemy):
 	if player_target != null:
 		player_target.show_arrow(false)
-		player_target.manage_current_player_dmg("reset",null)
+		#player_target.manage_current_player_dmg("reset",null)
 	player_target = new_target
 	player_target.show_arrow(true)
-	player_target.manage_current_player_dmg("set",player_attack["damage"])
+	#player_target.manage_current_player_dmg("set",player_attack["damage"])
 	calc_player_attack()
 	print("current target is: ", player_target.name)
 
@@ -492,7 +555,7 @@ func add_status_conditions(value):
 func do_status_effects():
 	var condition_index:int
 	for status in status_conditions:
-		#do status stuff
+		#do status stuff ADD DMG Here
 		match status:
 			Status_Library.StatusCondition.BLEED:
 				pass
@@ -519,6 +582,11 @@ func do_status_effects():
 			Status_Library.StatusCondition.BURN:
 				pass
 				
+				
+				
+		if status != -1:
+			var status_ref = game_manager.status_lib.get_status_data(status)
+			damage_player(status_ref["damage"],null)
 		#minus 1 from timeout 
 		if status_timeout[condition_index] > 1:
 			status_timeout[condition_index] -=1

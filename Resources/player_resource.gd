@@ -96,19 +96,19 @@ var dice_deck:Array[Dictionary] = [
 	},
 	{
 	"default":true,
-	"dice_name":"ice_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"ice_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"ice_dice"
+	"dice_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"ice_dice"
+	"dice_name":"fir_dice"
 	}
 ]
 

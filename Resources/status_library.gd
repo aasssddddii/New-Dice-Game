@@ -59,7 +59,7 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"texture":"res://Sprites/status_conditions/poison status.png",
 	"status_condition":StatusCondition.POISON,
 	"turns":3,
-	"damage":5
+	"damage":3
 }
 @export var frozen_status_data:Dictionary = {
 	"name":"frozen",

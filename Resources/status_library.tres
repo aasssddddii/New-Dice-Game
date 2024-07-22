@@ -13,6 +13,7 @@ bleed_status_data = {
 "turns": 3
 }
 reflect_status_data = {
+"damage": 0,
 "is_positive": true,
 "name": "reflect",
 "status_condition": 4,
@@ -36,7 +37,7 @@ stun_status_data = {
 "turns": 1
 }
 poison_status_data = {
-"damage": 5,
+"damage": 3,
 "is_positive": false,
 "name": "poison",
 "status_condition": 2,
@@ -52,6 +53,7 @@ frozen_status_data = {
 "turns": 1
 }
 attack_buff_status_data = {
+"damage": 0,
 "is_positive": true,
 "name": "atk_buff",
 "status_condition": 6,
@@ -67,6 +69,7 @@ attack_debuff_status_data = {
 "turns": 3
 }
 defence_buff_status_data = {
+"damage": 0,
 "is_positive": true,
 "name": "def_buff",
 "status_condition": 7,
@@ -80,6 +83,14 @@ defence_debuff_status_data = {
 "status_condition": 9,
 "texture": "res://Sprites/status_conditions/defence debuff status.png",
 "turns": 3
+}
+cure_status_data = {
+"damage": 0,
+"is_positive": true,
+"name": "cure",
+"status_condition": 11,
+"texture": "res://Sprites/status_conditions/cure status.png",
+"turns": 0
 }
 burn_status_data = {
 "damage": 5,

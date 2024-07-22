@@ -3,10 +3,13 @@ class_name Enemy
 
 var master:Node = self
 
+signal vitals_changed
+
 var game_manager = GameManager
 var current_enemy_resource:Resource
 var status_lib = Status_Library
 var attack_data:Dictionary
+@onready var dice_battle_node = $"../.."
 @onready var ui_turns = $ui_turns
 var enemy_ui_turn = load("res://Prefabs/game_ui/enemy_turn_ui.tscn")
 var attack_pattern:Array[enemy_resource.TurnActions]
@@ -34,14 +37,13 @@ var heal_amount:int
 
 var ui_heal_added:bool = false
 
-
 func setup_enemy(resource:Resource):
 	current_enemy_resource = resource
 	name = current_enemy_resource.enemy_name
 	texture_normal = current_enemy_resource.main_texture
 	ui_health.text = var_to_str(current_enemy_resource.health)
 	
-	
+	vitals_changed.connect(update_vitals)
 	global_position -= Vector2(64,64)
 	setup_next_attack()
 	#print("enemy now:", current_enemy_resource.enemy_name)
@@ -87,13 +89,16 @@ func deal_damage(amount:int):
 		print("dealing ", amount ," damage to enemy shield overrun")
 		current_enemy_resource.health -= amount
 	
-	update_vitals()
+	#update_vitals()
+	#kill_check()
+	vitals_changed.emit()
 
 func setup_next_attack():
 	
 	attack_pattern.clear()
 	reset_ui_turn()
-	update_vitals()
+	#update_vitals()
+	vitals_changed.emit()
 	#manage_enemy_heal("reset",null)
 	var remove_stun:bool = false
 	for attack_number in current_enemy_resource.attacks:
@@ -159,28 +164,30 @@ func ui_calc_turn():
 				pass
 			enemy_resource.TurnActions.DEFEND:
 				calc_shield += current_enemy_resource.defend
+				pass
 			enemy_resource.TurnActions.HEAL:
-				if !ui_heal_added:
-					var enemy_layer = get_parent()
-					var lowest_hp:int = 4775807
-					target_enemy=null
-					#find lowest target
-					for enemy in enemy_layer.get_children():
-						if lowest_hp >= enemy.current_enemy_resource.health:
-							target_enemy = enemy
-							lowest_hp = enemy.current_enemy_resource.health
-					
-					#heal_amount += current_enemy_resource.heal_power
-					#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
-					
-					if target_enemy != self:
-						print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
-						target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
-						#^^^^ NEEDS to be limited so that it does not keep adding to infinity when clicked
-					else:
-						print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
-						heal_amount += current_enemy_resource.heal_power
-					ui_heal_added = true
+#				if !ui_heal_added:
+#					var enemy_layer = get_parent()
+#					var lowest_hp:int = 4775807
+#					target_enemy=null
+#					#find lowest target
+#					for enemy in enemy_layer.get_children():
+#						if lowest_hp >= enemy.current_enemy_resource.health:
+#							target_enemy = enemy
+#							lowest_hp = enemy.current_enemy_resource.health
+#
+#					#heal_amount += current_enemy_resource.heal_power
+#					#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
+#
+#					if target_enemy != self:
+#						print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
+#						target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
+#						#^^^^ NEEDS to be limited so that it does not keep adding to infinity when clicked
+#					else:
+#						print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
+#						heal_amount += current_enemy_resource.heal_power
+#					ui_heal_added = true
+				pass
 			enemy_resource.TurnActions.NONE:
 				pass
 	
@@ -212,25 +219,25 @@ func _on_button_down():
 	$"../..".update_player_target(self)
 	pass # Replace with function body.
 
-func manage_current_player_dmg(choice:String,value):
-	match choice:
-		"reset":
-			current_player_damage = 0
-		"set":
-			current_player_damage = value
-	ui_calc_turn()
+#func manage_current_player_dmg(choice:String,value):
+#	match choice:
+#		"reset":
+#			current_player_damage = 0
+#		"set":
+#			current_player_damage = value
+#	ui_calc_turn()
 
-func manage_heal_amount(choice:String,value):
-	match choice:
-		"reset":
-			heal_amount = 0
-		"set":
-			heal_amount = value
-		"add":
-			heal_amount += value
-
-	print(name, " enemy heal now: ", heal_amount)
-	ui_calc_turn()
+#func manage_heal_amount(choice:String,value):
+#	match choice:
+#		"reset":
+#			heal_amount = 0
+#		"set":
+#			heal_amount = value
+#		"add":
+#			heal_amount += value
+#
+#	print(name, " enemy heal now: ", heal_amount)
+#	ui_calc_turn()
 	
 
 func add_status_conditions(value):
@@ -252,37 +259,10 @@ func add_status_conditions(value):
 		#print("adding status timeout is now: ",  status_timeouts)
 			
 func do_status_effects():
-#	print(name, ": statuses is now: ",  status_conditions)
-#	print(name, ": status timeout is now: ",  status_timeouts)
+	print(name, ": statuses is now: ",  status_conditions)
+	print(name, ": status timeout is now: ",  status_timeouts)
 	var condition_index:int
 	for status in status_conditions:
-		#do status damages
-#		match status:
-#			Status_Library.StatusCondition.BLEED:
-#				pass
-#			Status_Library.StatusCondition.REFLECT:
-#				pass
-#			Status_Library.StatusCondition.DISARM:
-#				pass
-#			Status_Library.StatusCondition.STUN:
-#				pass
-#			Status_Library.StatusCondition.POISON:
-#				pass
-#			Status_Library.StatusCondition.FROZEN:
-#				pass
-#			Status_Library.StatusCondition.ATKBUFF:
-#				pass
-#			Status_Library.StatusCondition.ATKDEBUFF:
-#				pass
-#			Status_Library.StatusCondition.DEFBUFF:
-#				pass
-#			Status_Library.StatusCondition.DEFDEBUFF:
-#				pass
-#			Status_Library.StatusCondition.CURE:
-#				pass
-#			Status_Library.StatusCondition.BURN:
-#				pass
-				
 		#minus 1 from timeout 
 		if status_timeouts[condition_index] > 1:
 			status_timeouts[condition_index] -=1
@@ -312,7 +292,7 @@ func do_status_effects():
 			#print(name, ": statuses is now: ",  status_conditions)
 			#print(name, ": status timeout is now: ",  status_timeouts)
 		condition_index+=1
-		
+	#clean_up_statuses()
 	update_statuses()
 	
 	
@@ -338,8 +318,23 @@ func update_statuses():
 #	flash_timer.start()
 #	return flash_timer
 	
+func clean_up_statuses():
+	#var status_index:int
+	var clean_status:Array[Status_Library.StatusCondition]
+	var clean_timeout:Array[int]
 	
+	for status in status_conditions:
+		print("sanity check status = ", status)
+		if status != -1:
+			clean_status.append(status)
+			#doesnt work due to .find only getting first result May also effect player
+			clean_timeout.append(status_timeouts[status_conditions.find(status)])
 	
+	status_conditions = clean_status
+	status_timeouts = clean_timeout
+	
+	print(name, ": statuses is now: ",  status_conditions)
+	print(name, ": status timeout is now: ",  status_timeouts)
 	
 	
 	
@@ -351,7 +346,8 @@ func do_attack_pattern():
 		"status_effect":Status_Library.StatusCondition.NONE,
 		#Maybe add a send Heal so the dice game can send it to the correct enemy
 		"target_enemy":null,
-		"heal_amount":0
+		"heal_amount":0,
+		"from_enemy":self
 	}
 	for action in attack_pattern:
 		match action:
@@ -368,21 +364,29 @@ func do_attack_pattern():
 							
 				await turn_tween("attack").finished
 			enemy_resource.TurnActions.DEFEND:
-				current_enemy_resource.shield += current_enemy_resource.defend
+				if current_enemy_resource.shield < current_enemy_resource.max_health:
+					current_enemy_resource.shield += current_enemy_resource.defend
+				if current_enemy_resource.shield > current_enemy_resource.max_health:
+					current_enemy_resource.shield = current_enemy_resource.max_health
 				await turn_tween("defend").finished
 			enemy_resource.TurnActions.HEAL:
 				await turn_tween("heal").finished
 #				send_attack["target_enemy"] = target_enemy
 #				send_attack["heal_amount"] += current_enemy_resource.heal_power
-#
-	#ui_calc_turn()
-	#return send_attack
+	dice_battle_node.hit_player(send_attack)
+	do_status_effects()
+	#clean_up_statuses()
+	setup_next_attack()
 
 func heal_enemy():
 	print("Healing enemy ", name, " current heal ", (heal_amount-get_status_dmg()))
-	current_enemy_resource.health += heal_amount #(heal_amount-get_status_dmg())
-	#manage_enemy_heal("reset",null)
 	
+	if current_enemy_resource.health < current_enemy_resource.max_health:
+		current_enemy_resource.health += heal_amount 
+	if current_enemy_resource.health > current_enemy_resource.max_health:
+		current_enemy_resource.health = current_enemy_resource.max_health 
+
+
 func turn_tween(choice:String):
 	var tweener = get_tree().create_tween()
 	var reset_position = position
@@ -403,3 +407,12 @@ func turn_tween(choice:String):
 	return tweener
 	
 	
+func kill_check():
+	var arrow = $target_arrow
+	if current_enemy_resource.health <= 0:
+		var filtered_targets = get_parent().get_children().filter(func(target):return target != self)
+		#maybe add something about adding to the player kills
+		if arrow.visible:
+			$"../..".update_player_target(filtered_targets.pick_random())
+		
+		queue_free()

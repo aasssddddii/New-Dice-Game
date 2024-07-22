@@ -128,6 +128,29 @@ theme_override_constants/outline_size = 8
 text = "SUBMIT"
 flat = true
 
+[node name="ui_damage" type="Button" parent="player_ui"]
+offset_left = 280.0
+offset_top = 471.0
+offset_right = 461.0
+offset_bottom = 521.0
+theme = ExtResource("4_7uilj")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "-"
+flat = true
+
+[node name="Label" type="Label" parent="player_ui/ui_damage"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = -36.0
+offset_right = 184.0
+offset_bottom = 9.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 10
+text = "damage"
+horizontal_alignment = 1
+
 [node name="item_button" type="Button" parent="player_ui"]
 offset_left = 16.0
 offset_top = 459.0
