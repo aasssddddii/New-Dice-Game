@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://k8uevourb2a1"]
+
+[ext_resource type="Script" path="res://Prefabs/game_map/level_template.gd" id="1_2f3qr"]
+
+[node name="HBoxContainer" type="HBoxContainer"]
+offset_right = 1300.0
+offset_bottom = 916.0
+pivot_offset = Vector2(49, 461)
+size_flags_horizontal = 0
+theme_override_constants/separation = 300
+script = ExtResource("1_2f3qr")

@@ -18,9 +18,10 @@ var all_enemies:Dictionary = {
 	"ice_wolf":ice_wolf_enemy_resource,
 	"wizard":wizard_enemy_resource
 }
-
+var enemies_array = all_enemies.values()
 
 func get_enemy_resource(enemy_name:String):
 	return all_enemies[enemy_name]
 	
-	
+func get_random_enemy():
+	return enemies_array.pick_random()

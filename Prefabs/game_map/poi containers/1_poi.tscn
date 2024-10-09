@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvcime2mveylv"]
+
+[ext_resource type="PackedScene" uid="uid://clqv4irrdb7uj" path="res://Prefabs/game_map/poi containers/poi_template.tscn" id="1_b18kh"]
+
+[node name="1_poi_container" type="VBoxContainer"]
+alignment = 1
+
+[node name="poi_template" parent="." instance=ExtResource("1_b18kh")]
+layout_mode = 2

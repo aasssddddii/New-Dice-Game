@@ -65,7 +65,7 @@ func hit_enemy(attack_data:Dictionary):
 	#deal Damage
 	deal_damage(attack_data["damage"])
 	
-	
+
 	
 	#add Status conditions
 	if !attack_data["status_conditions"].is_empty():
@@ -89,6 +89,17 @@ func deal_damage(amount:int):
 		print("dealing ", amount ," damage to enemy shield overrun")
 		current_enemy_resource.health -= amount
 	
+	if current_enemy_resource.health <= 0:
+		var left_enemies:Array[Enemy]
+		var dice_game = $"../.."
+		for child in get_parent().get_children():
+			if child != self:
+				left_enemies.append(child)
+		if !left_enemies.is_empty():
+			dice_game.update_player_target(left_enemies.pick_random())
+		else:
+			dice_game.end_battle(true)
+		queue_free()
 	#update_vitals()
 	#kill_check()
 	vitals_changed.emit()

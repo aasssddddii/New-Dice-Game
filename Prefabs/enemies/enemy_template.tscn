@@ -19,6 +19,7 @@ offset_right = 192.0
 offset_bottom = 109.0
 
 [node name="ui_health" type="Label" parent="ui_current"]
+self_modulate = Color(1, 0.34902, 0.360784, 1)
 layout_mode = 2
 theme = ExtResource("3_aduwl")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -26,6 +27,7 @@ theme_override_constants/outline_size = 8
 text = "0"
 
 [node name="ui_shield" type="Label" parent="ui_current"]
+self_modulate = Color(0, 0.317647, 1, 1)
 layout_mode = 2
 theme = ExtResource("3_aduwl")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -36,7 +38,7 @@ text = "0"
 position = Vector2(152, -25)
 
 [node name="ui_shield" type="Label" parent="ui_calc"]
-visible = false
+self_modulate = Color(0, 0.317647, 1, 1)
 offset_top = 127.0
 offset_right = 66.0
 offset_bottom = 172.0
@@ -45,8 +47,18 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "+ 0"
 
+[node name="ui_attack" type="Label" parent="ui_calc"]
+offset_left = -227.0
+offset_top = 89.0
+offset_right = -161.0
+offset_bottom = 134.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "0"
+
 [node name="ui_health" type="Label" parent="ui_calc"]
-visible = false
+modulate = Color(1, 0.34902, 0.360784, 1)
 offset_right = 66.0
 offset_bottom = 45.0
 theme = ExtResource("3_aduwl")

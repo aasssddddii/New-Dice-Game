@@ -26,6 +26,7 @@ class_name Player_Resource
 @export var default_heal_power:int
 
 @export var battle_wins:int
+@export var game_level:int
 
 func reset_values():
 	print("player resource ressetting values")
@@ -37,6 +38,7 @@ func reset_values():
 	reflect = 0
 	heal_power = default_heal_power
 	gold = 0
+	game_level = 0
 	print("new health now ", health)
 	
 func battle_reset():

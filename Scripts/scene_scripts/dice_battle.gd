@@ -9,7 +9,7 @@ signal vitals_changed
 @onready var enemy_layer = $enemy_layer
 @onready var status_grid = $player_layer/player/status_conditions
 @onready var dice_lib = preload("res://Resources/dice_library.tres")
-var enemy_lib #= preload("res://Resources/enemies/enemy_library.tres")
+#var enemy_lib #= preload("res://Resources/enemies/enemy_library.tres")
 
 var current_dice_deck:Array[Dictionary]
 var discard:Array[Dictionary]
@@ -25,6 +25,7 @@ var player_target:Enemy
 
 var spawned_statuses:Array[Status_Library.StatusCondition]
 
+var reward
 
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
@@ -36,23 +37,25 @@ var spawned_statuses:Array[Status_Library.StatusCondition]
 
 var can_attack:bool = true
 
-
-func _ready():
-	enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
+#LLO WORKING ON THE BATTLE FLOW IN GENERAL
+#Staticly set battle need to get ready for map generation
+func setup_dice_batle(input_data:Dictionary):
+	#enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
 #	battle_data = [
 #		enemy_lib.get_enemy_resource("snake"),
 #		enemy_lib.get_enemy_resource("wizard"),
 #		enemy_lib.get_enemy_resource("ice_wolf")]
 		
-	battle_data = [
-		enemy_lib.get_enemy_resource("snake")]
+	battle_data = input_data["enemies"]
+	reward = input_data["reward"]
+	
 	for ui_slot in action_slots.get_children():
 		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
 		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
 	
 	#setup player
-	update_vitals()
+#	#update_vitals()
 	vitals_changed.connect(update_vitals)
 	
 	setup_enemies()
@@ -64,8 +67,8 @@ func setup_enemies():
 	if battle_data != [null,null,null]:
 		var enemy_counter:int
 		for enemy in battle_data:
-			var next_enemy = enemy_lib.enemy_prefab.instantiate()
-			next_enemy.global_position = enemy_spawns.get_child(enemy_counter).global_position
+			var next_enemy = game_manager.enemy_lib.enemy_prefab.instantiate()
+			next_enemy.position = enemy_spawns.get_child(enemy_counter).position
 			enemy_layer.add_child(next_enemy)
 			next_enemy.setup_enemy(enemy)
 			
@@ -455,7 +458,7 @@ func hit_player(attack_data:Dictionary):
 	
 
 func damage_player(amount:int, from_enemy):
-	if game_manager.player_resource.reflect > 0:
+	if game_manager.player_resource.reflect > 0:#if player has reflect
 		#hit enemy back for amount
 		var reflect_amount:int
 		var current_reflect:int = game_manager.player_resource.reflect
@@ -468,17 +471,19 @@ func damage_player(amount:int, from_enemy):
 				reflect_amount = game_manager.player_resource.reflect
 			from_enemy.deal_damage(reflect_amount)
 		
-	if game_manager.player_resource.shield > 0:
+	if game_manager.player_resource.shield > 0:#if player has shield
 		if game_manager.player_resource.shield > amount:
 			game_manager.player_resource.shield -= amount
 		else:
 			amount -= game_manager.player_resource.shield
 			game_manager.player_resource.shield = 0
 			game_manager.player_resource.health -= amount
+	
 	else:
 		game_manager.player_resource.health -= amount
 	
-	
+	if game_manager.player_resource.health <= 0:
+		end_battle(false)
 	
 	vitals_changed.emit()
 
@@ -639,3 +644,9 @@ func cure_negative_effects():
 			status_timeout[status_index] = 0
 			
 	clean_up_statuses()
+
+func end_battle(win:bool):
+	if win:
+		print("game continues")
+	else:
+		print("game end")
