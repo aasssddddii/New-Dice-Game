@@ -48,9 +48,9 @@ theme_override_constants/outline_size = 8
 text = "+ 0"
 
 [node name="ui_attack" type="Label" parent="ui_calc"]
-offset_left = -227.0
+offset_left = -207.0
 offset_top = 89.0
-offset_right = -161.0
+offset_right = -141.0
 offset_bottom = 134.0
 theme = ExtResource("3_aduwl")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

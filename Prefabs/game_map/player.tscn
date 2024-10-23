@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c6ajo82ebsvjn"]
 
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="1_iwbna"]
-[ext_resource type="Script" path="res://Prefabs/game_map/player_map_controller.gd" id="2_fgcg4"]
+[ext_resource type="Script" path="res://Scripts/game_map/player_map_controller.gd" id="2_fgcg4"]
 
 [node name="player" type="Sprite2D"]
 texture = ExtResource("1_iwbna")

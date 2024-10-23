@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://xq0naemtpvqa"]
+[gd_scene load_steps=13 format=3 uid="uid://xq0naemtpvqa"]
 
 [ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_5q77g"]
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="4_7uilj"]
 [ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="4_jibh3"]
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="5_1gupk"]
+[ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="6_acft5"]
 [ext_resource type="Texture2D" uid="uid://cn3k5tjrtrevh" path="res://Sprites/dice_game_ui/heart.png" id="6_ayl21"]
 [ext_resource type="Texture2D" uid="uid://ckef36t0aywc3" path="res://Sprites/dice_game_ui/download.png" id="7_0ngxd"]
 [ext_resource type="Script" path="res://Scripts/dice_game/player_node.gd" id="7_6vodb"]
@@ -163,10 +164,33 @@ offset_left = 16.0
 offset_top = 459.0
 offset_right = 145.0
 offset_bottom = 501.0
+focus_mode = 0
 theme = ExtResource("4_7uilj")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "Items"
+flat = true
+
+[node name="item_background" type="ColorRect" parent="player_ui"]
+offset_left = 18.0
+offset_top = 455.0
+offset_right = 304.0
+offset_bottom = 619.0
+
+[node name="battle_item_container" type="GridContainer" parent="player_ui/item_background"]
+layout_mode = 0
+offset_top = 1.0
+offset_right = 286.0
+offset_bottom = 165.0
+
+[node name="item_close" type="Button" parent="player_ui/item_background"]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 7.0
+offset_right = 481.0
+offset_bottom = 242.0
+scale = Vector2(0.13, 0.13)
+icon = ExtResource("6_acft5")
 flat = true
 
 [node name="enemy_spawns" type="Node2D" parent="."]

@@ -36,12 +36,14 @@ var reward
 @onready var ui_calc_defend = $player_layer/player/calc_defend
 
 var can_attack:bool = true
+var enemy_count:int
 
 #LLO WORKING ON THE BATTLE FLOW IN GENERAL
 #Staticly set battle need to get ready for map generation
 func setup_dice_batle(input_data:Dictionary):
 	#enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
-	current_dice_deck = GameManager.player_resource.getset_dice_deck("get", null)
+	current_dice_deck = game_manager.player_resource.getset_dice_deck("get", null)
+	#print("setting up deck: ", current_dice_deck)
 #	battle_data = [
 #		enemy_lib.get_enemy_resource("snake"),
 #		enemy_lib.get_enemy_resource("wizard"),
@@ -55,7 +57,7 @@ func setup_dice_batle(input_data:Dictionary):
 		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
 	
 	#setup player
-#	#update_vitals()
+	update_vitals()
 	vitals_changed.connect(update_vitals)
 	
 	setup_enemies()
@@ -64,7 +66,7 @@ func setup_dice_batle(input_data:Dictionary):
 
 
 func setup_enemies():
-	if battle_data != [null,null,null]:
+	if !battle_data.is_empty():
 		var enemy_counter:int
 		for enemy in battle_data:
 			var next_enemy = game_manager.enemy_lib.enemy_prefab.instantiate()
@@ -74,6 +76,7 @@ func setup_enemies():
 			
 			enemy_counter+=1
 		
+		enemy_count = enemy_counter
 		current_enemy_dmg = calc_enemy_dmg()
 		calc_player_attack()
 		print("total enemy attack: ", current_enemy_dmg)
@@ -128,7 +131,7 @@ func shuffle_deck():
 	current_dice_deck += discard
 	#print("adding discard: ", discard)
 	discard.clear()
-	#print("current deck after shuffle: ", current_dice_deck)
+	print("current deck after shuffle: ", current_dice_deck)
 
 func use_dice(dice_array:Array[Dice]):
 	#Send Player Attack Data Here
@@ -647,6 +650,38 @@ func cure_negative_effects():
 
 func end_battle(win:bool):
 	if win:
-		print("game continues")
+		print("game continues: ", reward)
+		var dice_array:Array[Dictionary]
+		#RESOLVE player win Gold/Dice/Item
+		if typeof(reward) == TYPE_INT:
+			game_manager.player_resource.gold += reward
+		else:
+			for i in game_manager.rng.randi_range(1,3):
+				var picked_dice = game_manager.dice_lib.all_dice.values().pick_random()
+				dice_array.append(picked_dice)
+				if game_manager.default_checker(picked_dice):
+					game_manager.player_resource.getset_dice_deck("add",{
+						"default":true,
+						"dice_name":picked_dice["item_name"]
+						})
+				else:
+					game_manager.player_resource.getset_dice_deck("add",picked_dice)
+			
+		var ui_summary = game_manager.ui_battle_summary.instantiate()
+		ui_summary.setup_summary({
+			"enemies":enemy_count,
+			"reward":reward,
+			"dice":dice_array
+			})
+			
+		print("player gold is now: ", game_manager.player_resource.gold)
+		add_child(ui_summary)
+		#queue_free()
+		#$"../..".manage_camera("map_reset")
 	else:
 		print("game end")
+
+func summary_complete():
+	$"../..".manage_camera("map_reset")
+	queue_free()
+

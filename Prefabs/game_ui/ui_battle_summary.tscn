@@ -1,0 +1,128 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvfbfbo5m1je1"]
+
+[ext_resource type="Script" path="res://Scripts/dice_game/ui_battle_summary.gd" id="1_7i7pq"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="2_uicg7"]
+[ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="4_vfc6d"]
+[ext_resource type="Theme" uid="uid://dgx63tv2yl26o" path="res://Fonts/Themes/text_button.tres" id="5_gcou2"]
+
+[node name="ui_battle_summary" type="Node2D"]
+script = ExtResource("1_7i7pq")
+
+[node name="game Visuals TEMP2" type="ColorRect" parent="."]
+offset_left = -3.0
+offset_top = -5.0
+offset_right = 1158.0
+offset_bottom = 647.0
+color = Color(1, 0.619608, 0.878431, 1)
+
+[node name="Title" type="RichTextLabel" parent="."]
+offset_left = 278.0
+offset_top = 10.0
+offset_right = 870.0
+offset_bottom = 80.0
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Battle Summary"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 167.0
+offset_top = 108.0
+offset_right = 658.0
+offset_bottom = 323.0
+
+[node name="left_side" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="enemies_Label" type="Label" parent="HBoxContainer/left_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "Enemies Defeated:"
+horizontal_alignment = 2
+
+[node name="reward_Label2" type="Label" parent="HBoxContainer/left_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "Reward type:"
+horizontal_alignment = 2
+
+[node name="gold_Label3" type="Label" parent="HBoxContainer/left_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "Gold Earned:"
+horizontal_alignment = 2
+
+[node name="right_side" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ui_enemies" type="Label" parent="HBoxContainer/right_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "-"
+
+[node name="ui_reward" type="Label" parent="HBoxContainer/right_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "-"
+
+[node name="ui_gold" type="Label" parent="HBoxContainer/right_side"]
+layout_mode = 2
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+text = "-"
+
+[node name="player_ui" type="Node2D" parent="."]
+
+[node name="Button" type="Button" parent="player_ui"]
+offset_left = 774.0
+offset_top = 466.0
+offset_right = 950.0
+offset_bottom = 508.0
+theme = ExtResource("5_gcou2")
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "Continue"
+flat = true
+
+[node name="dice_reward" type="Node2D" parent="."]
+
+[node name="Title" type="RichTextLabel" parent="dice_reward"]
+offset_left = 12.0
+offset_top = 354.0
+offset_right = 604.0
+offset_bottom = 424.0
+theme = ExtResource("2_uicg7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 7
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]dice Collected"
+
+[node name="reward_dice" type="HBoxContainer" parent="dice_reward"]
+offset_left = 86.0
+offset_top = 416.0
+offset_right = 564.0
+offset_bottom = 555.0
+
+[node name="ui_item_desciption" parent="dice_reward" instance=ExtResource("4_vfc6d")]
+visible = false
+offset_left = 737.0
+offset_top = 267.0
+offset_right = 1105.0
+offset_bottom = 635.0
+
+[connection signal="button_down" from="player_ui/Button" to="." method="_on_button_button_down"]

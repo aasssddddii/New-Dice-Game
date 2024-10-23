@@ -10,14 +10,18 @@ var snake_enemy_resource:Resource = preload("res://Resources/enemies/snake.tres"
 var ice_wolf_enemy_resource:Resource = preload("res://Resources/enemies/ice_wolf.tres")
 var wizard_enemy_resource:Resource = preload("res://Resources/enemies/wizard.tres")
 
+#var all_enemies:Dictionary = {
+#	"bat":bat_enemy_resource,
+#	"wolf":wolf_enemy_resource,
+#	"slime":slime_enemy_resource,
+#	"snake":snake_enemy_resource,
+#	"ice_wolf":ice_wolf_enemy_resource,
+#	"wizard":wizard_enemy_resource
+#}
 var all_enemies:Dictionary = {
-	"bat":bat_enemy_resource,
-	"wolf":wolf_enemy_resource,
-	"slime":slime_enemy_resource,
-	"snake":snake_enemy_resource,
-	"ice_wolf":ice_wolf_enemy_resource,
-	"wizard":wizard_enemy_resource
+	"bat":bat_enemy_resource
 }
+
 var enemies_array = all_enemies.values()
 
 func get_enemy_resource(enemy_name:String):

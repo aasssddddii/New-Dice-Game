@@ -9,7 +9,12 @@ enum POI_Pattern_Type{
 	SHOP,
 	BOSS
 }
-
+enum Shop_Type{
+	DICE,
+	SKILL,
+	ITEM,
+	COMBO
+}
 
 
 
@@ -20,6 +25,7 @@ var three_poi_container = load("res://Prefabs/game_map/poi containers/3_poi.tscn
 
 
 var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
+#var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
 
 var last_poi_count:int = 0
 
@@ -78,7 +84,7 @@ func create_battle_data():
 	#decide how many enemies
 	#decide what enemies (based on level type)
 	var enemy_array:Array[Resource]
-	for i in game_manager.rng.randi_range(1,3):
+	for i in 1:#game_manager.rng.randi_range(1,3):
 		match current_level_type:
 			#uncomment when I have Level Specific Enemies
 #			map_gen.Level_Type.MAGIC:
@@ -105,13 +111,76 @@ func create_battle_data():
 		reward = gold
 		
 	else:
-		reward = "Dice Reward Prefab"
+		reward = "dice"
 	
 	output_data = {
 		"enemies":enemy_array,
 		"reward":reward
 	}
 	
+	
+	return output_data
+
+func create_shop():
+	var output_data:Dictionary
+	var shop_inventory:Array[Dictionary]
+	#Shop type selector VVV NEED to ADD COMBO Back when ready
+	var next_shop_type = [Shop_Type.DICE,Shop_Type.SKILL,Shop_Type.DICE,Shop_Type.SKILL,Shop_Type.ITEM,Shop_Type.ITEM].pick_random()
+	
+	match next_shop_type:#Creates Shop Inventory
+		Shop_Type.DICE:
+			for i in game_manager.rng.randi_range(3,20):#NEED to change to be dependent on how far the player is in the game
+				var next_dice = game_manager.dice_lib.all_dice.values().pick_random()
+				shop_inventory.append(next_dice)
+		Shop_Type.SKILL:#need a way to not generate discard slot when 2 are active
+			for item in game_manager.item_lib.all_shop_skills.values():
+				shop_inventory.append(item)
+#		Shop_Type.UPGRADE:
+#			pass
+		Shop_Type.ITEM:
+			for i in game_manager.rng.randi_range(3,20):#NEED to change to be dependent on how far the player is in the game
+				var next_item = game_manager.item_lib.all_items.values().pick_random()
+				shop_inventory.append(next_item)
+#		Shop_Type.COMBO:
+#			pass
+	
+	output_data = {
+		"shop_type":next_shop_type,
+		"inventory":shop_inventory
+	}
+	#test shop data
+#	output_data = {
+#		"shop_type":Shop_Type.DICE,
+#		"inventory":[{
+#			"item_code":0,
+#			"item_name":"ice_dice",
+#			"texture":"res://Sprites/Dice/one ice dice.png",
+#			"none_texture":"res://Sprites/Dice/none ice dice.png",
+#			"price":25,
+#			"upgrade_price":20,
+#			"animation_target":"target",
+#			"type":Dice.DiceType.ICE,
+#			"effect":false,
+#			"element":Dice.DamageElement.ICE,
+#			"faces":[0,0,0,1,1,1],
+#			"long_name":"Ice Dice",
+#			"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+#			},{
+#			"item_code":0,
+#			"item_name":"ice_dice",
+#			"texture":"res://Sprites/Dice/one ice dice.png",
+#			"none_texture":"res://Sprites/Dice/none ice dice.png",
+#			"price":25,
+#			"upgrade_price":20,
+#			"animation_target":"target",
+#			"type":Dice.DiceType.ICE,
+#			"effect":false,
+#			"element":Dice.DamageElement.ICE,
+#			"faces":[0,0,0,1,1,1],
+#			"long_name":"Ice Dice",
+#			"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+#			}]
+#	}
 	
 	return output_data
 
@@ -130,7 +199,7 @@ func poi_creator(input_poi:POI, current_pattern,level_index):
 		POI_Pattern_Type.EVENT:#create Event
 			event_data
 		POI_Pattern_Type.SHOP:#Maybe make a shop function for this
-			shop_data
+			shop_data = create_shop()
 		POI_Pattern_Type.BOSS:
 			battle_data
 	
@@ -141,7 +210,7 @@ func poi_creator(input_poi:POI, current_pattern,level_index):
 		"level_index":level_index,
 		"battle_data":battle_data,#new Dictionary
 		"event_data":null,#new Dictionary
-		"shop_data":null#new Dictionary
+		"shop_data":shop_data#new Dictionary
 	}
 	#print("POI Found: ", input_poi.name)
 	input_poi.setup_poi(poi_data)

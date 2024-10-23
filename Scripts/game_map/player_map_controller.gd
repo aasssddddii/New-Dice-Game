@@ -32,6 +32,7 @@ func move_player(input_poi:POI):
 	resolve_poi(poi_ref_data)
 	
 func resolve_poi(input_data:Dictionary):
+	#print("poi input data: ", input_data)
 	match input_data["pattern_type"]:
 		level_gen.POI_Pattern_Type.FIGHT:
 			var next_battle = game_manager.dice_battle_prefab.instantiate()
@@ -44,7 +45,14 @@ func resolve_poi(input_data:Dictionary):
 		level_gen.POI_Pattern_Type.EVENT:
 			pass
 		level_gen.POI_Pattern_Type.SHOP:
-			pass
+			var next_shop = game_manager.ui_shop_prefab.instantiate()
+			var next_shop_data = input_data["shop_data"]
+			player_camera.add_child(next_shop)
+			next_shop.setup_shop(next_shop_data)
+			manage_camera("battle")
+			next_shop.position = Vector2(-577,-325)
+			
+			
 		level_gen.POI_Pattern_Type.BOSS:
 			pass
 	

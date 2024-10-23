@@ -17,6 +17,7 @@ var attack_pattern:Array[enemy_resource.TurnActions]
 var current_player_damage:int
 #var enemy_heal:int
 var heal_calc
+var attack_calc
 
 var status_conditions:Array[Status_Library.StatusCondition]
 var status_timeouts:Array[int]
@@ -30,15 +31,17 @@ var heal_amount:int
 #DISPLAY TURN
 @onready var calc_ui_shield = $ui_calc/ui_shield
 @onready var calc_ui_heal = $ui_calc/ui_health
+@onready var calc_ui_attack = $ui_calc/ui_attack
 #UI Current
 @onready var ui_health = $ui_current/ui_health
 @onready var ui_shield = $ui_current/ui_shield
 
 
+
 var ui_heal_added:bool = false
 
 func setup_enemy(resource:Resource):
-	current_enemy_resource = resource
+	current_enemy_resource = resource.duplicate()
 	name = current_enemy_resource.enemy_name
 	texture_normal = current_enemy_resource.main_texture
 	ui_health.text = var_to_str(current_enemy_resource.health)
@@ -101,7 +104,7 @@ func deal_damage(amount:int):
 			dice_game.end_battle(true)
 		queue_free()
 	#update_vitals()
-	#kill_check()
+	kill_check()
 	vitals_changed.emit()
 
 func setup_next_attack():
@@ -165,6 +168,7 @@ func reset_ui_turn():
 func ui_calc_turn():
 	#var calc_heal:int
 	var calc_shield:int
+	attack_calc = 0
 	
 	#VVVV Maybe change this to a function that creates an attack Dictionary like player
 	for attack in attack_pattern:
@@ -172,6 +176,7 @@ func ui_calc_turn():
 			print(name, " attack pattern check, ", attack_pattern)
 		match attack:
 			enemy_resource.TurnActions.ATTACK:
+				attack_calc += current_enemy_resource.attack
 				pass
 			enemy_resource.TurnActions.DEFEND:
 				calc_shield += current_enemy_resource.defend
@@ -208,16 +213,19 @@ func ui_calc_turn():
 		calc_ui_shield.text ="+"+var_to_str(calc_shield)
 	else:
 		calc_ui_shield.visible = false
-	heal_calc = heal_amount - (current_player_damage + get_status_dmg())
+	heal_calc = heal_amount #- (current_player_damage + get_status_dmg())
 	if heal_calc > 0 :
 		calc_ui_heal.visible = true
 		calc_ui_heal.text ="+"+var_to_str(heal_calc)
-	elif heal_calc < 0 :
-		calc_ui_heal.visible = true
-		calc_ui_heal.text = var_to_str(heal_calc)
 	else:
 		calc_ui_heal.visible = false
-	print(name," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
+	if attack_calc > 0:
+		calc_ui_attack.visible = true
+		calc_ui_attack.text = var_to_str(attack_calc)
+	else:
+		calc_ui_attack.visible = false
+	
+	print(name,"attack calc: ", attack_calc ," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
 
 func show_arrow(choice:bool):
 	var arrow = $target_arrow
@@ -424,6 +432,7 @@ func kill_check():
 		var filtered_targets = get_parent().get_children().filter(func(target):return target != self)
 		#maybe add something about adding to the player kills
 		if arrow.visible:
-			$"../..".update_player_target(filtered_targets.pick_random())
+			if !filtered_targets.is_empty():
+				$"../..".update_player_target(filtered_targets.pick_random())
 		
 		queue_free()

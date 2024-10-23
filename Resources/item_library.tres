@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="Item_lib" load_steps=2 format=3 uid="uid://dfiufoewjbmdu"]
+
+[ext_resource type="Script" path="res://Resources/item_library.gd" id="1_drvbn"]
+
+[resource]
+script = ExtResource("1_drvbn")

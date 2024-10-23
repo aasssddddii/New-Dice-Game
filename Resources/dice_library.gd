@@ -333,7 +333,11 @@ func default_checker(dice_data:Dictionary):
 	return default
 			
 			
-			
+#func get_random_dice():
+#	var send_dice = all_dice
+#
+#
+#	return send_dice
 			
 			
 			

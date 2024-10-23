@@ -37,7 +37,6 @@ enum DamageElement{
 
 var current_sprite
 
-#var shop_lib = preload("res://resources/shop_item_library.tres")
 
 var dice_data:Dictionary = {
 #	"item_code":int,
@@ -49,8 +48,11 @@ var dice_data:Dictionary = {
 #	"animation_target":String,
 #	"type":Dice.DiceType,
 #	"effect":bool,
+#	"element":DamageElement,
+#	"faces":Array[int],
 #	"long_name":String,
 #	"description":String
+
 }
 @onready var area = get_node_or_null("dice_area")
 @onready var button = get_node_or_null("Dice")

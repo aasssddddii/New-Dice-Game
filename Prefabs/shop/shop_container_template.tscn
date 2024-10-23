@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgwp7oqs71tbk"]
+
+[ext_resource type="Script" path="res://Scripts/shop/shop_container.gd" id="1_whjdx"]
+
+[node name="shop_container_template" type="ScrollContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 15
+columns = 3
+script = ExtResource("1_whjdx")
