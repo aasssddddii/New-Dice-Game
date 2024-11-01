@@ -13,6 +13,8 @@ var item_lib = preload("res://Resources/item_library.tres")
 var item_prefab = preload("res://Prefabs/shop_item.tscn")
 var picture_item_prefab = preload("res://Prefabs/picture_item.tscn")
 var ui_battle_summary = preload("res://Prefabs/game_ui/ui_battle_summary.tscn")
+#player menu
+var player_inventory_menu = preload("res://Prefabs/game_map/player_inventory_menu.tscn")
 
 
 var rng = RandomNumberGenerator.new()

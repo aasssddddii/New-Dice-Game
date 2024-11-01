@@ -1,11 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://0gc4s42ra8le"]
+[gd_scene load_steps=4 format=3 uid="uid://0gc4s42ra8le"]
 
 [ext_resource type="Texture2D" uid="uid://y2jd117gwsjs" path="res://Sprites/Dice/bleed dice.png" id="1_84nem"]
 [ext_resource type="Script" path="res://Scripts/shop/item.gd" id="2_c8cls"]
 [ext_resource type="FontFile" uid="uid://cw706bl4vj4uf" path="res://Fonts/Dungeon Depths.otf" id="3_8ye8n"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pgk6c"]
-size = Vector2(66, 64)
 
 [node name="Item" type="TextureButton"]
 offset_left = -39.0
@@ -14,12 +11,6 @@ offset_right = 40.0
 offset_bottom = 39.0
 texture_normal = ExtResource("1_84nem")
 script = ExtResource("2_c8cls")
-
-[node name="item_area" type="Area2D" parent="." groups=["dice_area"]]
-position = Vector2(39, 38)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="item_area"]
-shape = SubResource("RectangleShape2D_pgk6c")
 
 [node name="quantity" type="Label" parent="."]
 layout_mode = 0
@@ -34,3 +25,5 @@ text = "-"
 horizontal_alignment = 1
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

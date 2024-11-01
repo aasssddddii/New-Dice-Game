@@ -24,8 +24,8 @@ var three_poi_container = load("res://Prefabs/game_map/poi containers/3_poi.tscn
 
 
 
-var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
-#var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
+#var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
+var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
 
 var last_poi_count:int = 0
 
@@ -102,7 +102,7 @@ func create_battle_data():
 	#decide on battle rewards
 	#calculate gold or dice reward packed scene
 	var reward
-	if game_manager.rng.randi_range(1,20)<15:
+	if game_manager.rng.randi_range(1,20)<1:#5:
 		#calculate gold
 		var gold = 0
 		for enemy_array_resource in enemy_array:

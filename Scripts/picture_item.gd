@@ -15,21 +15,25 @@ func _on_mouse_entered():
 
 
 func _on_mouse_exited():
-	manage_description(item_data,false)
+	ui_item_description.close_description()
 
 
 func manage_description(input_data,make_visible:bool):
-	ui_item_description.visible = make_visible
+	#ui_item_description.visible = make_visible
 	if make_visible:
 		if input_data["item_code"] == 0:
 			ui_item_description.setup_description({
-				"name":input_data["long_name"],
+				"item_code":input_data["item_code"],
+				"item_name":input_data["item_name"],
+				"long_name":input_data["long_name"],
 				"description":input_data["description"],
 				"faces":input_data["faces"]
 				})
 		else:
-			ui_item_description.setup_description({
-				"name":input_data["long_name"],
+			ui_item_description.close_description({
+				"item_code":input_data["item_code"],
+				"item_name":input_data["item_name"],
+				"long_name":input_data["long_name"],
 				"description":input_data["description"],
 				"faces":[]
 				})

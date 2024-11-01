@@ -44,73 +44,114 @@ func reset_values():
 func battle_reset():
 	shield = default_shield
 	reflect = 0
-
-var inventory:Array[Dictionary]
+#reset value
+#var inventory:Array[Dictionary]
+var inventory:Array[Dictionary] = [
+	{
+	"item_code":2,
+	"item_name":"die_pack",
+	"texture":"res://Sprites/shop/specialty_shops/dice_pack_item.png",
+	"price":80,
+	"long_name":"Dice Pack",
+	"description":"Open the pack for 3 random dice"
+	},
+	{
+	"item_code":2,
+	"item_name":"hea_potion",
+	"texture":"res://Sprites/shop/specialty_shops/health_potion_item.png",
+	"price":20,
+	"long_name":"Health Potion",
+	"description":"Heal 25% Health"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_bomb",
+	"texture":"res://Sprites/shop/specialty_shops/bomb_item.png",
+	"price":50,
+	"long_name":"Bomb",
+	"description":"Deal 30 Damage to all enemies (Can only use in combat)"
+	},
+	{
+	"item_code":0,
+	"default":true,
+	"item_name":"fir_dice"
+	},
+	{
+	"item_code":0,
+	"default":true,
+	"item_name":"fir_dice"
+	},
+	{
+	"item_code":0,
+	"default":true,
+	"item_name":"fir_dice"
+	}
+]
 
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"fir_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"item_name":"def_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"item_name":"def_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"item_name":"def_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"def_dice"
+	"item_name":"def_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"item_name":"hel_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"item_name":"hel_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"item_name":"hel_dice"
 	},
 	{
 	"default":true,
-	"dice_name":"hel_dice"
+	"item_name":"hel_dice"
 	}
 ]
 
@@ -126,7 +167,7 @@ func getset_dice_deck(choice:String,input_data):
 				
 				if die.has("default"):
 					#print("checking: ", die)
-					send_array.append(dice_lib.get_dice_data(die["dice_name"]))
+					send_array.append(dice_lib.get_dice_data(die["item_name"]))
 				else:
 					send_array.append(die)
 			return send_array

@@ -38,7 +38,7 @@ var reward
 var can_attack:bool = true
 var enemy_count:int
 
-#LLO WORKING ON THE BATTLE FLOW IN GENERAL
+
 #Staticly set battle need to get ready for map generation
 func setup_dice_batle(input_data:Dictionary):
 	#enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
@@ -684,4 +684,7 @@ func end_battle(win:bool):
 func summary_complete():
 	$"../..".manage_camera("map_reset")
 	queue_free()
+
+
+
 

@@ -120,9 +120,10 @@ offset_bottom = 555.0
 
 [node name="ui_item_desciption" parent="dice_reward" instance=ExtResource("4_vfc6d")]
 visible = false
-offset_left = 737.0
-offset_top = 267.0
-offset_right = 1105.0
-offset_bottom = 635.0
+offset_left = 686.0
+offset_top = 276.0
+offset_right = 1198.0
+offset_bottom = 732.0
+scale = Vector2(0.75, 0.75)
 
 [connection signal="button_down" from="player_ui/Button" to="." method="_on_button_button_down"]

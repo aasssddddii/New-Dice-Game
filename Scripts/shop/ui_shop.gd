@@ -19,6 +19,8 @@ var template_shop_container = load("res://Prefabs/shop/shop_container_template.t
 @onready var shop_trade_label = $player_ui/shop_trade_label
 @onready var shop_submit_button = $player_ui/Button
 
+@export var ui_item_description:ColorRect
+
 var shop_side_grid_container
 var player_side_grid_container
 
@@ -162,21 +164,30 @@ func _on_close_button_down():
 func _on_button_button_down():#SUBMIT button
 	match shop_data["shop_type"]:
 		level_gen.Shop_Type.DICE:#VVV Change from dice deck to inventory when ready , May be in creation function
-				var combo_inventory = player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data + shop_side_trade.inventory_data
+				var combo_inventory = player_side_inventory.get_node_or_null("Inventory/GridContainer").inventory_data + shop_side_trade.inventory_data
 				#print("combo inventory is AFTER BUY: ", combo_inventory)
 				var converted_inventory:Array[Dictionary]
 				for item_data in combo_inventory:
-					if game_manager.dice_lib.all_dice[item_data["item_name"]] == item_data:
-						print("defualt dice detected")
-						converted_inventory.append({
-							"default":true,
-							"dice_name":item_data["item_name"]
-							})
+					match item_data["item_code"]:
+						0:#Dice
+							if game_manager.dice_lib.all_dice[item_data["item_name"]] == item_data:
+								print("defualt dice detected")
+								converted_inventory.append({
+									"default":true,
+									"dice_name":item_data["item_name"]
+									})
+						1:#Skills
+							print("item data: ", item_data)
+							pass
+						2:#Items
+							print("item data: ", item_data)
+							pass
 						
-				game_manager.player_resource.getset_dice_deck("set",converted_inventory)
+				#game_manager.player_resource.getset_dice_deck("set",converted_inventory)
 		level_gen.Shop_Type.SKILL:
 			print("SKILL Evaluatiing: ", shop_side_trade.inventory_data)
-			game_manager.player_resource.getset_dice_deck("set",player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data)
+			#broken due to not alowing dice deck to be sold VVV
+			#game_manager.player_resource.getset_dice_deck("set",player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data)
 			pass
 #		level_gen.Shop_Type.UPGRADE:
 #			shop_name = "Upgrade"
@@ -186,8 +197,6 @@ func _on_button_button_down():#SUBMIT button
 			game_manager.player_resource.getset_inventory("set",combo_inventory)
 			
 			
-			game_manager.player_resource.getset_dice_deck("set",player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data)
-			pass
 	
 	
 

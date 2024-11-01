@@ -9,6 +9,7 @@ var active_trade_side:String = ""
 @onready var ui_shop = $"../../../.."
 
 
+
 # Maybe REMOVE Quantity
 func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 	
@@ -35,11 +36,13 @@ func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 
 
 func _on_button_down():
+	ui_shop.ui_item_description.close_description()
 	if ui_shop.name == "ui_shop":
 		ui_shop.change_item_side(self)
 
 func update_quantity():
 	var quantity_label = $quantity
+	print("parent inventory: ", get_parent().get_inventory())
 	var quantity = get_parent().get_inventory().count(item_data)
 	print("Quantity Check: ", quantity)
 	
@@ -48,7 +51,25 @@ func update_quantity():
 	else:
 		queue_free()
 
+func _on_mouse_entered():
+	print(ui_shop.name)
+	match ui_shop.name:
+		"stats":
+			var inventory_description_location:Node2D = $"../../../../../../description_locations/inventory"
+			ui_shop.ui_item_description.relocate(inventory_description_location)
+			ui_shop.ui_item_description.setup_description(item_data)
+		"deck":
+			if active_trade_side == "deck_inventory":
+				var inventory_description_location:Node2D = $"../../../../../../description_locations/deck_inventory"
+				ui_shop.ui_item_description.relocate(inventory_description_location)
+				ui_shop.ui_item_description.setup_description(item_data)
+			else:
+				var inventory_description_location:Node2D = $"../../../../../../description_locations/deck"
+				ui_shop.ui_item_description.relocate(inventory_description_location)
+				ui_shop.ui_item_description.setup_description(item_data)
+		"ui_shop":
+			ui_shop.ui_item_description.setup_description(item_data)
 
 
-
-
+func _on_mouse_exited():
+	ui_shop.ui_item_description.close_description()

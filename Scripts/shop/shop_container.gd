@@ -5,19 +5,32 @@ var inventory_data:Array[Dictionary] = []
 @export var trade_side:String
 
 
-
+#LLO make a function to convert the default dice in the temp inventory
 func setup_inventory(input_data:Array[Dictionary],setup_side:String):
-	inventory_data = input_data
-	trade_side = setup_side
+	#scrub default dice
+	
+	inventory_data = scrub_default_dice(input_data)
+	trade_side = setup_side #"deck_inventory"
 	generate_grid()
+	
+func scrub_default_dice(input_data:Array[Dictionary]):
+	var scrubbed_data:Array[Dictionary]
+	for value in input_data:
+		#scrub all items for default dice and return full item datas for all items
+		pass
+	return scrubbed_data
 
+func setup_deck():
+	inventory_data = game_manager.player_resource.getset_dice_deck("get_converted",null).duplicate(true)
+	trade_side = "deck"
+	generate_grid()
 
 func generate_grid():
 	clear_grid()
 	var only_one_array = only_one_of_each(inventory_data)
 	#print("input data, ", input_data)
 	for item in only_one_array:
-		#print("item: ", item)
+		print("item: ", item)
 		var next_item = game_manager.item_prefab.instantiate()
 		add_child(next_item)
 		next_item.setup_item(item,trade_side,0)
@@ -85,6 +98,12 @@ func only_one_of_each(input_array:Array[Dictionary]):
 	var output_array:Array[Dictionary] 
 	
 	for value in input_array:
+		#check for default dice
+		if value["item_code"] == 0:
+			value = game_manager.dice_lib.get_dice_data(value["item_name"])
+			if !output_array.any(func(input):return input == value):
+				output_array.append(value)
+		
 		if !output_array.any(func(input):return input == value):
 			output_array.append(value)
 	

@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6ajo82ebsvjn"]
+[gd_scene load_steps=6 format=3 uid="uid://c6ajo82ebsvjn"]
 
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="1_iwbna"]
 [ext_resource type="Script" path="res://Scripts/game_map/player_map_controller.gd" id="2_fgcg4"]
+[ext_resource type="Texture2D" uid="uid://bso4x4842h8i2" path="res://Sprites/map_assets/backpack-03-icon-2048x2046-qs5hvcr9.png" id="3_mltsc"]
+[ext_resource type="Script" path="res://Scripts/game_map/player_ui.gd" id="3_p6g0l"]
+[ext_resource type="Texture2D" uid="uid://mxn01gxaoqtl" path="res://Sprites/map_assets/gear-icon-2048x2048-5lk2g86a.png" id="4_oh1x6"]
 
 [node name="player" type="Sprite2D"]
 texture = ExtResource("1_iwbna")
@@ -9,3 +12,25 @@ script = ExtResource("2_fgcg4")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.45, 0.45)
+
+[node name="player_ui" type="Node2D" parent="Camera2D"]
+script = ExtResource("3_p6g0l")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Camera2D/player_ui"]
+offset_left = 882.0
+offset_top = -684.0
+offset_right = 1362.0
+offset_bottom = -484.0
+scale = Vector2(0.6, 0.6)
+theme_override_constants/separation = 80
+
+[node name="player_inventory" type="TextureButton" parent="Camera2D/player_ui/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_mltsc")
+
+[node name="settings" type="TextureButton" parent="Camera2D/player_ui/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_oh1x6")
+
+[connection signal="button_down" from="Camera2D/player_ui/HBoxContainer/player_inventory" to="Camera2D/player_ui" method="_on_player_inventory_button_down"]
+[connection signal="button_down" from="Camera2D/player_ui/HBoxContainer/settings" to="Camera2D/player_ui" method="_on_settings_button_down"]

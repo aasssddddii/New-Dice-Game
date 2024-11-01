@@ -76,3 +76,37 @@ var all_items:Dictionary = {
 }
 func get_item_data(name:String):
 	return all_items[name]
+
+
+
+var health_stat:Dictionary = {
+	"item_code":3,
+	"item_name":"sta_health",
+	"long_name":"health",
+	"description":"Your current health is in red and your max health is in pink (hover over heart to see max)"
+	}
+var attack_stat:Dictionary = {
+	"item_code":3,
+	"item_name":"sta_attack",
+	"long_name":"attack power",
+	"description":"the current strength of your attack rolls"
+	}
+var shield_stat:Dictionary = {
+	"item_code":3,
+	"item_name":"sta_shield",
+	"long_name":"shield power",
+	"description":"the current strength of your defend rolls"
+	}
+var heal_power_stat:Dictionary = {
+	"item_code":3,
+	"item_name":"sta_heal",
+	"long_name":"heal power",
+	"description":"the current strength of your heal rolls"
+	}
+var gold_stat:Dictionary = {
+	"item_code":3,
+	"item_name":"sta_gold",
+	"long_name":"gold",
+	"description":"the current amount of gold you have"
+	}
+
