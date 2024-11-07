@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bvfbfbo5m1je1"]
 
 [ext_resource type="Script" path="res://Scripts/dice_game/ui_battle_summary.gd" id="1_7i7pq"]
-[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="2_uicg7"]
+[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="2_bpi0x"]
 [ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="4_vfc6d"]
 [ext_resource type="Theme" uid="uid://dgx63tv2yl26o" path="res://Fonts/Themes/text_button.tres" id="5_gcou2"]
 
@@ -20,7 +20,7 @@ offset_left = 278.0
 offset_top = 10.0
 offset_right = 870.0
 offset_bottom = 80.0
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/normal_font_size = 30
@@ -38,7 +38,7 @@ layout_mode = 2
 
 [node name="enemies_Label" type="Label" parent="HBoxContainer/left_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "Enemies Defeated:"
@@ -46,7 +46,7 @@ horizontal_alignment = 2
 
 [node name="reward_Label2" type="Label" parent="HBoxContainer/left_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "Reward type:"
@@ -54,7 +54,7 @@ horizontal_alignment = 2
 
 [node name="gold_Label3" type="Label" parent="HBoxContainer/left_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "Gold Earned:"
@@ -65,21 +65,21 @@ layout_mode = 2
 
 [node name="ui_enemies" type="Label" parent="HBoxContainer/right_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "-"
 
 [node name="ui_reward" type="Label" parent="HBoxContainer/right_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "-"
 
 [node name="ui_gold" type="Label" parent="HBoxContainer/right_side"]
 layout_mode = 2
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 text = "-"
@@ -105,7 +105,7 @@ offset_left = 12.0
 offset_top = 354.0
 offset_right = 604.0
 offset_bottom = 424.0
-theme = ExtResource("2_uicg7")
+theme = ExtResource("2_bpi0x")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 7
 theme_override_font_sizes/normal_font_size = 25

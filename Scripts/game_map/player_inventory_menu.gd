@@ -1,5 +1,8 @@
 extends ColorRect
 
+signal menu_closed
+
+
 var game_manager = GameManager
 #stats text
 @onready var health_text = $content/stats/stats_container/health/current_text
@@ -29,14 +32,16 @@ var current_stats_page:int
 
 
 func _ready():
-	pass
+	setup_stats()
+	setup_inventory()
+	current_stats_page = 1
+	change_page()
+	page_arrow_checker()
 
 #inventory + stats page
 func open_stats():
 	setup_stats()
 	setup_inventory()
-	current_stats_page = 1
-	change_page()
 	page_arrow_checker()
 func setup_stats():
 	health_text.text = var_to_str(game_manager.player_resource.health)
@@ -62,8 +67,12 @@ func setup_deck_inventory():
 	
 #close stats menu
 func _on_close_button_down():
-	queue_free()
-	pass # Replace with function body.
+	if game_manager.player_resource.deck_size <= game_manager.player_resource.dice_deck.size():
+		#print("calculation: ", game_manager.player_resource.deck_size ," <= ", game_manager.player_resource.current_deck_amount)
+		menu_closed.emit()
+		queue_free()
+	else:
+		print("not enough dice in dice deck")
 	
 #Show Max HP functions
 func show_max_health(choice:bool):
@@ -105,6 +114,7 @@ func change_page():
 		0:
 			pass
 		1:
+			open_stats()
 			stat_page.visible = true
 		2:
 			open_deck()

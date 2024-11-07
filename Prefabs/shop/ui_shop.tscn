@@ -1,12 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://bjar322ivvjus"]
+[gd_scene load_steps=10 format=3 uid="uid://bjar322ivvjus"]
 
-[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="1_01mqa"]
 [ext_resource type="Script" path="res://Scripts/shop/ui_shop.gd" id="1_2xj8c"]
 [ext_resource type="Texture2D" uid="uid://cid7xw3a2jr70" path="res://Sprites/shop/store trade platform.png" id="1_27cvl"]
+[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="2_fdeuw"]
 [ext_resource type="FontFile" uid="uid://cw706bl4vj4uf" path="res://Fonts/Dungeon Depths.otf" id="4_7amp7"]
 [ext_resource type="Theme" uid="uid://dgx63tv2yl26o" path="res://Fonts/Themes/text_button.tres" id="4_yrp3r"]
 [ext_resource type="Script" path="res://Scripts/shop/shop_container.gd" id="5_21rd6"]
 [ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="5_bohet"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="6_4qsoa"]
 [ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="8_cnket"]
 
 [node name="ui_shop" type="Node2D" node_paths=PackedStringArray("ui_item_description")]
@@ -25,7 +26,7 @@ offset_left = 388.0
 offset_top = 10.0
 offset_right = 760.0
 offset_bottom = 80.0
-theme = ExtResource("1_01mqa")
+theme = ExtResource("2_fdeuw")
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]SHOP"
@@ -70,7 +71,7 @@ offset_left = 587.0
 offset_top = 446.0
 offset_right = 747.0
 offset_bottom = 491.0
-theme = ExtResource("1_01mqa")
+theme = ExtResource("6_4qsoa")
 text = "$ 0"
 horizontal_alignment = 1
 
@@ -79,7 +80,7 @@ offset_left = 404.0
 offset_top = 446.0
 offset_right = 564.0
 offset_bottom = 491.0
-theme = ExtResource("1_01mqa")
+theme = ExtResource("6_4qsoa")
 text = "$ 0"
 horizontal_alignment = 1
 

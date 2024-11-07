@@ -23,9 +23,9 @@ var two_poi_container = load("res://Prefabs/game_map/poi containers/2_poi.tscn")
 var three_poi_container = load("res://Prefabs/game_map/poi containers/3_poi.tscn")
 
 
-
 #var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
-var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
+var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
+#var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
 
 var last_poi_count:int = 0
 

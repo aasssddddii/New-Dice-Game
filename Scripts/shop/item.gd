@@ -1,6 +1,8 @@
 extends TextureButton
 class_name Shop_Item
 
+var game_manager = GameManager
+
 const offset =  Vector2(-28,-28)
 var current_sprite
 var item_data:Dictionary
@@ -37,12 +39,44 @@ func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 
 func _on_button_down():
 	ui_shop.ui_item_description.close_description()
-	if ui_shop.name == "ui_shop":
-		ui_shop.change_item_side(self)
+	#print("parent name: ", ui_shop.name)
+	match ui_shop.name:
+		"ui_shop":
+			ui_shop.change_item_side(self)
+		"stats":
+			print("is item usable here: ", ui_shop.is_item_usable(item_data))
+			if ui_shop.is_item_usable(item_data):
+				get_parent().use_map_item(item_data)
+		"deck":
+			#print("trade side: ", active_trade_side)
+			match active_trade_side:
+				"deck_inventory":
+					if ui_shop.is_item_usable(item_data):
+						get_parent().use_map_item(item_data)
+						pass
+					elif item_data["item_code"] == 0:
+						#switch ui side
+						get_node_or_null("../../../../deck_grid/ScrollContainer/GridContainer").add_item_to_grid(item_data)
+						get_parent().remove_from_grid(item_data)
+						#set inventories
+						game_manager.player_resource.getset_dice_deck("set",get_node_or_null("../../../../deck_grid/ScrollContainer/GridContainer").inventory_data)
+						game_manager.player_resource.getset_inventory("set",get_parent().inventory_data)
+					
+				"deck":
+					if ui_shop.is_item_usable(item_data):
+						get_parent().use_map_item(item_data)
+						pass
+					elif item_data["item_code"] == 0:
+						#switch ui side
+						get_node_or_null("../../../../inventory_grid/ScrollContainer/GridContainer").add_item_to_grid(item_data)
+						get_parent().remove_from_grid(item_data)
+						#set inventories
+						game_manager.player_resource.getset_dice_deck("set",get_parent().inventory_data)
+						game_manager.player_resource.getset_inventory("set",get_node_or_null("../../../../inventory_grid/ScrollContainer/GridContainer").inventory_data)
 
 func update_quantity():
 	var quantity_label = $quantity
-	print("parent inventory: ", get_parent().get_inventory())
+	#print("parent inventory: ", get_parent().get_inventory())
 	var quantity = get_parent().get_inventory().count(item_data)
 	print("Quantity Check: ", quantity)
 	
@@ -52,7 +86,7 @@ func update_quantity():
 		queue_free()
 
 func _on_mouse_entered():
-	print(ui_shop.name)
+	#print(ui_shop.name)
 	match ui_shop.name:
 		"stats":
 			var inventory_description_location:Node2D = $"../../../../../../description_locations/inventory"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bxqlfmjuqmsqk"]
+[gd_scene load_steps=16 format=3 uid="uid://bxqlfmjuqmsqk"]
 
 [ext_resource type="Script" path="res://Scripts/game_map/player_inventory_menu.gd" id="1_fbj4g"]
 [ext_resource type="Texture2D" uid="uid://cgdterivga4du" path="res://Sprites/map_assets/stats_heart.png" id="1_jnyon"]
@@ -9,10 +9,11 @@
 [ext_resource type="Texture2D" uid="uid://frb4qltosttv" path="res://Sprites/map_assets/stats_shield.png" id="4_todk7"]
 [ext_resource type="Texture2D" uid="uid://dgjanom1r1qep" path="res://Sprites/map_assets/stats_heal.png" id="5_j7sk4"]
 [ext_resource type="Texture2D" uid="uid://dpk4wisjxb71e" path="res://Sprites/map_assets/stats_gold.png" id="6_7d2by"]
-[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="7_6q2uo"]
 [ext_resource type="Script" path="res://Scripts/shop/shop_container.gd" id="8_1omsm"]
 [ext_resource type="Texture2D" uid="uid://bptx871bkg5r2" path="res://Sprites/dice_game_ui/target_arrow.png" id="8_fs74x"]
 [ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="9_3npen"]
+[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="11_ui6e1"]
+[ext_resource type="Script" path="res://Scripts/game_map/deck_numbers.gd" id="12_83h0h"]
 [ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="13_unhg3"]
 
 [node name="inventory" type="ColorRect"]
@@ -26,6 +27,7 @@ script = ExtResource("1_fbj4g")
 [node name="content" type="Node2D" parent="."]
 
 [node name="charm" type="Node2D" parent="content"]
+visible = false
 
 [node name="stats" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
 visible = false
@@ -213,7 +215,7 @@ autowrap_mode = 0
 [node name="PanelContainer" type="PanelContainer" parent="content/stats"]
 offset_left = 856.0
 offset_top = 184.0
-offset_right = 1233.0
+offset_right = 1274.0
 offset_bottom = 572.0
 scale = Vector2(1.5, 1.5)
 
@@ -232,7 +234,7 @@ offset_left = 912.0
 offset_top = 62.0
 offset_right = 1385.0
 offset_bottom = 148.0
-theme = ExtResource("7_6q2uo")
+theme = ExtResource("11_ui6e1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 45
@@ -243,7 +245,7 @@ offset_left = 106.0
 offset_top = 62.0
 offset_right = 579.0
 offset_bottom = 148.0
-theme = ExtResource("7_6q2uo")
+theme = ExtResource("11_ui6e1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 45
@@ -251,13 +253,14 @@ text = "Stats"
 horizontal_alignment = 1
 
 [node name="deck" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
+visible = false
 script = ExtResource("2_0xf7c")
 ui_item_description = NodePath("../../ui_item_desciption")
 
 [node name="inventory_grid" type="PanelContainer" parent="content/deck"]
 offset_left = 169.0
 offset_top = 184.0
-offset_right = 546.0
+offset_right = 576.0
 offset_bottom = 572.0
 scale = Vector2(1.5, 1.5)
 
@@ -293,7 +296,7 @@ offset_left = 225.0
 offset_top = 62.0
 offset_right = 698.0
 offset_bottom = 148.0
-theme = ExtResource("7_6q2uo")
+theme = ExtResource("11_ui6e1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 45
@@ -304,11 +307,40 @@ offset_left = 996.0
 offset_top = 62.0
 offset_right = 1469.0
 offset_bottom = 148.0
-theme = ExtResource("7_6q2uo")
+theme = ExtResource("11_ui6e1")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 45
 text = "deck"
+horizontal_alignment = 1
+
+[node name="deck_numbers" type="Node2D" parent="content/deck"]
+script = ExtResource("12_83h0h")
+
+[node name="min_dice" type="Label" parent="content/deck/deck_numbers"]
+offset_left = 1267.0
+offset_top = 807.0
+offset_right = 1429.0
+offset_bottom = 893.0
+theme = ExtResource("11_ui6e1")
+text = "-"
+horizontal_alignment = 1
+
+[node name="label" type="Label" parent="content/deck/deck_numbers"]
+offset_left = 1239.0
+offset_top = 807.0
+offset_right = 1315.0
+offset_bottom = 893.0
+theme = ExtResource("11_ui6e1")
+text = "/"
+
+[node name="current_dice" type="Label" parent="content/deck/deck_numbers"]
+offset_left = 1090.0
+offset_top = 807.0
+offset_right = 1244.0
+offset_bottom = 893.0
+theme = ExtResource("11_ui6e1")
+text = "-"
 horizontal_alignment = 1
 
 [node name="buttons" type="Node2D" parent="."]
@@ -365,6 +397,7 @@ position = Vector2(198, 208)
 
 [connection signal="mouse_entered" from="content/stats/stats_container/health" to="." method="_on_health_mouse_entered"]
 [connection signal="mouse_exited" from="content/stats/stats_container/health" to="." method="_on_health_mouse_exited"]
+[connection signal="inventory_changed" from="content/deck/deck_grid/ScrollContainer/GridContainer" to="content/deck/deck_numbers" method="_on_grid_container_inventory_changed"]
 [connection signal="button_down" from="buttons/left" to="." method="_on_left_button_down"]
 [connection signal="button_down" from="buttons/right" to="." method="_on_right_button_down"]
 [connection signal="button_down" from="buttons/close" to="." method="_on_close_button_down"]

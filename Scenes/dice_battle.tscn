@@ -3,10 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_5q77g"]
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
 [ext_resource type="Script" path="res://Scripts/dice_game/action_slot.gd" id="2_olh32"]
-[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="4_7uilj"]
 [ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="4_jibh3"]
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="5_1gupk"]
 [ext_resource type="Script" path="res://Scripts/dice_game/player_ui.gd" id="5_vccpn"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="6_7mrag"]
 [ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="6_acft5"]
 [ext_resource type="Texture2D" uid="uid://cn3k5tjrtrevh" path="res://Sprites/dice_game_ui/heart.png" id="6_ayl21"]
 [ext_resource type="Texture2D" uid="uid://ckef36t0aywc3" path="res://Sprites/dice_game_ui/download.png" id="7_0ngxd"]
@@ -132,7 +132,7 @@ offset_top = 459.0
 offset_right = 826.0
 offset_bottom = 501.0
 focus_mode = 0
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "SUBMIT"
@@ -143,7 +143,8 @@ offset_left = 280.0
 offset_top = 471.0
 offset_right = 461.0
 offset_bottom = 521.0
-theme = ExtResource("4_7uilj")
+focus_mode = 0
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "-"
@@ -167,7 +168,7 @@ offset_top = 459.0
 offset_right = 145.0
 offset_bottom = 501.0
 focus_mode = 0
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "Items"
@@ -193,6 +194,7 @@ offset_top = 7.0
 offset_right = 481.0
 offset_bottom = 242.0
 scale = Vector2(0.13, 0.13)
+theme = ExtResource("6_7mrag")
 icon = ExtResource("6_acft5")
 flat = true
 
@@ -244,7 +246,7 @@ offset_left = -25.0
 offset_top = 10.0
 offset_right = 101.0
 offset_bottom = 60.0
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "0"
@@ -260,7 +262,7 @@ offset_left = -43.0
 offset_top = 26.0
 offset_right = 120.0
 offset_bottom = 76.0
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "0"
@@ -271,7 +273,7 @@ offset_left = -162.857
 offset_top = -120.0
 offset_right = -36.8571
 offset_bottom = -70.0
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "0"
@@ -282,7 +284,7 @@ offset_left = -162.857
 offset_top = 75.7143
 offset_right = -36.8571
 offset_bottom = 125.714
-theme = ExtResource("4_7uilj")
+theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 text = "0"

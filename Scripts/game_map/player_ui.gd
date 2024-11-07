@@ -2,15 +2,21 @@ extends Node2D
 
 var game_manager = GameManager
 
-
+var screen_in_use:bool = false
 
 
 func _on_player_inventory_button_down():
 	#open player inventory(new prefab)
-	var next_menu = game_manager.player_inventory_menu.instantiate()
-	add_child(next_menu)
-	next_menu.open_stats()
+	if !screen_in_use:
+		var next_menu = game_manager.player_inventory_menu.instantiate()
+		next_menu.menu_closed.connect(reset_in_use)
+		add_child(next_menu)
+		screen_in_use = true
+	else:
+		print("screen in use")
 
+func reset_in_use():
+	screen_in_use = false
 
 
 func _on_settings_button_down():

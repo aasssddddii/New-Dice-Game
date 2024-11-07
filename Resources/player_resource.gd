@@ -11,6 +11,8 @@ class_name Player_Resource
 @export var shield:int
 @export var heal_power:int
 @export var gold:int
+@export var deck_size:int
+@export var current_deck_amount:int
 
 #statuses
 @export var reflect:int
@@ -24,6 +26,7 @@ class_name Player_Resource
 @export var default_defend:int
 @export var default_shield:int
 @export var default_heal_power:int
+@export var default_deck_size:int
 
 @export var battle_wins:int
 @export var game_level:int
@@ -52,6 +55,7 @@ var inventory:Array[Dictionary] = [
 	"item_name":"die_pack",
 	"texture":"res://Sprites/shop/specialty_shops/dice_pack_item.png",
 	"price":80,
+	"use_type":0,
 	"long_name":"Dice Pack",
 	"description":"Open the pack for 3 random dice"
 	},
@@ -60,6 +64,7 @@ var inventory:Array[Dictionary] = [
 	"item_name":"hea_potion",
 	"texture":"res://Sprites/shop/specialty_shops/health_potion_item.png",
 	"price":20,
+	"use_type":2,
 	"long_name":"Health Potion",
 	"description":"Heal 25% Health"
 	},
@@ -68,58 +73,59 @@ var inventory:Array[Dictionary] = [
 	"item_name":"ite_bomb",
 	"texture":"res://Sprites/shop/specialty_shops/bomb_item.png",
 	"price":50,
+	"use_type":1,
 	"long_name":"Bomb",
 	"description":"Deal 30 Damage to all enemies (Can only use in combat)"
 	},
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	}
 ]
 
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"atk_dice"
 	},
 	{
 	"default":true,
@@ -200,5 +206,25 @@ func getset_inventory(choice:String,input_data):
 				for data in input_data:
 					if typeof(data) == TYPE_DICTIONARY:
 						inventory.append(data)
+		"add":
+			if typeof(input_data) == TYPE_ARRAY:
+				for data in input_data:
+					if typeof(data) == TYPE_DICTIONARY:
+						inventory.append(data)
+			elif typeof(input_data) == TYPE_DICTIONARY:
+				inventory.append(input_data)
 		_:
 			print("no:Player_Resoure")
+			
+func manage_health(choice:String,amount:int):
+	match choice:
+		"add":
+			health += amount
+			if health > max_health:
+				health = max_health
+		"add_max":
+			pass
+	
+	
+	
+	

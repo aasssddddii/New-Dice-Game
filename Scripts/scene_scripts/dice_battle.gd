@@ -99,12 +99,12 @@ func set_player_hand():
 			var next_dice_data = current_dice_deck.pick_random()
 			current_dice_deck.remove_at(current_dice_deck.find(next_dice_data))
 			if next_dice_data["default"]:
-				#print("setting up dice: ", dice_lib.get_dice_data(next_dice_data["dice_name"]))
-				next_dice.set_dice_data(dice_lib.get_dice_data(next_dice_data["dice_name"]))#dice library reference
+				#print("setting up dice: ", dice_lib.get_dice_data(next_dice_data["item_name"]))
+				next_dice.set_dice_data(dice_lib.get_dice_data(next_dice_data["item_name"]))#dice library reference
 			else:
 				next_dice.set_dice_data()#player library reference
 				
-			next_dice.name = next_dice_data["dice_name"]
+			next_dice.name = next_dice_data["item_name"]
 			dice_layer.add_child(next_dice)
 			next_dice.global_position = slot.global_position + dice_lib.die_offset
 			next_dice.last_snap_area = slot.get_child(0)
@@ -114,12 +114,12 @@ func set_player_hand():
 			var next_dice_data = current_dice_deck.pick_random()
 			current_dice_deck.remove_at(current_dice_deck.find(next_dice_data))
 			if next_dice_data["default"]:
-				#print("setting up dice: ", dice_lib.get_dice_data(next_dice_data["dice_name"]))
-				next_dice.set_dice_data(dice_lib.get_dice_data(next_dice_data["dice_name"]))#dice library reference
+				#print("setting up dice: ", dice_lib.get_dice_data(next_dice_data["item_name"]))
+				next_dice.set_dice_data(dice_lib.get_dice_data(next_dice_data["item_name"]))#dice library reference
 			else:
 				next_dice.set_dice_data()#player library reference
 				
-			next_dice.name = next_dice_data["dice_name"]
+			next_dice.name = next_dice_data["item_name"]
 			dice_layer.add_child(next_dice)
 			next_dice.global_position = slot.global_position + dice_lib.die_offset
 			next_dice.last_snap_area = slot.get_child(0)
@@ -145,7 +145,7 @@ func use_dice(dice_array:Array[Dice]):
 		if dice_lib.default_checker(dice_data):
 			discard.append({
 				"default":true,
-				"dice_name":dice_data["item_name"]
+				"item_name":dice_data["item_name"]
 			})
 		else:
 			discard.append(dice_data)
@@ -239,8 +239,13 @@ func calc_player_attack():
 	var calculator_statuses:Array[Status_Library.StatusCondition]
 	var calculator_elements:Array[Dice.DamageElement]
 	var calculator_element_dmg:Array[int]
-	
-	
+	var all_dice_bonus:bool = false
+	#LLO Adding Same Type Attack Bonus
+	if action_slot_dice.size() == 3 && action_slot_dice.all(func(element): return element.dice_data["type"] == action_slot_dice[0].dice_data["type"]):
+		all_dice_bonus = true
+	print("all dice bonus is now: ", all_dice_bonus)
+		
+		
 	#print("calculating value based on slot data: ", action_slot_dice)
 	for die in action_slot_dice:
 		if die.up_face >= 1:
@@ -250,7 +255,10 @@ func calc_player_attack():
 			#still need to add all same bonus
 			match die_data["type"]:
 				Dice.DiceType.ATTACK:
-					calculator_damage += game_manager.player_resource.attack
+					if all_dice_bonus:
+						calculator_damage += game_manager.player_resource.attack * 1.5
+					else:
+						calculator_damage += game_manager.player_resource.attack
 				Dice.DiceType.DEFEND:
 					calculator_defend += game_manager.player_resource.defend
 				Dice.DiceType.REROLL:
@@ -659,13 +667,7 @@ func end_battle(win:bool):
 			for i in game_manager.rng.randi_range(1,3):
 				var picked_dice = game_manager.dice_lib.all_dice.values().pick_random()
 				dice_array.append(picked_dice)
-				if game_manager.default_checker(picked_dice):
-					game_manager.player_resource.getset_dice_deck("add",{
-						"default":true,
-						"dice_name":picked_dice["item_name"]
-						})
-				else:
-					game_manager.player_resource.getset_dice_deck("add",picked_dice)
+				game_manager.player_resource.getset_inventory("add",picked_dice)
 			
 		var ui_summary = game_manager.ui_battle_summary.instantiate()
 		ui_summary.setup_summary({

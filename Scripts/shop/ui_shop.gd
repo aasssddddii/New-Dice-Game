@@ -165,7 +165,6 @@ func _on_button_button_down():#SUBMIT button
 	match shop_data["shop_type"]:
 		level_gen.Shop_Type.DICE:#VVV Change from dice deck to inventory when ready , May be in creation function
 				var combo_inventory = player_side_inventory.get_node_or_null("Inventory/GridContainer").inventory_data + shop_side_trade.inventory_data
-				#print("combo inventory is AFTER BUY: ", combo_inventory)
 				var converted_inventory:Array[Dictionary]
 				for item_data in combo_inventory:
 					match item_data["item_code"]:
@@ -173,8 +172,9 @@ func _on_button_button_down():#SUBMIT button
 							if game_manager.dice_lib.all_dice[item_data["item_name"]] == item_data:
 								print("defualt dice detected")
 								converted_inventory.append({
+									"item_code":0,
 									"default":true,
-									"dice_name":item_data["item_name"]
+									"item_name":item_data["item_name"]
 									})
 						1:#Skills
 							print("item data: ", item_data)
@@ -183,7 +183,7 @@ func _on_button_button_down():#SUBMIT button
 							print("item data: ", item_data)
 							pass
 						
-				#game_manager.player_resource.getset_dice_deck("set",converted_inventory)
+				game_manager.player_resource.getset_inventory("set",converted_inventory)
 		level_gen.Shop_Type.SKILL:
 			print("SKILL Evaluatiing: ", shop_side_trade.inventory_data)
 			#broken due to not alowing dice deck to be sold VVV
