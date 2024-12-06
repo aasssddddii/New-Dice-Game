@@ -13,6 +13,7 @@ class_name Player_Resource
 @export var gold:int
 @export var deck_size:int
 @export var current_deck_amount:int
+@export var all_dice_bonus:float
 
 #statuses
 @export var reflect:int
@@ -27,6 +28,7 @@ class_name Player_Resource
 @export var default_shield:int
 @export var default_heal_power:int
 @export var default_deck_size:int
+@export var default_dice_bonus:float
 
 @export var battle_wins:int
 @export var game_level:int
@@ -80,68 +82,68 @@ var inventory:Array[Dictionary] = [
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"item_code":0,
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	}
 ]
 
 var dice_deck:Array[Dictionary] = [
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"atk_dice"
+	"item_name":"fir_dice"
 	},
 	{
 	"default":true,
-	"item_name":"def_dice"
+	"item_name":"gld_dice"
 	},
 	{
 	"default":true,
-	"item_name":"def_dice"
+	"item_name":"gld_dice"
 	},
 	{
 	"default":true,
-	"item_name":"def_dice"
+	"item_name":"gld_dice"
 	},
 	{
 	"default":true,
-	"item_name":"def_dice"
+	"item_name":"gld_dice"
 	},
 	{
 	"default":true,
@@ -200,6 +202,33 @@ func getset_inventory(choice:String,input_data):
 		"get":
 			#print("sending deck: ",dice_deck)
 			return inventory.duplicate(true)
+		"get_battle":
+			var send_data:Array[Dictionary]
+			for item in inventory:
+				if item["item_code"] == 2:
+					if item["use_type"] > 0:
+						send_data.append(item)
+			return send_data
+		"get_map":
+			var send_data:Array[Dictionary]
+			for item in inventory:
+				if item["item_code"] == 2:
+					if item["use_type"] == 0:
+						send_data.append(item)
+			return send_data
+		"get_dice":
+			var dice_lib = load("res://Resources/dice_library.tres")
+			var send_data:Array[Dictionary]
+			for item in inventory:
+				if item["item_code"] == 0:
+					send_data.append(dice_lib.get_dice_data(item["item_name"]))
+			return send_data
+		"get_item":
+			var send_data:Array[Dictionary]
+			for item in inventory:
+				if item["item_code"] == 2:
+					send_data.append(item)
+			return send_data
 		"set":
 			inventory.clear()
 			if typeof(input_data) == TYPE_ARRAY:

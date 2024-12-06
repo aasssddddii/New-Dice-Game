@@ -22,5 +22,7 @@ shape = SubResource("RectangleShape2D_pgk6c")
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
 [connection signal="button_up" from="." to="." method="_on_button_up"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
 [connection signal="area_entered" from="dice_area" to="." method="_on_dice_area_area_entered"]
 [connection signal="area_exited" from="dice_area" to="." method="_on_dice_area_area_exited"]

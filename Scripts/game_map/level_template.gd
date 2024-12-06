@@ -6,6 +6,7 @@ var game_manager = GameManager
 enum POI_Pattern_Type{
 	FIGHT,
 	EVENT,
+	RANDOM,
 	SHOP,
 	BOSS
 }
@@ -24,8 +25,11 @@ var three_poi_container = load("res://Prefabs/game_map/poi containers/3_poi.tscn
 
 
 #var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.FIGHT,POI_Pattern_Type.EVENT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
-var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
+#var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.FIGHT,POI_Pattern_Type.SHOP,POI_Pattern_Type.BOSS]
 #var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP,POI_Pattern_Type.SHOP]
+var level_pattern:Array[POI_Pattern_Type] = [POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT,POI_Pattern_Type.EVENT]
+
+
 
 var last_poi_count:int = 0
 
@@ -148,41 +152,17 @@ func create_shop():
 		"shop_type":next_shop_type,
 		"inventory":shop_inventory
 	}
-	#test shop data
-#	output_data = {
-#		"shop_type":Shop_Type.DICE,
-#		"inventory":[{
-#			"item_code":0,
-#			"item_name":"ice_dice",
-#			"texture":"res://Sprites/Dice/one ice dice.png",
-#			"none_texture":"res://Sprites/Dice/none ice dice.png",
-#			"price":25,
-#			"upgrade_price":20,
-#			"animation_target":"target",
-#			"type":Dice.DiceType.ICE,
-#			"effect":false,
-#			"element":Dice.DamageElement.ICE,
-#			"faces":[0,0,0,1,1,1],
-#			"long_name":"Ice Dice",
-#			"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
-#			},{
-#			"item_code":0,
-#			"item_name":"ice_dice",
-#			"texture":"res://Sprites/Dice/one ice dice.png",
-#			"none_texture":"res://Sprites/Dice/none ice dice.png",
-#			"price":25,
-#			"upgrade_price":20,
-#			"animation_target":"target",
-#			"type":Dice.DiceType.ICE,
-#			"effect":false,
-#			"element":Dice.DamageElement.ICE,
-#			"faces":[0,0,0,1,1,1],
-#			"long_name":"Ice Dice",
-#			"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
-#			}]
-#	}
+	return output_data
+
+func create_event():
+	#var output_data:PackedScene = game_manager.event_lib.dice_altar
+	var output_data:PackedScene = game_manager.event_lib.basic_event
+	
+	
+	
 	
 	return output_data
+
 
 
 func poi_creator(input_poi:POI, current_pattern,level_index):
@@ -190,14 +170,14 @@ func poi_creator(input_poi:POI, current_pattern,level_index):
 		##I need a way to assign POI data prolly here as a Dict
 		#
 	var battle_data:Dictionary
-	var event_data:Dictionary
+	var event_data:PackedScene
 	var shop_data:Dictionary
 	
 	match current_pattern:
 		POI_Pattern_Type.FIGHT:#Create Battle Based on current game level
 			battle_data = create_battle_data()
 		POI_Pattern_Type.EVENT:#create Event
-			event_data
+			event_data = create_event()
 		POI_Pattern_Type.SHOP:#Maybe make a shop function for this
 			shop_data = create_shop()
 		POI_Pattern_Type.BOSS:
@@ -209,7 +189,7 @@ func poi_creator(input_poi:POI, current_pattern,level_index):
 		"pattern_type":current_pattern,
 		"level_index":level_index,
 		"battle_data":battle_data,#new Dictionary
-		"event_data":null,#new Dictionary
+		"event_data":event_data,#new Dictionary
 		"shop_data":shop_data#new Dictionary
 	}
 	#print("POI Found: ", input_poi.name)

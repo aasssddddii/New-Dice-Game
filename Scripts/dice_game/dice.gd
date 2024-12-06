@@ -71,13 +71,16 @@ var is_on_dice:bool = false
 var up_face:int
 var upgrade_level
 
-
+var ui_item_description
 
 func _physics_process(delta):
 	if Input.is_action_just_released("mouse_click_up"):
 		is_grabbing = false
 	if snap_area:
-		if !is_grabbing && global_position != snap_area.global_position:
+		if snap_area.name == "inventory" && !is_grabbing:
+			$"../../player_inventory/PanelContainer/GridContainer".add_item_to_grid(dice_data)
+			queue_free()
+		elif !is_grabbing && global_position != snap_area.global_position:
 			global_position = snap_area.global_position + offset
 		
 	if is_grabbing:
@@ -85,6 +88,7 @@ func _physics_process(delta):
 		
 func get_current_snap_area():
 	area.area_entered.connect(func set_snap_area(entered_area:Area2D):
+		#print("dice has entered area: ", entered_area.name)
 		if entered_area.is_in_group("dice_snap"):
 			if !entered_area.is_filled:
 				if last_snap_area != snap_area:
@@ -97,10 +101,21 @@ func get_current_snap_area():
 		return false
 
 func go_to_last_snap():
+	#print("test")
 	if snap_area:
-		global_position = snap_area.global_position + offset
+		print("snap_area: ", snap_area.name)
+		if snap_area.name != "inventory":
+			global_position = snap_area.global_position + offset
+		else:
+			get_parent().add_item_to_grid(dice_data)
+			queue_free()
 	else:
-		global_position = last_snap_area.global_position + offset
+		print("last_snap_area: ", last_snap_area.name)
+		if last_snap_area.name != "inventory":
+			global_position = last_snap_area.global_position + offset
+		else:
+			get_parent().add_item_to_grid(dice_data)
+			queue_free()
 
 
 func set_dice_data(data:Dictionary):
@@ -108,6 +123,13 @@ func set_dice_data(data:Dictionary):
 	name = dice_data["item_name"]
 	roll()
 	
+	
+func setup_event_data(data:Dictionary):
+	dice_data = data
+	name = dice_data["item_name"]
+	texture_normal = load(dice_data["texture"])
+	print("trying to set snap area: ", get_current_snap_area())
+	is_grabbing = true
 
 func roll():
 	#print("rolling dice: ", name)
@@ -123,14 +145,6 @@ func roll():
 	
 	
 
-#func _on_dice_area_area_entered(area):
-#	print(name, " dice now overlapping area ", area)
-#	if area.is_in_group("dice_snap"):
-#			if !area.is_filled:
-#				if last_snap_area != snap_area:
-#					last_snap_area = snap_area
-#				snap_area = area
-#
 
 
 func _on_button_down():
@@ -145,6 +159,7 @@ func _on_button_down():
 
 
 func _on_button_up():
+	#print("test")
 	if get_current_snap_area():
 		if dice_data["type"] == DiceType.REROLL && up_face >0:
 			if is_on_dice:
@@ -155,6 +170,7 @@ func _on_button_up():
 		global_position = snap_area.global_position + offset
 		snap_area.filler(self)
 		is_grabbing = false
+		print("snap_area name: ", snap_area.name)
 	else:
 		go_to_last_snap()
 
@@ -169,3 +185,15 @@ func _on_dice_area_area_exited(area):
 	if area.is_in_group("dice_area"):
 		overlap_dice = null
 		is_on_dice = false
+
+
+func _on_mouse_entered():
+	if !is_grabbing:
+		ui_item_description.setup_description(dice_data)
+
+
+
+func _on_mouse_exited():
+	if !is_grabbing:
+		ui_item_description.close_description()
+

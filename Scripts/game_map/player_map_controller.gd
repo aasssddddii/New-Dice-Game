@@ -43,7 +43,10 @@ func resolve_poi(input_data:Dictionary):
 			next_battle.setup_dice_batle(input_data["battle_data"])
 			
 		level_gen.POI_Pattern_Type.EVENT:
-			pass
+			var next_event = input_data["event_data"].instantiate()
+			player_camera.add_child(next_event)
+			manage_camera("battle")
+			next_event.position = Vector2(-577,-325)
 		level_gen.POI_Pattern_Type.SHOP:
 			var next_shop = game_manager.ui_shop_prefab.instantiate()
 			var next_shop_data = input_data["shop_data"]

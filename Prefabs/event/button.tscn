@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bj7iocver25va"]
+
+[ext_resource type="Theme" uid="uid://dgx63tv2yl26o" path="res://Fonts/Themes/text_button.tres" id="1_lfm05"]
+
+[node name="Button" type="Button"]
+theme = ExtResource("1_lfm05")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+text = "ui_button"

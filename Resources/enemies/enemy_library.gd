@@ -19,7 +19,7 @@ var wizard_enemy_resource:Resource = preload("res://Resources/enemies/wizard.tre
 #	"wizard":wizard_enemy_resource
 #}
 var all_enemies:Dictionary = {
-	"bat":bat_enemy_resource
+	"wolf":wolf_enemy_resource
 }
 
 var enemies_array = all_enemies.values()

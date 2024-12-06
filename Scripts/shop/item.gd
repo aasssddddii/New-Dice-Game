@@ -10,8 +10,6 @@ var item_data:Dictionary
 var active_trade_side:String = ""
 @onready var ui_shop = $"../../../.."
 
-
-
 # Maybe REMOVE Quantity
 func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 	
@@ -73,7 +71,21 @@ func _on_button_down():
 						#set inventories
 						game_manager.player_resource.getset_dice_deck("set",get_parent().inventory_data)
 						game_manager.player_resource.getset_inventory("set",get_node_or_null("../../../../inventory_grid/ScrollContainer/GridContainer").inventory_data)
-
+		"Dice_Battle":
+			get_parent().use_battle_item(item_data)
+		"dice_altar":
+			get_parent().remove_from_grid(item_data)
+			var temp_dice = game_manager.dice_lib.dice_prefab.instantiate()
+			var dice_layer = $"../../../../dice_layer"
+			var dice_snap = $"../../../../player_inventory/inventory"
+			dice_layer.add_child(temp_dice)
+			temp_dice.ui_item_description = ui_shop.ui_item_description
+			temp_dice.snap_area = dice_snap
+			#temp_dice.last_snap_area = dice_snap
+			#temp_dice.get_current_snap_area()
+			temp_dice.setup_event_data(item_data)
+			
+			
 func update_quantity():
 	var quantity_label = $quantity
 	#print("parent inventory: ", get_parent().get_inventory())
@@ -103,7 +115,10 @@ func _on_mouse_entered():
 				ui_shop.ui_item_description.setup_description(item_data)
 		"ui_shop":
 			ui_shop.ui_item_description.setup_description(item_data)
-
+		"Dice_Battle":
+			ui_shop.ui_item_description.setup_description(item_data)
+		"dice_altar":
+			ui_shop.ui_item_description.setup_description(item_data)
 
 func _on_mouse_exited():
 	ui_shop.ui_item_description.close_description()

@@ -143,5 +143,22 @@ func use_map_item(item_data):
 	setup_inventory(inventory_data,trade_side)
 
 
-
+func use_battle_item(item_data):
+	var dice_battle = $"../../.."
+	inventory_data.remove_at(inventory_data.find(item_data))
+	match item_data["item_name"]:
+		"hea_potion":
+			game_manager.player_resource.manage_health("add",game_manager.player_resource.health *.25)
+			dice_battle.update_vitals()
+		"ite_bomb":
+			#print("using Bomb")
+			for enemy in dice_battle.get_node_or_null("enemy_layer").get_children():
+				enemy.hit_enemy({
+					"damage":30,
+					"status_conditions":[]
+				})
+		_:
+			print("item is not usable on map/ not coded YET")
+			
+	setup_inventory(inventory_data,trade_side)
 
