@@ -297,6 +297,21 @@ var lightning_dice_shop_data:Dictionary = {
 	"long_name":"Lightning Dice",
 	"description":"deal lightning type damage to an enemy, deals half damage to other enemies"
 	}
+var none_dice_shop_data:Dictionary = {
+	"item_code":0,
+	"item_name":"non_dice",
+	"texture":"res://Sprites/Dice/blank dice template.png",
+	"none_texture":"res://Sprites/Dice/blank dice template.png",
+	"price":0,
+	"upgrade_price":0,
+	"animation_target":"",
+	"type":Dice.DiceType.NONE,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"faces":[0,0,0,0,0,00],
+	"long_name":"None Dice",
+	"description":"not meant to be playeble"
+	}
 
 var all_dice:Dictionary = {
 	"atk_dice":attack_dice_shop_data,
@@ -332,14 +347,52 @@ func default_checker(dice_data:Dictionary):
 				default = true
 	return default
 			
+func get_dice_type(dice_name:String):
+	var ref_dice = all_dice[dice_name]
+	return ref_dice["type"]
+func get_sprite_from_type(dice_type:Dice.DiceType):
+	var send_texture = ""
+	match dice_type:
+		Dice.DiceType.ATTACK:
+			send_texture = "res://Sprites/Dice/attack dice template.png"
+		Dice.DiceType.DEFEND:
+			send_texture = "res://Sprites/Dice/defend dice template.png"
+		Dice.DiceType.REROLL:
+			send_texture = "res://Sprites/Dice/reroll dice template.png"
+		Dice.DiceType.BLEED:
+			send_texture = "res://Sprites/Dice/bleed dice template.png"
+		Dice.DiceType.HEAL:
+			send_texture = "res://Sprites/Dice/heal dice template.png"
+		Dice.DiceType.GOLD:
+			send_texture = "res://Sprites/Dice/none gold dice.png"
+		Dice.DiceType.REFLECT:
+			send_texture = "res://Sprites/Dice/none reflect dice.png"
+		Dice.DiceType.LIFESTEAL:
+			send_texture = "res://Sprites/Dice/none lifesteal dice.png"
+		Dice.DiceType.POISON:
+			send_texture = "res://Sprites/Dice/none poison dice.png"
+		Dice.DiceType.CURE:
+			send_texture = "res://Sprites/Dice/none cure dice.png"
+		Dice.DiceType.DISARM:
+			send_texture = "res://Sprites/Dice/none disarm dice.png"
+		Dice.DiceType.STUN:
+			send_texture = "res://Sprites/Dice/none stun dice.png"
+		Dice.DiceType.ATKBUFF:
+			send_texture = "res://Sprites/Dice/none buff dice.png"
+		Dice.DiceType.DEFBUFF:
+			send_texture = "res://Sprites/Dice/none buff dice.png"
+		Dice.DiceType.ATKDEBUFF:
+			send_texture = "res://Sprites/Dice/none debuff dice.png"
+		Dice.DiceType.DEFDEBUFF:
+			send_texture = "res://Sprites/Dice/none debuff dice.png"
+		Dice.DiceType.FIRE:
+			send_texture = "res://Sprites/Dice/none fire dice.png"
+		Dice.DiceType.ICE:
+			send_texture = "res://Sprites/Dice/none ice dice.png"
+		Dice.DiceType.LIGHTNING:
+			send_texture = "res://Sprites/Dice/none lightning dice.png"
+		Dice.DiceType.NONE:
+			send_texture = "res://Sprites/Dice/blank dice template.png"
 			
-#func get_random_dice():
-#	var send_dice = all_dice
-#
-#
-#	return send_dice
-			
-			
-			
-			
-			
+	return send_texture
+	

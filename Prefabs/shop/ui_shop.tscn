@@ -18,7 +18,7 @@ ui_item_description = NodePath("ui_item_desciption")
 offset_left = -3.0
 offset_top = -5.0
 offset_right = 1158.0
-offset_bottom = 647.0
+offset_bottom = 651.0
 color = Color(1, 0.658824, 0.658824, 1)
 
 [node name="Title" type="RichTextLabel" parent="."]

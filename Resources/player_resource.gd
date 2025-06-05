@@ -163,6 +163,30 @@ var dice_deck:Array[Dictionary] = [
 	}
 ]
 
+var charm_inventory:Array[Dictionary] = [
+	{
+	"item_code":4,
+	"item_name":"cha_hpup",
+	"texture":"res://Sprites/charms/HP up.png",
+	"long_name":"+max hp",
+	"description":"increases current max hp"
+	},
+	{
+	"item_code":4,
+	"item_name":"cha_coupon",
+	"texture":"res://Sprites/charms/shop_coupon.png",
+	"long_name":"shop coupon",
+	"description":"provides a 5% off all shop items up to 50%"
+	},
+	{
+	"item_code":4,
+	"item_name":"cha_atks",
+	"texture":"res://Sprites/charms/attacks_shield.png",
+	"long_name":"Offensive Defence",
+	"description":"all attack will also provide one shield stack"
+	}
+]
+
 func getset_dice_deck(choice:String,input_data):
 	match choice:
 		"get":

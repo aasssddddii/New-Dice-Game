@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=7 format=3 uid="uid://copth117v51g5"]
+
+[ext_resource type="Texture2D" uid="uid://d3br60prmlc0w" path="res://Sprites/Dice/one attack face.png" id="1_04y04"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_ucaxc"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_sm8kv"]
+[ext_resource type="Texture2D" uid="uid://bsruvfp46w0r5" path="res://Sprites/Dice/one heal face.png" id="4_7338c"]
+[ext_resource type="Texture2D" uid="uid://d1sa1d8wd8g8t" path="res://Sprites/enemies/enemy minitaur.png" id="5_nu4fx"]
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="6_anq5v"]
+
+[resource]
+script = ExtResource("6_anq5v")
+enemy_name = "minotaur"
+enemy_description = "Large Minotaur with hulking strength"
+max_health = 40
+health = 40
+shield = 0
+heal_power = 0
+attack = 8
+defend = 6
+attacks = 2
+reward_gold = 30
+basic_attack_damage_type = 6
+weaknesses = {
+0: true,
+1: false,
+2: true,
+3: false,
+5: false
+}
+resistantses = {
+0: false,
+1: true,
+2: false,
+3: false,
+5: false
+}
+attack_texture = ExtResource("1_04y04")
+defend_texture = ExtResource("3_sm8kv")
+heal_texture = ExtResource("4_7338c")
+blank_texture = ExtResource("2_ucaxc")
+main_texture = ExtResource("5_nu4fx")
+possible_turn_actions = Array[int]([0, 1, 3])

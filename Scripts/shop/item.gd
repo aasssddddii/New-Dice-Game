@@ -73,7 +73,7 @@ func _on_button_down():
 						game_manager.player_resource.getset_inventory("set",get_node_or_null("../../../../inventory_grid/ScrollContainer/GridContainer").inventory_data)
 		"Dice_Battle":
 			get_parent().use_battle_item(item_data)
-		"dice_altar":
+		"dice_altar","upgrade_altar":
 			get_parent().remove_from_grid(item_data)
 			var temp_dice = game_manager.dice_lib.dice_prefab.instantiate()
 			var dice_layer = $"../../../../dice_layer"
@@ -84,6 +84,9 @@ func _on_button_down():
 			#temp_dice.last_snap_area = dice_snap
 			#temp_dice.get_current_snap_area()
 			temp_dice.setup_event_data(item_data)
+#		"dice_altar":
+#			print("NO SYSTEM FOR DICE UPGRADE YET!!!")
+#			pass
 			
 			
 func update_quantity():
@@ -119,6 +122,13 @@ func _on_mouse_entered():
 			ui_shop.ui_item_description.setup_description(item_data)
 		"dice_altar":
 			ui_shop.ui_item_description.setup_description(item_data)
-
+		"charm":
+			var inventory_description_location:Node2D = $"../../../../../../description_locations/charm"
+			ui_shop.ui_item_description.relocate(inventory_description_location)
+			ui_shop.ui_item_description.setup_description(item_data)
+		"battle_charm":
+			ui_shop.ui_item_description.setup_description(item_data)
+		"upgrade_altar":
+			ui_shop.ui_item_description.setup_description(item_data)
 func _on_mouse_exited():
 	ui_shop.ui_item_description.close_description()

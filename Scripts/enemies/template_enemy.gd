@@ -26,6 +26,9 @@ var spawned_statuses:Array[Status_Library.StatusCondition]
 var target_enemy:Enemy
 var heal_amount:int
 
+var trap_countdown:int = -1
+var trap_key:Array[Dice.DiceType] = []
+
 
 @onready var status_grid = $status_conditions
 #DISPLAY TURN
@@ -48,6 +51,9 @@ func setup_enemy(resource:Resource):
 	
 	vitals_changed.connect(update_vitals)
 	global_position -= Vector2(64,64)
+	if dice_battle_node.is_trap_battle:
+		set_trap_key()
+	
 	setup_next_attack()
 	#print("enemy now:", current_enemy_resource.enemy_name)
 
@@ -108,31 +114,44 @@ func deal_damage(amount:int):
 	vitals_changed.emit()
 
 func setup_next_attack():
-	
-	attack_pattern.clear()
-	reset_ui_turn()
-	#update_vitals()
-	vitals_changed.emit()
-	#manage_enemy_heal("reset",null)
-	var remove_stun:bool = false
-	for attack_number in current_enemy_resource.attacks:
+	if !dice_battle_node.is_trap_battle:#Regular battle
+		attack_pattern.clear()
+		reset_ui_turn()
+		#update_vitals()
+		vitals_changed.emit()
+		#manage_enemy_heal("reset",null)
+		var remove_stun:bool = false
+		for attack_number in current_enemy_resource.attacks:
 
-		if status_conditions.find(Status_Library.StatusCondition.STUN) == -1:
-			if status_conditions.find(Status_Library.StatusCondition.DISARM) != -1:
-				attack_pattern.append(current_enemy_resource.possible_turn_actions[randi_range(1,2)])
+			if status_conditions.find(Status_Library.StatusCondition.STUN) == -1:
+				if status_conditions.find(Status_Library.StatusCondition.DISARM) != -1:
+					attack_pattern.append(current_enemy_resource.possible_turn_actions[randi_range(1,2)])
+				else:
+					attack_pattern.append(current_enemy_resource.possible_turn_actions.pick_random())
 			else:
-				attack_pattern.append(current_enemy_resource.possible_turn_actions.pick_random())
-		else:
-			remove_stun = true
-			attack_pattern.append(enemy_resource.TurnActions.NONE)
-	#print(name," attack pattern: ", attack_pattern)
-	ui_calc_turn()
-	display_turn_actions(attack_pattern)
-	if remove_stun:
-			var stun_index = status_conditions.find(Status_Library.StatusCondition.STUN)
-			status_conditions.remove_at(stun_index)
-			status_timeouts.remove_at(stun_index)
-
+				remove_stun = true
+				attack_pattern.append(enemy_resource.TurnActions.NONE)
+		#print(name," attack pattern: ", attack_pattern)
+		ui_calc_turn()
+		display_turn_actions(attack_pattern)
+		if remove_stun:
+				var stun_index = status_conditions.find(Status_Library.StatusCondition.STUN)
+				status_conditions.remove_at(stun_index)
+				status_timeouts.remove_at(stun_index)
+	else:#Trap battle
+		#print("I AM A TRAP!!!")
+		if trap_countdown == -1:
+			trap_countdown = 5
+		elif trap_countdown >= 1:
+			trap_countdown -= 1
+		elif trap_countdown <= 0:
+			#spring trap code here
+			#deal_damage(current_enemy_resource.health)
+			spring_trap()
+			kill_check()
+			
+		ui_calc_turn()
+		
 
 func get_status_dmg():
 	var total_status_dmg:int
@@ -159,6 +178,36 @@ func display_turn_actions(attack_pattern:Array[enemy_resource.TurnActions]):
 				
 		ui_turns.add_child(next_turn_ui)
 
+func set_trap_key():
+	var player_dice_deck = game_manager.player_resource.dice_deck.duplicate()
+	var only_one_dice_deck = only_one(player_dice_deck)
+	var possible_key_values = convert_dice_to_type(only_one_dice_deck)
+	possible_key_values.append(Dice.DiceType.NONE)
+	
+	for key_index in 3:
+		var next_key_value = possible_key_values.pick_random()
+		trap_key.append(next_key_value)#need to pick dice type for trap key here
+		var next_turn_ui = enemy_ui_turn.instantiate()
+		
+		next_turn_ui.setup_ui_turn(load(game_manager.dice_lib.get_sprite_from_type(next_key_value)))#This will show the key to the player
+		
+		ui_turns.add_child(next_turn_ui)
+		
+	print("TRAP KEY CODE IS: ", trap_key)
+
+func only_one(input_array):
+	var output_array:Array[Dictionary]
+	for value in input_array:
+		if !output_array.any(func(checker):return checker == value):
+			output_array.append(value)
+	return output_array
+
+func convert_dice_to_type(input_array):
+	var output_array:Array[Dice.DiceType]
+	for value in input_array:
+		output_array.append(game_manager.dice_lib.get_dice_type(value["item_name"]))
+	return output_array
+
 func reset_ui_turn():
 	#heal_calc = 0
 	ui_heal_added = false
@@ -166,67 +215,73 @@ func reset_ui_turn():
 		turn_display.queue_free()
 
 func ui_calc_turn():
-	#var calc_heal:int
-	var calc_shield:int
-	attack_calc = 0
-	
-	#VVVV Maybe change this to a function that creates an attack Dictionary like player
-	for attack in attack_pattern:
-		if name == "wizard":
-			print(name, " attack pattern check, ", attack_pattern)
-		match attack:
-			enemy_resource.TurnActions.ATTACK:
-				attack_calc += current_enemy_resource.attack
-				pass
-			enemy_resource.TurnActions.DEFEND:
-				calc_shield += current_enemy_resource.defend
-				pass
-			enemy_resource.TurnActions.HEAL:
-#				if !ui_heal_added:
-#					var enemy_layer = get_parent()
-#					var lowest_hp:int = 4775807
-#					target_enemy=null
-#					#find lowest target
-#					for enemy in enemy_layer.get_children():
-#						if lowest_hp >= enemy.current_enemy_resource.health:
-#							target_enemy = enemy
-#							lowest_hp = enemy.current_enemy_resource.health
-#
-#					#heal_amount += current_enemy_resource.heal_power
-#					#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
-#
-#					if target_enemy != self:
-#						print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
-#						target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
-#						#^^^^ NEEDS to be limited so that it does not keep adding to infinity when clicked
-#					else:
-#						print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
-#						heal_amount += current_enemy_resource.heal_power
-#					ui_heal_added = true
-				pass
-			enemy_resource.TurnActions.NONE:
-				pass
-	
-	
-	if calc_shield >0:
-		calc_ui_shield.visible = true
-		calc_ui_shield.text ="+"+var_to_str(calc_shield)
+	if !dice_battle_node.is_trap_battle:
+		#var calc_heal:int
+		var calc_shield:int
+		attack_calc = 0
+		
+		#VVVV Maybe change this to a function that creates an attack Dictionary like player
+		for attack in attack_pattern:
+			if name == "wizard":
+				print(name, " attack pattern check, ", attack_pattern)
+			match attack:
+				enemy_resource.TurnActions.ATTACK:
+					attack_calc += current_enemy_resource.attack
+					pass
+				enemy_resource.TurnActions.DEFEND:
+					calc_shield += current_enemy_resource.defend
+					pass
+				enemy_resource.TurnActions.HEAL:
+	#				if !ui_heal_added:
+	#					var enemy_layer = get_parent()
+	#					var lowest_hp:int = 4775807
+	#					target_enemy=null
+	#					#find lowest target
+	#					for enemy in enemy_layer.get_children():
+	#						if lowest_hp >= enemy.current_enemy_resource.health:
+	#							target_enemy = enemy
+	#							lowest_hp = enemy.current_enemy_resource.health
+	#
+	#					#heal_amount += current_enemy_resource.heal_power
+	#					#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
+	#
+	#					if target_enemy != self:
+	#						print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
+	#						target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
+	#						#^^^^ NEEDS to be limited so that it does not keep adding to infinity when clicked
+	#					else:
+	#						print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
+	#						heal_amount += current_enemy_resource.heal_power
+	#					ui_heal_added = true
+					pass
+				enemy_resource.TurnActions.NONE:
+					pass
+		
+		
+		if calc_shield >0:
+			calc_ui_shield.visible = true
+			calc_ui_shield.text ="+"+var_to_str(calc_shield)
+		else:
+			calc_ui_shield.visible = false
+		heal_calc = heal_amount #- (current_player_damage + get_status_dmg())
+		if heal_calc > 0 :
+			calc_ui_heal.visible = true
+			calc_ui_heal.text ="+"+var_to_str(heal_calc)
+		else:
+			calc_ui_heal.visible = false
+		if attack_calc > 0:
+			calc_ui_attack.visible = true
+			calc_ui_attack.text = var_to_str(attack_calc)
+		else:
+			calc_ui_attack.visible = false
+		
+		print(name,"attack calc: ", attack_calc ," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
 	else:
-		calc_ui_shield.visible = false
-	heal_calc = heal_amount #- (current_player_damage + get_status_dmg())
-	if heal_calc > 0 :
-		calc_ui_heal.visible = true
-		calc_ui_heal.text ="+"+var_to_str(heal_calc)
-	else:
-		calc_ui_heal.visible = false
-	if attack_calc > 0:
-		calc_ui_attack.visible = true
+		attack_calc = trap_countdown
 		calc_ui_attack.text = var_to_str(attack_calc)
-	else:
-		calc_ui_attack.visible = false
-	
-	print(name,"attack calc: ", attack_calc ," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
-
+		
+		
+		
 func show_arrow(choice:bool):
 	var arrow = $target_arrow
 	if choice:
@@ -260,22 +315,23 @@ func _on_button_down():
 	
 
 func add_status_conditions(value):
-	if typeof(value) != TYPE_ARRAY:
-		var status_ref = game_manager.status_lib.get_status_data(value)
-		status_conditions.append(value)
-		status_timeouts.append(status_ref["turns"])
-		
-#		print("statuses is now: ",  status_conditions)
-#		print("status timeout is now: ",  status_timeouts)
-		
-		if spawned_statuses.find(value) == -1:
-			spawned_statuses.append(value)
-			var next_ui_status = game_manager.status_lib.status_prefab.instantiate()
-			status_grid.add_child(next_ui_status)
-			next_ui_status.setup_status(status_ref)
+	if !dice_battle_node.is_trap_battle:
+		if typeof(value) != TYPE_ARRAY:
+			var status_ref = game_manager.status_lib.get_status_data(value)
+			status_conditions.append(value)
+			status_timeouts.append(status_ref["turns"])
 			
-		#print("adding statuses is now: ",  status_conditions)
-		#print("adding status timeout is now: ",  status_timeouts)
+	#		print("statuses is now: ",  status_conditions)
+	#		print("status timeout is now: ",  status_timeouts)
+			
+			if spawned_statuses.find(value) == -1:
+				spawned_statuses.append(value)
+				var next_ui_status = game_manager.status_lib.status_prefab.instantiate()
+				status_grid.add_child(next_ui_status)
+				next_ui_status.setup_status(status_ref)
+				
+			#print("adding statuses is now: ",  status_conditions)
+			#print("adding status timeout is now: ",  status_timeouts)
 			
 func do_status_effects():
 	print(name, ": statuses is now: ",  status_conditions)
@@ -430,9 +486,24 @@ func kill_check():
 	var arrow = $target_arrow
 	if current_enemy_resource.health <= 0:
 		var filtered_targets = get_parent().get_children().filter(func(target):return target != self)
+		if dice_battle_node.is_trap_battle:
+			dice_battle_node.trap_disarmed = true
 		#maybe add something about adding to the player kills
 		if arrow.visible:
 			if !filtered_targets.is_empty():
 				$"../..".update_player_target(filtered_targets.pick_random())
-		
 		queue_free()
+
+func spring_trap():
+	send_attack = {
+		"damage":current_enemy_resource.attack,
+		"status_effect":Status_Library.StatusCondition.NONE,
+		#Maybe add a send Heal so the dice game can send it to the correct enemy
+		"target_enemy":null,
+		"heal_amount":0,
+		"from_enemy":self
+	}
+	dice_battle_node.hit_player(send_attack)
+	#Maybe change trap to sprung image
+	$"../..".end_battle(true)
+	queue_free()

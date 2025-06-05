@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://lvifo74rs6yl"]
+
+[ext_resource type="Script" path="res://Scripts/new_game_map/level_selection_template.gd" id="2_rnkmk"]
+
+[node name="TextureButton" type="TextureButton"]
+script = ExtResource("2_rnkmk")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]

@@ -10,12 +10,15 @@ var dice_battle_prefab = preload("res://Scenes/dice_battle.tscn")
 var ui_shop_prefab = preload("res://Prefabs/shop/ui_shop.tscn")
 var dice_lib = preload("res://Resources/dice_library.tres")
 var item_lib = preload("res://Resources/item_library.tres")
-var event_lib = preload("res://Resources/event_library.tres")
 var item_prefab = preload("res://Prefabs/shop_item.tscn")
 var picture_item_prefab = preload("res://Prefabs/picture_item.tscn")
 var ui_battle_summary = preload("res://Prefabs/game_ui/ui_battle_summary.tscn")
+var poi_lib = preload("res://Resources/poi_library.tres")
+var level_selection_template = preload("res://Prefabs/new_game_map/level_selection_template.tscn")
+var discard_event_prefab = preload("res://Prefabs/event/dice_altar.tscn")
+var ui_event = preload("res://Prefabs/event/ui_event.tscn")
 #player menu
-var player_inventory_menu = preload("res://Prefabs/game_map/player_inventory_menu.tscn")
+var player_inventory_menu = preload("res://Prefabs/new_game_map/player_inventory_menu.tscn")
 
 
 var rng = RandomNumberGenerator.new()

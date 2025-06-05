@@ -6,9 +6,11 @@ var game_manager = GameManager
 var button_prefab = preload("res://Prefabs/event/button.tscn")
 
 var event_data:Dictionary
+var battle_enemies:Array[Resource] =[]
 
-func _ready():
-	setup_event(game_manager.event_lib.test_event_data)
+var start_battle_on_exit:bool = false
+#func _ready():
+#	setup_event(game_manager.poi_lib.test_event_data)
 
 # Called when the node enters the scene tree for the first time.
 func setup_event(input_data:Dictionary):
@@ -33,29 +35,34 @@ func setup_event(input_data:Dictionary):
 		option_index += 1
 	
 	
-func event_resolver(event_result:event_library.EventResults, result_text:String):
+func event_resolver(event_result:POI_Library.Event_Results, result_text:String):
 	
+	setup_result(result_text)
 	print("test: ", event_result, " text: ", result_text)
 	match event_result:
-		event_library.EventResults.LOSSHPMINOR:
+		POI_Library.Event_Results.LOSSHPMINOR:
 			pass
-		event_library.EventResults.LOSSHPMAJOR:
+		POI_Library.Event_Results.LOSSHPMAJOR:
 			pass
-		event_library.EventResults.STARTBATTLE:
+		POI_Library.Event_Results.STARTBATTLE:
+			start_battle_on_exit = true
+			battle_enemies = enemy_resource_converter(event_data["enemies"])
+		POI_Library.Event_Results.STARTTRAP:
+			start_battle_on_exit = true
+			battle_enemies.append(game_manager.enemy_lib.trap_enemy_resource)
+		POI_Library.Event_Results.ADDHPMINOR:
 			pass
-		event_library.EventResults.ADDHPMINOR:
+		POI_Library.Event_Results.ADDHPMAJOR:
 			pass
-		event_library.EventResults.ADDHPMAJOR:
+		POI_Library.Event_Results.ADDDICE:
 			pass
-		event_library.EventResults.ADDDICE:
+		POI_Library.Event_Results.ADDITEM:
 			pass
-		event_library.EventResults.ADDITEM:
-			pass
-		event_library.EventResults.NOTHING:
+		POI_Library.Event_Results.NOTHING:
 			pass
 		
 		
-	setup_result(result_text)
+	
 		
 		
 		
@@ -68,7 +75,33 @@ func setup_result(result_text:String):
 	result_bg.visible = true
 	
 
+func enemy_resource_converter(enemy_array):
+	var send_array:Array[Resource]
+	for next_enemy in enemy_array:
+		send_array.append(game_manager.enemy_lib.get_enemy_resource(next_enemy))
+	return send_array
+	
 
 func _on_button_button_down():
-	$"../..".manage_camera("map_reset")
-	queue_free()
+	if start_battle_on_exit:
+		#start dice battle
+		var next_dice_battle = game_manager.dice_battle_prefab.instantiate()
+		get_parent().add_child(next_dice_battle)
+		if battle_enemies == [game_manager.enemy_lib.trap_enemy_resource]:
+			next_dice_battle.setup_dice_batle({
+				"enemies":battle_enemies,
+				"reward":5#Hard coded for Trap disarm reward for simplicity
+			})
+			queue_free()
+		else:
+			var reward:String = "gold"
+			if game_manager.rng.randi_range(1,20)>16:
+				reward = "dice"
+			next_dice_battle.setup_dice_batle({
+				"enemies":battle_enemies,
+				"reward":reward
+			})
+			queue_free()
+	else:
+		$"../choice_creator".poi_manager()
+		queue_free()

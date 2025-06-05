@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://xq0naemtpvqa"]
+[gd_scene load_steps=18 format=3 uid="uid://xq0naemtpvqa"]
 
 [ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_5q77g"]
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" path="res://Scripts/dice_game/player_node.gd" id="7_6vodb"]
 [ext_resource type="Script" path="res://Scripts/shop/shop_container.gd" id="7_72rp6"]
 [ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="13_vc105"]
+[ext_resource type="Script" path="res://Scripts/description_holder.gd" id="14_t0ed2"]
+[ext_resource type="Script" path="res://Scripts/dice_game/charm_display.gd" id="14_wxpdw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ojoh0"]
 
@@ -26,7 +28,7 @@ ui_item_description = NodePath("ui_item_desciption")
 offset_left = -3.0
 offset_top = -5.0
 offset_right = 1158.0
-offset_bottom = 647.0
+offset_bottom = 651.0
 color = Color(0.294118, 0.294118, 0.294118, 1)
 
 [node name="action_slots" type="Node2D" parent="."]
@@ -309,6 +311,22 @@ offset_top = 320.0
 offset_right = 1294.0
 offset_bottom = 776.0
 scale = Vector2(0.7, 0.7)
+
+[node name="battle_charm" type="Node2D" parent="." node_paths=PackedStringArray("ui_item_description")]
+script = ExtResource("14_t0ed2")
+ui_item_description = NodePath("../ui_item_desciption")
+
+[node name="PanelContainer" type="Node2D" parent="battle_charm"]
+
+[node name="ScrollContainer" type="ScrollContainer" parent="battle_charm/PanelContainer"]
+clip_contents = false
+offset_right = 1927.0
+offset_bottom = 103.0
+scale = Vector2(0.6, 0.6)
+
+[node name="charm_display" type="HBoxContainer" parent="battle_charm/PanelContainer/ScrollContainer"]
+layout_mode = 2
+script = ExtResource("14_wxpdw")
 
 [connection signal="button_down" from="player_ui/submit_button" to="." method="_on_submit_button_down"]
 [connection signal="button_down" from="player_ui/item_button" to="player_ui" method="_on_item_button_button_down"]

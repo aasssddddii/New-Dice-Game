@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="POI_Library" load_steps=2 format=3 uid="uid://bk5oqu7m0u5hm"]
+
+[ext_resource type="Script" path="res://Resources/poi_library.gd" id="1_ca2lg"]
+
+[resource]
+script = ExtResource("1_ca2lg")

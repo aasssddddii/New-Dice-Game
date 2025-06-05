@@ -16,6 +16,8 @@ var game_manager = GameManager
 #deck grids
 @onready var deck_grid = $content/deck/deck_grid/ScrollContainer/GridContainer
 @onready var deck_inventory_grid = $content/deck/inventory_grid/ScrollContainer/GridContainer
+#charm grid
+@onready var charm_grid = $content/charm/PanelContainer/ScrollContainer/GridContainer
 #page buttons
 @onready var left_arrow = $buttons/left
 @onready var right_arrow = $buttons/right
@@ -65,6 +67,9 @@ func setup_deck_inventory():
 	deck_inventory_grid.setup_inventory(game_manager.player_resource.inventory,"deck_inventory")
 	
 	
+func open_charm():
+	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory,"charm")
+	
 #close stats menu
 func _on_close_button_down():
 	if game_manager.player_resource.deck_size <= game_manager.player_resource.dice_deck.size():
@@ -112,7 +117,8 @@ func change_page():
 	#show correct one
 	match current_stats_page:
 		0:
-			pass
+			open_charm()
+			charm_page.visible = true
 		1:
 			open_stats()
 			stat_page.visible = true

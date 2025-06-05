@@ -153,8 +153,7 @@ func update_trade_values():
 	shop_trade_label.text = "$ " + var_to_str(shop_side_value)
 	
 func close_shop():
-	var player_node = $"../.."
-	player_node.manage_camera("map_reset")
+	$"../choice_creator".poi_manager()
 	queue_free()
 
 func _on_close_button_down():

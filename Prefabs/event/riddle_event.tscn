@@ -1,0 +1,69 @@
+[gd_scene load_steps=5 format=3 uid="uid://cljg37fga8a0s"]
+
+[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="1_rywf7"]
+[ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="2_87bs1"]
+[ext_resource type="Texture2D" uid="uid://wieq6et4ugt" path="res://Sprites/event/sphynx.png" id="3_iefc5"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="4_uls7h"]
+
+[node name="riddle_event" type="Node2D"]
+
+[node name="game Visuals TEMP2" type="ColorRect" parent="."]
+offset_left = -3.0
+offset_top = -5.0
+offset_right = 1158.0
+offset_bottom = 647.0
+color = Color(1, 0.658824, 0.658824, 1)
+
+[node name="Title" type="RichTextLabel" parent="."]
+offset_left = 201.0
+offset_top = 10.0
+offset_right = 947.0
+offset_bottom = 80.0
+theme = ExtResource("1_rywf7")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]sphinx's riddle"
+
+[node name="player_ui" type="Node2D" parent="."]
+visible = false
+
+[node name="close" type="TextureButton" parent="player_ui"]
+offset_left = 1093.0
+offset_top = 7.0
+offset_right = 1315.0
+offset_bottom = 234.0
+scale = Vector2(0.23, 0.23)
+focus_mode = 0
+texture_normal = ExtResource("2_87bs1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(221, 366)
+texture = ExtResource("3_iefc5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = 437.0
+offset_top = 121.0
+offset_right = 1133.0
+offset_bottom = 410.0
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_uls7h")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "ui_riddle"
+autowrap_mode = 3
+
+[node name="TextEdit" type="TextEdit" parent="."]
+offset_left = 437.0
+offset_top = 461.0
+offset_right = 1133.0
+offset_bottom = 519.0
+theme = ExtResource("4_uls7h")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+placeholder_text = "riddle answer"
+
+[connection signal="button_down" from="player_ui/close" to="." method="_on_close_button_down"]

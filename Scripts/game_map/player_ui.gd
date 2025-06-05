@@ -10,6 +10,7 @@ func _on_player_inventory_button_down():
 	if !screen_in_use:
 		var next_menu = game_manager.player_inventory_menu.instantiate()
 		next_menu.menu_closed.connect(reset_in_use)
+		#next_menu.position += Vector2(576,324)
 		add_child(next_menu)
 		screen_in_use = true
 	else:

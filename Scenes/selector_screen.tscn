@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3pgflbkqlh53"]
+
+[ext_resource type="PackedScene" uid="uid://bpdljaiirsmft" path="res://Prefabs/new_game_map/choice_creator.tscn" id="1_c5fde"]
+[ext_resource type="Script" path="res://Scripts/game_map/player_ui.gd" id="2_5uoh6"]
+[ext_resource type="Texture2D" uid="uid://bso4x4842h8i2" path="res://Sprites/level_selector_assets/backpack-03-icon-2048x2046-qs5hvcr9.png" id="3_pjl7g"]
+[ext_resource type="Texture2D" uid="uid://mxn01gxaoqtl" path="res://Sprites/level_selector_assets/gear-icon-2048x2048-5lk2g86a.png" id="4_1odnh"]
+
+[node name="selector_screen" type="Node2D"]
+
+[node name="background" type="ColorRect" parent="."]
+offset_left = -6.0
+offset_top = -5.0
+offset_right = 1159.0
+offset_bottom = 657.0
+
+[node name="choice_creator" parent="." instance=ExtResource("1_c5fde")]
+offset_top = 152.0
+offset_right = 1439.0
+offset_bottom = 402.0
+scale = Vector2(0.8, 0.8)
+
+[node name="enemy_predict" type="HBoxContainer" parent="."]
+offset_top = 450.0
+offset_right = 1152.0
+offset_bottom = 641.0
+
+[node name="player_ui" type="Node2D" parent="."]
+script = ExtResource("2_5uoh6")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="player_ui"]
+offset_left = 907.0
+offset_top = 5.0
+offset_right = 1387.0
+offset_bottom = 205.0
+scale = Vector2(0.5, 0.5)
+theme_override_constants/separation = 80
+
+[node name="player_inventory" type="TextureButton" parent="player_ui/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("3_pjl7g")
+
+[node name="settings" type="TextureButton" parent="player_ui/HBoxContainer"]
+layout_mode = 2
+texture_normal = ExtResource("4_1odnh")
+
+[connection signal="button_down" from="player_ui/HBoxContainer/player_inventory" to="player_ui" method="_on_player_inventory_button_down"]
+[connection signal="button_down" from="player_ui/HBoxContainer/settings" to="player_ui" method="_on_settings_button_down"]

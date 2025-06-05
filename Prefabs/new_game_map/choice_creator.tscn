@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpdljaiirsmft"]
+
+[ext_resource type="Script" path="res://Scripts/new_game_map/choice_creator.gd" id="1_y1cvf"]
+
+[node name="choice_creator" type="HBoxContainer"]
+offset_top = 216.0
+offset_right = 1153.0
+offset_bottom = 466.0
+theme_override_constants/separation = 110
+alignment = 1
+script = ExtResource("1_y1cvf")

@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://dchj8nlguekcm"]
+[gd_scene load_steps=3 format=3 uid="uid://b76vg5qhwfkko"]
 
-[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="1_pf7h8"]
-[ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="2_wp5g7"]
+[ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="1_6lo3b"]
+[ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="2_pmodq"]
 
 [node name="ui_event" type="Node2D"]
 
@@ -17,7 +17,9 @@ offset_left = 201.0
 offset_top = 10.0
 offset_right = 947.0
 offset_bottom = 80.0
-theme = ExtResource("1_pf7h8")
+theme = ExtResource("1_6lo3b")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
 theme_override_font_sizes/normal_font_size = 30
 bbcode_enabled = true
 text = "[center]ui_event"
@@ -31,6 +33,6 @@ offset_right = 1315.0
 offset_bottom = 234.0
 scale = Vector2(0.23, 0.23)
 focus_mode = 0
-texture_normal = ExtResource("2_wp5g7")
+texture_normal = ExtResource("2_pmodq")
 
 [connection signal="button_down" from="player_ui/close" to="." method="_on_close_button_down"]

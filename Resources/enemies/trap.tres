@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=3 format=3 uid="uid://mu8o8txwuh02"]
+
+[ext_resource type="Texture2D" uid="uid://dwtcjqkruyibu" path="res://Sprites/enemies/trap/bear-trap.png" id="1_00obf"]
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_w3gjt"]
+
+[resource]
+script = ExtResource("1_w3gjt")
+enemy_name = "trap"
+enemy_description = "trap that deals massive damage if not broken or disarmed"
+max_health = 50
+health = 50
+shield = 0
+heal_power = 0
+attack = 30
+defend = 0
+attacks = 0
+reward_gold = 5
+basic_attack_damage_type = 6
+weaknesses = {
+0: false,
+1: false,
+2: false,
+3: false,
+5: false
+}
+resistantses = {
+0: false,
+1: false,
+2: false,
+3: false,
+5: false
+}
+main_texture = ExtResource("1_00obf")
+possible_turn_actions = Array[int]([0, 1, 3])

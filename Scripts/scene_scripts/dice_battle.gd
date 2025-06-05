@@ -8,6 +8,7 @@ signal vitals_changed
 @onready var enemy_spawns = $enemy_spawns
 @onready var enemy_layer = $enemy_layer
 @onready var status_grid = $player_layer/player/status_conditions
+@onready var charm_grid = $battle_charm/PanelContainer/ScrollContainer/charm_display
 @onready var dice_lib = preload("res://Resources/dice_library.tres")
 #var enemy_lib #= preload("res://Resources/enemies/enemy_library.tres")
 @export var ui_item_description:ColorRect
@@ -27,6 +28,9 @@ var player_target:Enemy
 var spawned_statuses:Array[Status_Library.StatusCondition]
 
 var reward
+
+var is_trap_battle:bool = false
+var trap_disarmed:bool = false
 
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
@@ -49,8 +53,14 @@ func setup_dice_batle(input_data:Dictionary):
 #		enemy_lib.get_enemy_resource("snake"),
 #		enemy_lib.get_enemy_resource("wizard"),
 #		enemy_lib.get_enemy_resource("ice_wolf")]
+
 		
 	battle_data = input_data["enemies"]
+	if battle_data[0].enemy_name == "trap":
+		#print("ITS A TRAP!!!")
+		is_trap_battle = true
+	
+	
 	reward = input_data["reward"]
 	
 	for ui_slot in action_slots.get_children():
@@ -60,31 +70,42 @@ func setup_dice_batle(input_data:Dictionary):
 	#setup player
 	update_vitals()
 	vitals_changed.connect(update_vitals)
+	show_charms()
+	
+	
 	
 	setup_enemies()
 	update_player_target(enemy_layer.get_child(0))
 	set_player_hand()
 
 
+func show_charms():
+	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory,"battle_charm")
+
 func setup_enemies():
-	if !battle_data.is_empty():
-		var enemy_counter:int
-		for enemy in battle_data:
-			var next_enemy = game_manager.enemy_lib.enemy_prefab.instantiate()
-			next_enemy.position = enemy_spawns.get_child(enemy_counter).position
-			enemy_layer.add_child(next_enemy)
-			next_enemy.setup_enemy(enemy)
+	if !is_trap_battle:
+		if !battle_data.is_empty():
+			var enemy_counter:int
+			for enemy in battle_data:
+				var next_enemy = game_manager.enemy_lib.enemy_prefab.instantiate()
+				next_enemy.position = enemy_spawns.get_child(enemy_counter).position
+				enemy_layer.add_child(next_enemy)
+				next_enemy.setup_enemy(enemy)
+				
+				enemy_counter+=1
 			
-			enemy_counter+=1
-		
-		enemy_count = enemy_counter
-		current_enemy_dmg = calc_enemy_dmg()
-		calc_player_attack()
-		print("total enemy attack: ", current_enemy_dmg)
-	#get enemies from battle data
-	#for each enemy create the enemy from the enemy prefab
-	#setup enemy using enemy library enemy data
-	pass
+			enemy_count = enemy_counter
+			current_enemy_dmg = calc_enemy_dmg()
+			calc_player_attack()
+			print("total enemy attack: ", current_enemy_dmg)
+		#get enemies from battle data
+		#for each enemy create the enemy from the enemy prefab
+		#setup enemy using enemy library enemy data
+	else:
+		var next_enemy = game_manager.enemy_lib.trap_prefab.instantiate()
+		next_enemy.position = enemy_spawns.get_child(0).position
+		enemy_layer.add_child(next_enemy)
+		next_enemy.setup_enemy(game_manager.enemy_lib.trap_enemy_resource)
 
 func set_player_hand():
 	#print("current dice deck: ", current_dice_deck)
@@ -99,6 +120,7 @@ func set_player_hand():
 			next_dice.scale = Vector2(.7,.7)
 			var next_dice_data = current_dice_deck.pick_random()
 			current_dice_deck.remove_at(current_dice_deck.find(next_dice_data))
+			#filters out default dice
 			if next_dice_data.has("default"):
 				#print("setting up dice: ", dice_lib.get_dice_data(next_dice_data["item_name"]))
 				next_dice.set_dice_data(dice_lib.get_dice_data(next_dice_data["item_name"]))#dice library reference
@@ -139,22 +161,39 @@ func shuffle_deck():
 func use_dice(dice_array:Array[Dice]):
 	#Send Player Attack Data Here
 	for die in dice_array:
-		var dice_data = die.dice_data
-		
-		#print("using ", dice_data["item_name"])
-		#Send Attack Data
-		
-		
-		if dice_lib.default_checker(dice_data):
-			discard.append({
-				"default":true,
-				"item_name":dice_data["item_name"]
-			})
-		else:
-			discard.append(dice_data)
-		die.queue_free()
+		if !die == null:
+			var dice_data = die.dice_data
+			
+			#print("using ", dice_data["item_name"])
+			#Send Attack Data
+			
+			
+			if dice_lib.default_checker(dice_data):
+				discard.append({
+					"default":true,
+					"item_name":dice_data["item_name"]
+				})
+			else:
+				discard.append(dice_data)
+			die.queue_free()
 		
 	set_player_hand()
+
+func trap_check(input):
+	
+	var dice_sequence:Array[Dice.DiceType]
+	for die in input:
+		if !die == null:
+			dice_sequence.append(die.dice_data["type"])
+		else:
+			dice_sequence.append(Dice.DiceType.NONE)
+	
+	if dice_sequence == enemy_layer.get_child(0).trap_key:
+		print("TRAP DISARMED")
+		trap_disarmed = true
+		end_battle(true)
+	print("used dice: ",dice_sequence, " check against key: ", enemy_layer.get_child(0).trap_key)
+
 
 #Player ENDS turn here
 func _on_submit_button_down():
@@ -167,6 +206,15 @@ func _on_submit_button_down():
 			if slot_area.is_filled:
 				var dice_node = slot_area.filled_node
 				send_dice.append(dice_node)
+			else:
+				send_dice.append(null)
+				
+		
+		#LLO 6/1
+		if is_trap_battle:
+			#CHECK FOR TRAP KEY HERE SINCE I HAVE ALL DICE here
+			trap_check(send_dice)
+		
 		use_dice(send_dice)
 		
 		do_positive_statuses()#does positive statuses
@@ -756,7 +804,7 @@ func cure_negative_effects():
 	clean_up_statuses()
 
 func end_battle(win:bool):
-	if win:
+	if win && !is_trap_battle:
 		#print("game continues: ", reward)
 		#set player inventory
 		game_manager.player_resource.getset_inventory("set",$player_ui/item_background/battle_item_container.inventory_data+game_manager.player_resource.getset_inventory("get_map",null))
@@ -783,11 +831,37 @@ func end_battle(win:bool):
 		add_child(ui_summary)
 		#queue_free()
 		#$"../..".manage_camera("map_reset")
+	elif win && is_trap_battle:
+	#	if game_manager.player_resource.health > 0:
+		game_manager.player_resource.getset_inventory("set",$player_ui/item_background/battle_item_container.inventory_data+game_manager.player_resource.getset_inventory("get_map",null))
+		
+		
+		#var dice_array:Array[Dictionary]
+		var trap_gold = game_manager.enemy_lib.trap_enemy_resource.reward_gold
+		
+		
+		if trap_disarmed:
+			game_manager.player_resource.gold += trap_gold
+		else:
+			reward = 0
+			
+		var ui_summary = game_manager.ui_battle_summary.instantiate()
+		ui_summary.setup_summary({
+			"enemies":1,
+			"reward":reward
+			#"dice":dice_array
+			})
+			
+		print("player gold is now: ", game_manager.player_resource.gold)
+		add_child(ui_summary)
+#		else:
+#			print("game end")
 	else:
 		print("game end")
 
 func summary_complete():
-	$"../..".manage_camera("map_reset")
+	#SETUP FOR NEXT SELECTION
+	$"../choice_creator".poi_manager()
 	queue_free()
 
 
