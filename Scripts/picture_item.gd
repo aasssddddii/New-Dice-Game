@@ -3,6 +3,7 @@ extends TextureButton
 #var current_sprite
 var item_data:Dictionary
 var ui_item_description
+var game_manager = GameManager
 # Called when the node enters the scene tree for the first time.
 func setup_item(input_data:Dictionary):
 	item_data = input_data
@@ -22,18 +23,18 @@ func manage_description(input_data,make_visible:bool):
 	#ui_item_description.visible = make_visible
 	if make_visible:
 		if input_data["item_code"] == 0:
+			print("SANITY CHECK input data: ", input_data)
 			ui_item_description.setup_description({
 				"item_code":input_data["item_code"],
 				"item_name":input_data["item_name"],
 				"long_name":input_data["long_name"],
 				"description":input_data["description"],
-				"faces":input_data["faces"]
+				"upgrade_level":input_data["upgrade_level"]
 				})
 		else:
 			ui_item_description.close_description({
 				"item_code":input_data["item_code"],
 				"item_name":input_data["item_name"],
 				"long_name":input_data["long_name"],
-				"description":input_data["description"],
-				"faces":[]
+				"description":input_data["description"]
 				})

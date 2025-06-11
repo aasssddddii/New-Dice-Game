@@ -28,7 +28,7 @@ func poi_reset():
 func poi_hover():
 	texture_normal = hover_texture
 	
-func poi_click(viewport,event,shapeID):
+func poi_click(_viewport,event,_shapeID):
 	if event is InputEventMouseButton:
 		if event.pressed:
 			#print_poi_data()

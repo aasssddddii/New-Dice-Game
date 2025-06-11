@@ -374,6 +374,67 @@ theme = ExtResource("11_phdiu")
 text = "-"
 horizontal_alignment = 1
 
+[node name="upgrade" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
+script = ExtResource("2_h8ajs")
+ui_item_description = NodePath("../../ui_item_desciption")
+
+[node name="inventory_grid" type="PanelContainer" parent="content/upgrade"]
+offset_left = 153.615
+offset_top = 145.538
+offset_right = 560.615
+offset_bottom = 533.538
+scale = Vector2(1.5, 1.5)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="content/upgrade/inventory_grid"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="content/upgrade/inventory_grid/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+script = ExtResource("10_cy6va")
+
+[node name="deck_grid" type="PanelContainer" parent="content/upgrade"]
+offset_left = 924.616
+offset_top = 145.538
+offset_right = 1301.62
+offset_bottom = 533.538
+scale = Vector2(1.5, 1.5)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="content/upgrade/deck_grid"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="content/upgrade/deck_grid/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+script = ExtResource("10_cy6va")
+
+[node name="title" type="Label" parent="content/upgrade"]
+offset_left = 209.615
+offset_top = 23.5385
+offset_right = 682.615
+offset_bottom = 109.538
+theme = ExtResource("11_phdiu")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 45
+text = "Inventory"
+
+[node name="title2" type="Label" parent="content/upgrade"]
+offset_left = 980.615
+offset_top = 23.5385
+offset_right = 1453.62
+offset_bottom = 109.538
+theme = ExtResource("11_phdiu")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 45
+text = "deck"
+horizontal_alignment = 1
+
 [node name="buttons" type="Node2D" parent="."]
 
 [node name="left" type="TextureButton" parent="buttons"]

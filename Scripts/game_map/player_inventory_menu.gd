@@ -18,6 +18,11 @@ var game_manager = GameManager
 @onready var deck_inventory_grid = $content/deck/inventory_grid/ScrollContainer/GridContainer
 #charm grid
 @onready var charm_grid = $content/charm/PanelContainer/ScrollContainer/GridContainer
+#upgrade grids
+@onready var upgrade_deck_grid = $content/upgrade/deck_grid/ScrollContainer/GridContainer
+@onready var upgrade_inventory_grid = $content/upgrade/inventory_grid/ScrollContainer/GridContainer
+
+
 #page buttons
 @onready var left_arrow = $buttons/left
 @onready var right_arrow = $buttons/right
@@ -27,13 +32,16 @@ var game_manager = GameManager
 @onready var stat_page = $content/stats
 @onready var deck_page = $content/deck
 @onready var charm_page = $content/charm
+@onready var upgrade_page = $content/upgrade
 
 var current_stats_page:int
 
-
+#specialty variables
+var upgrade_dice_count:int
 
 
 func _ready():
+	disable_buttons(false)
 	setup_stats()
 	setup_inventory()
 	current_stats_page = 1
@@ -78,6 +86,22 @@ func _on_close_button_down():
 		queue_free()
 	else:
 		print("not enough dice in dice deck")
+	
+	
+func open_upgrade():
+	
+	#setup deck
+	upgrade_deck_grid.setup_inventory(game_manager.player_resource.dice_deck,"upgrade_deck")
+	#setup inventory(Dice only)
+	upgrade_inventory_grid.setup_inventory(game_manager.player_resource.getset_inventory("get_dice",null),"upgrade_inventory")
+	
+	change_page_to_upgrade()
+
+func close_upgrade():
+	disable_buttons(false)
+	# Plus go back to inventory page
+	current_stats_page = 1
+	change_page()
 	
 #Show Max HP functions
 func show_max_health(choice:bool):
@@ -127,3 +151,12 @@ func change_page():
 			deck_page.visible = true
 		_:
 			pass
+func change_page_to_upgrade():
+	charm_page.visible = false
+	stat_page.visible = false
+	deck_page.visible = false
+	disable_buttons(true)
+	upgrade_page.visible = true
+	
+func disable_buttons(disabled:bool):
+	$buttons.visible = !disabled

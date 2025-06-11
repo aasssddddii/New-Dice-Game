@@ -27,7 +27,7 @@ var poi_rotation:Array[POI_PHASE] = [
 	]
 #var poi_rotation:Array[POI_PHASE] = [POI_PHASE.TEST]#for testing trap battles
 var current_poi_phase:POI_PHASE
-var current_poi_index:int =1
+var current_poi_index:int =1#Testing
 var battle_count_in_current_phase:int
 var battle_count_max_in_phase:int
 
@@ -107,7 +107,7 @@ func poi_manager():
 				if shop_spawned:
 					current_poi = poi_lib.event_poi
 				else:
-					if gamemanager.rng.randi_range(1,20) > 21:#12: #commented out for testing
+					if gamemanager.rng.randi_range(1,20) < 21:#12: #commented out for testing
 						current_poi = poi_lib.shop_poi
 						shop_spawned = true
 					else:
@@ -171,7 +171,7 @@ func setup_poi(input_data):
 				send_img = "res://Sprites/level_selector_assets/battle level 1.png"
 			#set reward
 			var reward = ""
-			if gamemanager.rng.randi_range(1,20)>16:
+			if gamemanager.rng.randi_range(1,20)>0:#>16: #commented for testing
 				reward = "dice"
 			else:
 				var reward_count:int
@@ -190,7 +190,7 @@ func setup_poi(input_data):
 #			"inventory":[]
 #			}
 			
-			output_data["shop_type"] = gamemanager.poi_lib.Shop_Type.DICE
+			output_data["shop_type"] = gamemanager.poi_lib.Shop_Type.ITEM
 			var input_inventory = create_shop(output_data["shop_type"])
 			output_data["inventory"] = input_inventory
 			print("setup poi inventory: ", input_inventory )

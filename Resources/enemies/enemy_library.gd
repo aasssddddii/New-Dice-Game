@@ -32,6 +32,7 @@ var trap_enemy_resource:Resource = preload("res://Resources/enemies/trap.tres")
 #}
 var all_enemies:Dictionary = {
 	"wolf":wolf_enemy_resource,#Test Enemy
+	"wizard":wizard_enemy_resource
 }
 var all_minibosses:Dictionary = {
 	"minotaur":minotaur_enemy_resource

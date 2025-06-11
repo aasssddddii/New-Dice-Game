@@ -41,14 +41,16 @@ func create_shop():
 	var export_inventory:Array[Dictionary]
 	var shop_name:String
 	match shop_data["shop_type"]:
-		level_gen.Shop_Type.DICE:
+		POI_Library.Shop_Type.DICE:
 			shop_name = "Dice Shop"
-		level_gen.Shop_Type.SKILL:
+		POI_Library.Shop_Type.SKILL:
 			shop_name = "Skill Shop"
-#		level_gen.Shop_Type.UPGRADE:
+#		POI_Library.Shop_Type.UPGRADE:
 #			shop_name = "Upgrade"
-		level_gen.Shop_Type.ITEM:
+		POI_Library.Shop_Type.ITEM:
 			shop_name = "Item Shop"
+		POI_Library.Shop_Type.COMBO:
+			shop_name = "Combo Shop"
 	
 	for item in shop_data["inventory"]:
 		export_inventory.append(item)
@@ -162,7 +164,7 @@ func _on_close_button_down():
 
 func _on_button_button_down():#SUBMIT button
 	match shop_data["shop_type"]:
-		level_gen.Shop_Type.DICE:#VVV Change from dice deck to inventory when ready , May be in creation function
+		POI_Library.Shop_Type.DICE:#VVV Change from dice deck to inventory when ready , May be in creation function
 				var combo_inventory = player_side_inventory.get_node_or_null("Inventory/GridContainer").inventory_data + shop_side_trade.inventory_data
 				var converted_inventory:Array[Dictionary]
 				for item_data in combo_inventory:
@@ -183,14 +185,14 @@ func _on_button_button_down():#SUBMIT button
 							pass
 						
 				game_manager.player_resource.getset_inventory("set",converted_inventory)
-		level_gen.Shop_Type.SKILL:
+		POI_Library.Shop_Type.SKILL:
 			print("SKILL Evaluatiing: ", shop_side_trade.inventory_data)
 			#broken due to not alowing dice deck to be sold VVV
 			#game_manager.player_resource.getset_dice_deck("set",player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data)
 			pass
-#		level_gen.Shop_Type.UPGRADE:
-#			shop_name = "Upgrade"
-		level_gen.Shop_Type.ITEM:#need specialiced way to give player payed for items + Dice
+#		POI_Library.Shop_Type.UPGRADE:
+#			pass
+		POI_Library.Shop_Type.ITEM:#need specialiced way to give player payed for items + Dice
 			print("ITEM Evaluatiing: ", shop_side_trade.inventory_data)
 			var combo_inventory = game_manager.player_resource.getset_inventory("get",null) + shop_side_trade.inventory_data
 			game_manager.player_resource.getset_inventory("set",combo_inventory)

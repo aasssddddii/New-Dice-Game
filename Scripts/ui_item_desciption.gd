@@ -29,12 +29,20 @@ func setup_description(input_data:Dictionary):
 		ui_faces_label.visible = true
 		var face_index:int = 0
 		var dice_ref = game_manager.dice_lib.get_dice_data(description_data["item_name"])
-		for face_value in description_data["faces"]:
+		
+		#for generating faces based on upgrade level
+		for face_value in game_manager.dice_lib.upgrade_tier[description_data["upgrade_level"]]:
 			match face_value:
 				0:
 					ui_faces_parent.get_child(face_index).texture = load(dice_ref["none_texture"])
 				1:
 					ui_faces_parent.get_child(face_index).texture = load(dice_ref["texture"])
+				2:
+					ui_faces_parent.get_child(face_index).texture = load(dice_ref["two_texture"])
+				3:
+					ui_faces_parent.get_child(face_index).texture = load(dice_ref["three_texture"])
+				4:
+					ui_faces_parent.get_child(face_index).texture = load(dice_ref["four_texture"])
 			
 			face_index += 1
 	else:

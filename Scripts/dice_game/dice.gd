@@ -2,7 +2,7 @@ extends TextureButton
 class_name Dice
 
 const offset =  Vector2(-28,-28)
-
+var game_manager = GameManager
 enum DiceType {
 	ATTACK,
 	DEFEND,
@@ -69,7 +69,7 @@ var is_on_dice:bool = false
 
 
 var up_face:int
-var upgrade_level
+var upgrade_level:int = 0
 
 var ui_item_description
 
@@ -134,12 +134,19 @@ func setup_event_data(data:Dictionary):
 func roll():
 	#print("rolling dice: ", name)
 	
-	up_face = dice_data["faces"].pick_random()
+	#change up face generration to be based on upgrade level
+	up_face = game_manager.dice_lib.upgrade_tier[dice_data["upgrade_level"]].pick_random()
 	match up_face:
 		0:
 			texture_normal = load(dice_data["none_texture"])
 		1:
 			texture_normal = load(dice_data["texture"])
+		2:
+			texture_normal = load(dice_data["two_texture"])
+		3:
+			texture_normal = load(dice_data["three_texture"])
+		4:
+			texture_normal = load(dice_data["four_texture"])
 		_:
 			print("not implemented in faces: dice.gd")
 	
@@ -150,12 +157,16 @@ func roll():
 func _on_button_down():
 	if get_current_snap_area():
 		snap_area.filler(self)
-		
 	if player_bar_node != null:
 		if !player_bar_node.enemy_taking_turn:
 			is_grabbing = true 
 	else:
 		is_grabbing = true
+		
+	if $"../..".name == "Dice_Battle":
+		var dice_battle = $"../.."
+		dice_battle.start_fate_fragment(false)
+		dice_battle.cancel_item_button.give_player_limbo_item()
 
 
 func _on_button_up():

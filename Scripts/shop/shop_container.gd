@@ -9,22 +9,24 @@ var inventory_data:Array[Dictionary] = []
 
 
 
+
+
 func setup_inventory(input_data:Array[Dictionary],setup_side:String):
 	#scrub default dice
 	
-	inventory_data = scrub_default_dice(input_data)
+	inventory_data = input_data.duplicate(true)
 	trade_side = setup_side #"deck_inventory"
 	generate_grid()
 	
-func scrub_default_dice(input_data:Array[Dictionary]):
-	var scrubbed_data:Array[Dictionary]
-	for value in input_data:
-		#scrub all items for default dice and return full item datas for all items
-		if value["item_code"] == 0:
-			scrubbed_data.append(game_manager.dice_lib.get_dice_data(value["item_name"]))
-		else:
-			scrubbed_data.append(value)
-	return scrubbed_data
+#func scrub_default_dice(input_data:Array[Dictionary]):
+#	var scrubbed_data:Array[Dictionary]
+#	for value in input_data:
+#		#scrub all items for default dice and return full item datas for all items
+#		if value["item_code"] == 0:
+#			scrubbed_data.append(game_manager.dice_lib.get_dice_data(value["item_name"]))
+#		else:
+#			scrubbed_data.append(value)
+#	return scrubbed_data
 
 func setup_deck():
 	inventory_data = game_manager.player_resource.getset_dice_deck("get_converted",null).duplicate(true)
@@ -107,14 +109,13 @@ func manage_inventory(choice:String,input_data):
 	#generate_grid()
 	inventory_changed.emit(inventory_data)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func only_one_of_each(input_array:Array[Dictionary]):
 	var output_array:Array[Dictionary] 
 	
 	for value in input_array:
 		#check for default dice
-		if value["item_code"] == 0:
-			value = game_manager.dice_lib.get_dice_data(value["item_name"])
+		if value["item_code"] == 0:# for Dice
+			#value = game_manager.dice_lib.get_dice_data(value["item_name"])
 			if !output_array.any(func(input):return input == value):
 				output_array.append(value)
 		
@@ -124,6 +125,7 @@ func only_one_of_each(input_array:Array[Dictionary]):
 	return output_array
 
 func use_map_item(item_data):
+	var main_menu_node = $"../../../../.."
 	inventory_data.remove_at(inventory_data.find(item_data))
 	match item_data["item_name"]:
 		"die_pack":
@@ -131,10 +133,13 @@ func use_map_item(item_data):
 			#var pack_dice:Array[Dictionary]
 			for i in 3:
 				inventory_data.append(game_manager.dice_lib.all_dice.values().pick_random())
-			pass
 		"hea_potion":
 			game_manager.player_resource.manage_health("add",game_manager.player_resource.health *.25)
-			$"../../../../..".setup_stats()
+			main_menu_node.setup_stats()
+		"ite_forc":
+			print("START UPGRADE SEQUENCE!")
+			main_menu_node.upgrade_dice_count = 0
+			main_menu_node.open_upgrade()
 		_:
 			print("item is not usable on map/ not coded YET")
 			
@@ -146,9 +151,10 @@ func use_map_item(item_data):
 func use_battle_item(item_data):
 	var dice_battle = $"../../.."
 	inventory_data.remove_at(inventory_data.find(item_data))
+	game_manager.player_resource.inventory.remove_at(game_manager.player_resource.inventory.find(item_data))
 	match item_data["item_name"]:
 		"hea_potion":
-			game_manager.player_resource.manage_health("add",game_manager.player_resource.health *.25)
+			game_manager.player_resource.manage_health("add",game_manager.player_resource.max_health *.25)
 			dice_battle.update_vitals()
 		"ite_bomb":
 			#print("using Bomb")
@@ -157,8 +163,29 @@ func use_battle_item(item_data):
 					"damage":30,
 					"status_conditions":[]
 				})
+		"ite_mims":
+			#get enemy attack dice
+			var send_dice_data = dice_battle.player_target.get_attack_dice_data()
+			send_dice_data["is_temp"] = true
+			#add to player hand
+			dice_battle.add_dice_to_hand(send_dice_data)
+		"ite_fatf":
+			#bring all dice to hand
+			dice_battle.rehand_dice()
+			#start fate fragment
+			dice_battle.start_fate_fragment(true)
+			#dice data in limbo
+			dice_battle.cancel_item_button.setup_limbo_item(item_data)
+		"ite_actu":
+			#add action slot
+			dice_battle.add_action_up_slot()
+			#profit??
+			pass
+		"ite_aegc":
+			#add status conditon to player
+			dice_battle.add_status_conditions(Status_Library.StatusCondition.PROTECT)
 		_:
-			print("item is not usable on map/ not coded YET")
+			print("item is not usable on battle/ not coded YET")
 			
 	setup_inventory(inventory_data,trade_side)
 

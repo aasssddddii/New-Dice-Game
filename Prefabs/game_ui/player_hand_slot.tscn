@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8i21y7qxk0qs"]
+
+[ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_uhspu"]
+[ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="2_whto2"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_lsvpt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k8q8o"]
+
+[node name="TextureRect" type="TextureRect"]
+texture = ExtResource("1_uhspu")
+
+[node name="dholder_hand" type="Area2D" parent="." groups=["dice_snap"]]
+position = Vector2(50.9999, 52)
+script = ExtResource("2_whto2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="dholder_hand"]
+shape = SubResource("RectangleShape2D_k8q8o")
+
+[node name="discard_button" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 31.0
+offset_top = 107.0
+offset_right = 71.0
+offset_bottom = 157.0
+focus_mode = 0
+theme = ExtResource("3_lsvpt")
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 9
+text = "x"
+flat = true
+
+[connection signal="button_down" from="discard_button" to="dholder_hand" method="_on_label_button_down"]

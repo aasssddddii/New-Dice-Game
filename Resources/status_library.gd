@@ -2,20 +2,21 @@ extends Resource
 class_name Status_Library
 
 enum StatusCondition{
-	BLEED,
-	BURN,
-	POISON,
-	SLEEP,
-	REFLECT,
-	FROZEN,
-	ATKBUFF,
-	DEFBUFF,
-	ATKDEBUFF,
-	DEFDEBUFF,
-	STUN,
-	CURE,
-	DISARM,
-	NONE
+	BLEED,#0
+	BURN,#1
+	POISON,#2
+	SLEEP,#3
+	REFLECT,#4
+	FROZEN,#5
+	ATKBUFF,#6
+	DEFBUFF,#7
+	ATKDEBUFF,#8
+	DEFDEBUFF,#9
+	STUN,#10
+	CURE,#11
+	DISARM,#12
+	PROTECT,#13
+	NONE#14
 }
 
 var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn")
@@ -66,7 +67,7 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"is_positive":false,
 	"texture":"res://Sprites/status_conditions/frozen status.png",
 	"status_condition":StatusCondition.FROZEN,
-	"turns":1,
+	"turns":3,#-1 due to taking effect early
 	"damage":0
 }
 @export var attack_buff_status_data:Dictionary = {
@@ -117,7 +118,14 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"turns":3,
 	"damage":5
 }
-
+@export var coin_status_data:Dictionary = {
+	"name":"aegis coin",
+	"is_positive":true,
+	"texture":"res://Sprites/status_conditions/aegis coin.png",
+	"status_condition":StatusCondition.PROTECT,
+	"turns":1,
+	"damage":0
+}
 
 
 
@@ -147,6 +155,8 @@ func get_status_data(status_condition:StatusCondition):
 			return cure_status_data
 		StatusCondition.BURN:
 			return burn_status_data
+		StatusCondition.PROTECT:
+			return coin_status_data
 		_:
 			print("Error on status library - Status not implemented")
 

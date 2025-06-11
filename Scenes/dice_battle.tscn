@@ -1,9 +1,7 @@
-[gd_scene load_steps=18 format=3 uid="uid://xq0naemtpvqa"]
+[gd_scene load_steps=16 format=3 uid="uid://xq0naemtpvqa"]
 
-[ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_5q77g"]
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
-[ext_resource type="Script" path="res://Scripts/dice_game/action_slot.gd" id="2_olh32"]
-[ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="4_jibh3"]
+[ext_resource type="Texture2D" uid="uid://cge74qu1scst6" path="res://Sprites/dice_game_ui/submit.png" id="4_wgehd"]
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="5_1gupk"]
 [ext_resource type="Script" path="res://Scripts/dice_game/player_ui.gd" id="5_vccpn"]
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="6_7mrag"]
@@ -12,13 +10,11 @@
 [ext_resource type="Texture2D" uid="uid://ckef36t0aywc3" path="res://Sprites/dice_game_ui/download.png" id="7_0ngxd"]
 [ext_resource type="Script" path="res://Scripts/dice_game/player_node.gd" id="7_6vodb"]
 [ext_resource type="Script" path="res://Scripts/shop/shop_container.gd" id="7_72rp6"]
+[ext_resource type="Script" path="res://Scripts/dice_game/cancel_item_button.gd" id="7_t6s0x"]
+[ext_resource type="Script" path="res://Scripts/dice_game/status_condition_manager.gd" id="13_5iqri"]
 [ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="13_vc105"]
 [ext_resource type="Script" path="res://Scripts/description_holder.gd" id="14_t0ed2"]
 [ext_resource type="Script" path="res://Scripts/dice_game/charm_display.gd" id="14_wxpdw"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ojoh0"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_erbep"]
 
 [node name="Dice_Battle" type="Node2D" node_paths=PackedStringArray("ui_item_description")]
 script = ExtResource("1_fecdh")
@@ -31,135 +27,37 @@ offset_right = 1158.0
 offset_bottom = 651.0
 color = Color(0.294118, 0.294118, 0.294118, 1)
 
-[node name="action_slots" type="Node2D" parent="."]
-position = Vector2(421, 464)
-scale = Vector2(0.7, 0.7)
-
-[node name="ui_slot_1" type="ColorRect" parent="action_slots"]
-offset_left = 49.0
-offset_top = 69.0
-offset_right = 138.0
-offset_bottom = 76.0
-
-[node name="action_slot1" type="Area2D" parent="action_slots/ui_slot_1" groups=["dice_snap"]]
-position = Vector2(43, -48)
-script = ExtResource("2_olh32")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="action_slots/ui_slot_1/action_slot1"]
-shape = SubResource("RectangleShape2D_ojoh0")
-
-[node name="ui_slot_2" type="ColorRect" parent="action_slots"]
-offset_left = 159.0
-offset_top = 69.0
-offset_right = 248.0
-offset_bottom = 76.0
-
-[node name="action_slot2" type="Area2D" parent="action_slots/ui_slot_2" groups=["dice_snap"]]
-position = Vector2(43, -48)
-script = ExtResource("2_olh32")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="action_slots/ui_slot_2/action_slot2"]
-shape = SubResource("RectangleShape2D_ojoh0")
-
-[node name="ui_slot_3" type="ColorRect" parent="action_slots"]
-offset_left = 269.0
-offset_top = 69.0
-offset_right = 358.0
-offset_bottom = 76.0
-
-[node name="action_slot3" type="Area2D" parent="action_slots/ui_slot_3" groups=["dice_snap"]]
-position = Vector2(43, -48)
-script = ExtResource("2_olh32")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="action_slots/ui_slot_3/action_slot3"]
-shape = SubResource("RectangleShape2D_ojoh0")
-
-[node name="player_hand" type="Node2D" parent="."]
-position = Vector2(369, 559)
-scale = Vector2(0.7, 0.7)
-
-[node name="slot_1" type="Sprite2D" parent="player_hand"]
-position = Vector2(59.5, 60.5)
-texture = ExtResource("1_5q77g")
-
-[node name="dholder_hand" type="Area2D" parent="player_hand/slot_1" groups=["dice_snap"]]
-script = ExtResource("4_jibh3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player_hand/slot_1/dholder_hand"]
-shape = SubResource("RectangleShape2D_erbep")
-
-[node name="slot_2" type="Sprite2D" parent="player_hand"]
-position = Vector2(169.5, 60.5)
-texture = ExtResource("1_5q77g")
-
-[node name="dholder_hand" type="Area2D" parent="player_hand/slot_2" groups=["dice_snap"]]
-script = ExtResource("4_jibh3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player_hand/slot_2/dholder_hand"]
-shape = SubResource("RectangleShape2D_erbep")
-
-[node name="slot_3" type="Sprite2D" parent="player_hand"]
-position = Vector2(279.5, 60.5)
-texture = ExtResource("1_5q77g")
-
-[node name="dholder_hand" type="Area2D" parent="player_hand/slot_3" groups=["dice_snap"]]
-script = ExtResource("4_jibh3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player_hand/slot_3/dholder_hand"]
-shape = SubResource("RectangleShape2D_erbep")
-
-[node name="slot_4" type="Sprite2D" parent="player_hand"]
-position = Vector2(389.5, 60.5)
-texture = ExtResource("1_5q77g")
-
-[node name="dholder_hand" type="Area2D" parent="player_hand/slot_4" groups=["dice_snap"]]
-script = ExtResource("4_jibh3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player_hand/slot_4/dholder_hand"]
-shape = SubResource("RectangleShape2D_erbep")
-
-[node name="slot_5" type="Sprite2D" parent="player_hand"]
-position = Vector2(499.5, 60.5)
-texture = ExtResource("1_5q77g")
-
-[node name="dholder_hand" type="Area2D" parent="player_hand/slot_5" groups=["dice_snap"]]
-script = ExtResource("4_jibh3")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player_hand/slot_5/dholder_hand"]
-shape = SubResource("RectangleShape2D_erbep")
-
 [node name="player_ui" type="Node2D" parent="."]
 script = ExtResource("5_vccpn")
 
-[node name="submit_button" type="Button" parent="player_ui"]
-offset_left = 697.0
+[node name="submit_button" type="TextureButton" parent="player_ui"]
+offset_left = 833.0
 offset_top = 459.0
-offset_right = 826.0
-offset_bottom = 501.0
+offset_right = 876.0
+offset_bottom = 509.0
 focus_mode = 0
 theme = ExtResource("6_7mrag")
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 8
-text = "SUBMIT"
-flat = true
+texture_normal = ExtResource("4_wgehd")
 
 [node name="ui_damage" type="Button" parent="player_ui"]
-offset_left = 280.0
-offset_top = 471.0
-offset_right = 461.0
-offset_bottom = 521.0
+offset_left = 699.0
+offset_top = 415.0
+offset_right = 880.0
+offset_bottom = 465.0
 focus_mode = 0
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 text = "-"
 flat = true
+alignment = 2
 
 [node name="Label" type="Label" parent="player_ui/ui_damage"]
 layout_mode = 0
-offset_left = -7.0
+offset_left = 40.0
 offset_top = -36.0
-offset_right = 184.0
+offset_right = 231.0
 offset_bottom = 9.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 3
@@ -168,10 +66,11 @@ text = "damage"
 horizontal_alignment = 1
 
 [node name="item_button" type="Button" parent="player_ui"]
-offset_left = 16.0
+visible = false
+offset_left = 959.0
 offset_top = 459.0
-offset_right = 145.0
-offset_bottom = 501.0
+offset_right = 1088.0
+offset_bottom = 509.0
 focus_mode = 0
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -205,16 +104,78 @@ theme = ExtResource("6_7mrag")
 icon = ExtResource("6_acft5")
 flat = true
 
+[node name="display_menu" type="TabContainer" parent="player_ui"]
+offset_left = 11.0
+offset_top = 396.0
+offset_right = 300.0
+offset_bottom = 733.0
+scale = Vector2(0.7, 0.7)
+theme_override_constants/side_margin = 20
+
+[node name="deck" type="GridContainer" parent="player_ui/display_menu"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 3
+script = ExtResource("7_72rp6")
+
+[node name="discard" type="GridContainer" parent="player_ui/display_menu"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 3
+script = ExtResource("7_72rp6")
+
+[node name="items" type="GridContainer" parent="player_ui/display_menu"]
+visible = false
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 10
+columns = 3
+script = ExtResource("7_72rp6")
+
+[node name="cancel_item_button" type="Button" parent="player_ui"]
+visible = false
+offset_left = 468.0
+offset_top = 613.0
+offset_right = 579.0
+offset_bottom = 647.0
+focus_mode = 0
+theme = ExtResource("6_7mrag")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "cancel"
+flat = true
+script = ExtResource("7_t6s0x")
+
+[node name="action_slot_container" type="HBoxContainer" parent="."]
+offset_left = 267.0
+offset_top = 451.0
+offset_right = 805.0
+offset_bottom = 482.0
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="player_hand_container" type="HBoxContainer" parent="."]
+offset_left = 247.0
+offset_top = 506.0
+offset_right = 1093.0
+offset_bottom = 609.0
+scale = Vector2(0.7, 0.7)
+theme_override_constants/separation = 6
+alignment = 1
+
 [node name="enemy_spawns" type="Node2D" parent="."]
 
 [node name="enemy_spawn1" type="Node2D" parent="enemy_spawns"]
-position = Vector2(739, 213)
+position = Vector2(742, 185)
 
 [node name="enemy_spawn2" type="Node2D" parent="enemy_spawns"]
-position = Vector2(978, 324)
+position = Vector2(978, 271)
 
 [node name="enemy_spawn3" type="Node2D" parent="enemy_spawns"]
-position = Vector2(978, 100)
+position = Vector2(978, 90)
 
 [node name="dice_layer" type="Node2D" parent="."]
 
@@ -222,7 +183,7 @@ position = Vector2(978, 100)
 offset_left = -3.0
 offset_top = -5.0
 offset_right = 1158.0
-offset_bottom = 435.0
+offset_bottom = 377.0
 color = Color(0.521569, 0.337255, 1, 1)
 
 [node name="enemy_layer" type="Node2D" parent="."]
@@ -256,6 +217,7 @@ offset_bottom = 60.0
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 1
 
@@ -272,6 +234,7 @@ offset_bottom = 76.0
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 1
 
@@ -283,6 +246,7 @@ offset_bottom = -70.0
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 1
 
@@ -294,6 +258,7 @@ offset_bottom = 125.714
 theme = ExtResource("6_7mrag")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 1
 
@@ -303,14 +268,15 @@ offset_top = -58.5714
 offset_right = 172.143
 offset_bottom = 103.429
 columns = 2
+script = ExtResource("13_5iqri")
 
 [node name="ui_item_desciption" parent="." instance=ExtResource("13_vc105")]
 visible = false
-offset_left = 782.0
-offset_top = 320.0
-offset_right = 1294.0
-offset_bottom = 776.0
-scale = Vector2(0.7, 0.7)
+offset_left = 883.0
+offset_top = 405.0
+offset_right = 1395.0
+offset_bottom = 861.0
+scale = Vector2(0.5, 0.5)
 
 [node name="battle_charm" type="Node2D" parent="." node_paths=PackedStringArray("ui_item_description")]
 script = ExtResource("14_t0ed2")
@@ -329,5 +295,4 @@ layout_mode = 2
 script = ExtResource("14_wxpdw")
 
 [connection signal="button_down" from="player_ui/submit_button" to="." method="_on_submit_button_down"]
-[connection signal="button_down" from="player_ui/item_button" to="player_ui" method="_on_item_button_button_down"]
-[connection signal="button_down" from="player_ui/item_background/item_close" to="player_ui" method="_on_item_close_button_down"]
+[connection signal="button_down" from="player_ui/cancel_item_button" to="player_ui/cancel_item_button" method="_on_button_down"]

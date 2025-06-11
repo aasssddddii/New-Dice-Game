@@ -35,7 +35,7 @@ func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 #	get_parent().inventory_data.append(item_data)
 
 
-func _on_button_down():
+func _on_button_down():#WHEN ITEM IS CLICKED DO THIS
 	ui_shop.ui_item_description.close_description()
 	#print("parent name: ", ui_shop.name)
 	match ui_shop.name:
@@ -84,6 +84,71 @@ func _on_button_down():
 			#temp_dice.last_snap_area = dice_snap
 			#temp_dice.get_current_snap_area()
 			temp_dice.setup_event_data(item_data)
+		"upgrade":
+			var main_menu_node = $"../../../../../.."
+			match active_trade_side:
+				"upgrade_deck":
+					#Upgrade clicked Dice
+					print("upgrade count = ", main_menu_node.upgrade_dice_count)
+					if main_menu_node.upgrade_dice_count < 2:
+						#print("Dice in DECK to be upgraded: ", item_data)
+						if game_manager.player_resource.dice_deck.any(func(check):return check == item_data):
+							var upgrade_dice = game_manager.player_resource.dice_deck[game_manager.player_resource.dice_deck.find(item_data)]
+							if upgrade_dice["upgrade_level"] < 8:
+								#upgrade dice
+								upgrade_dice["upgrade_level"] += 1
+								
+								main_menu_node.upgrade_dice_count += 1
+							else:
+								print("DICE MAX LEVEL")
+							main_menu_node.open_upgrade()
+						else:
+							print("ERROR Dice not found")
+					elif main_menu_node.upgrade_dice_count == 2:
+						if game_manager.player_resource.dice_deck.any(func(check):return check == item_data):
+							var upgrade_dice = game_manager.player_resource.dice_deck[game_manager.player_resource.dice_deck.find(item_data)]
+							if upgrade_dice["upgrade_level"] < 8:
+								#upgrade dice
+								upgrade_dice["upgrade_level"] += 1
+								
+								main_menu_node.close_upgrade()
+							else:
+								print("DICE MAX LEVEL")
+						else:
+							print("ERROR Dice not found")
+					else:
+						print("no more upgrades left")
+				"upgrade_inventory":
+					#Upgrade clicked Dice
+					print("upgrade count = ", main_menu_node.upgrade_dice_count)
+					if main_menu_node.upgrade_dice_count < 2:
+						#print("Dice in DECK to be upgraded: ", item_data)
+						if game_manager.player_resource.inventory.any(func(check):return check == item_data):
+							var upgrade_dice = game_manager.player_resource.inventory[game_manager.player_resource.inventory.find(item_data)]
+							if upgrade_dice["upgrade_level"] < 8:
+								#upgrade dice
+								upgrade_dice["upgrade_level"] += 1
+								main_menu_node.upgrade_dice_count += 1
+							else:
+								print("DICE MAX LEVEL")
+							print("player inventory now:  ", game_manager.player_resource.inventory)
+							main_menu_node.open_upgrade()
+						else:
+							print("ERROR Dice not found")
+					elif main_menu_node.upgrade_dice_count == 2:
+						if game_manager.player_resource.inventory.any(func(check):return check == item_data):
+							var upgrade_dice = game_manager.player_resource.inventory[game_manager.player_resource.inventory.find(item_data)]
+							if upgrade_dice["upgrade_level"] < 8:
+								#upgrade dice
+								upgrade_dice["upgrade_level"] += 1
+								
+								main_menu_node.close_upgrade()
+							else:
+								print("DICE MAX LEVEL")
+						else:
+							print("ERROR Dice not found")
+					else:
+						print("no more upgrades left")
 #		"dice_altar":
 #			print("NO SYSTEM FOR DICE UPGRADE YET!!!")
 #			pass
@@ -130,5 +195,14 @@ func _on_mouse_entered():
 			ui_shop.ui_item_description.setup_description(item_data)
 		"upgrade_altar":
 			ui_shop.ui_item_description.setup_description(item_data)
+		"upgrade":
+			if active_trade_side == "upgrade_deck":
+				var inventory_description_location:Node2D = $"../../../../../../description_locations/deck"
+				ui_shop.ui_item_description.relocate(inventory_description_location)
+				ui_shop.ui_item_description.setup_description(item_data)
+			else:
+				var inventory_description_location:Node2D = $"../../../../../../description_locations/deck_inventory"
+				ui_shop.ui_item_description.relocate(inventory_description_location)
+				ui_shop.ui_item_description.setup_description(item_data)
 func _on_mouse_exited():
 	ui_shop.ui_item_description.close_description()

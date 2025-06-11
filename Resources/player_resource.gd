@@ -14,6 +14,9 @@ class_name Player_Resource
 @export var deck_size:int
 @export var current_deck_amount:int
 @export var all_dice_bonus:float
+@export var hand_size:int
+@export var action_size:int
+
 
 #statuses
 @export var reflect:int
@@ -44,6 +47,8 @@ func reset_values():
 	heal_power = default_heal_power
 	gold = 0
 	game_level = 0
+	hand_size = 5
+	action_size = 3
 	print("new health now ", health)
 	
 func battle_reset():
@@ -63,103 +68,386 @@ var inventory:Array[Dictionary] = [
 	},
 	{
 	"item_code":2,
-	"item_name":"hea_potion",
-	"texture":"res://Sprites/shop/specialty_shops/health_potion_item.png",
-	"price":20,
-	"use_type":2,
-	"long_name":"Health Potion",
-	"description":"Heal 25% Health"
+	"item_name":"ite_mims",
+	"texture":"res://Sprites/shop/items/mimic shard.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"mimic shard",
+	"description":"copy attack dice of any enemy and roll it for yourself"
 	},
 	{
 	"item_code":2,
-	"item_name":"ite_bomb",
-	"texture":"res://Sprites/shop/specialty_shops/bomb_item.png",
-	"price":50,
+	"item_name":"ite_fatf",
+	"texture":"res://Sprites/shop/items/fate fragment.png",
+	"price":0,
 	"use_type":1,
-	"long_name":"Bomb",
-	"description":"Deal 30 Damage to all enemies (Can only use in combat)"
+	"long_name":"fate fragment",
+	"description":"discard one dice and draw 2"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_forc",
+	"texture":"res://Sprites/shop/items/forge core.png",
+	"price":0,
+	"use_type":0,
+	"long_name":"forge core",
+	"description":"upgrade one dice by one stage"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_actu",
+	"texture":"res://Sprites/shop/items/Action up.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"action up",
+	"description":"gives you one extra action slot for 3 turns"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_actu",
+	"texture":"res://Sprites/shop/items/Action up.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"action up",
+	"description":"gives you one extra action slot for 3 turns"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_aegc",
+	"texture":"res://Sprites/shop/items/aegis coin.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"aegis coin",
+	"description":"nullifies all damage for one turn"
 	},
 	{
 	"item_code":0,
-	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"fir_dice",
+	"texture":"res://Sprites/Dice/one fire dice.png",
+	"none_texture":"res://Sprites/Dice/none fire dice.png",
+	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+	"mini_texture":"res://sprites/mini fire dice.png",
+	"price":30,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.FIRE,
+	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"long_name":"Fire Dice",
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
 	},
 	{
 	"item_code":0,
-	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"fir_dice",
+	"texture":"res://Sprites/Dice/one fire dice.png",
+	"none_texture":"res://Sprites/Dice/none fire dice.png",
+	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+	"mini_texture":"res://sprites/mini fire dice.png",
+	"price":30,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.FIRE,
+	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"long_name":"Fire Dice",
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
 	},
 	{
 	"item_code":0,
-	"default":true,
-	"item_name":"fir_dice"
+	"item_name":"fir_dice",
+	"texture":"res://Sprites/Dice/one fire dice.png",
+	"none_texture":"res://Sprites/Dice/none fire dice.png",
+	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+	"mini_texture":"res://sprites/mini fire dice.png",
+	"price":30,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.FIRE,
+	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"long_name":"Fire Dice",
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
 	}
 ]
 
 var dice_deck:Array[Dictionary] = [
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"fir_dice"
+	"item_code":0,
+	"item_name":"ice_dice",
+	"texture":"res://Sprites/Dice/one ice dice.png",
+	"none_texture":"res://Sprites/Dice/none ice dice.png",
+	"two_texture":"res://Sprites/Dice/2 ice dice.png",
+	"three_texture":"res://Sprites/Dice/3 ice dice.png",
+	"four_texture":"res://Sprites/Dice/4 ice dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.ICE,
+	"effect":false,
+	"element":Dice.DamageElement.ICE,
+	"long_name":"Ice Dice",
+	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
 	},
 	{
-	"default":true,
-	"item_name":"gld_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"gld_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"gld_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"gld_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"hel_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"hel_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"hel_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	},
 	{
-	"default":true,
-	"item_name":"hel_dice"
+	"item_code":0,
+	"item_name":"poi_dice",
+	"texture":"res://Sprites/Dice/one poison dice.png",
+	"none_texture":"res://Sprites/Dice/none poison dice.png",
+	"two_texture":"res://Sprites/Dice/2 poison dice.png",
+	"three_texture":"res://Sprites/Dice/3 poison dice.png",
+	"four_texture":"res://Sprites/Dice/4 poison dice.png",
+	"price":25,
+	"upgrade_level":0,
+	"animation_target":"target",
+	"type":Dice.DiceType.POISON,
+	"effect":Status_Library.StatusCondition.POISON,
+	"element":Dice.DamageElement.POISON,
+	"long_name":"Poison Dice",
+	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
 	}
 ]
 
@@ -245,7 +533,7 @@ func getset_inventory(choice:String,input_data):
 			var send_data:Array[Dictionary]
 			for item in inventory:
 				if item["item_code"] == 0:
-					send_data.append(dice_lib.get_dice_data(item["item_name"]))
+					send_data.append(item)
 			return send_data
 		"get_item":
 			var send_data:Array[Dictionary]

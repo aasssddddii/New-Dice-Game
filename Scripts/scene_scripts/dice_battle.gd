@@ -1,16 +1,19 @@
 extends Node2D
 
 signal vitals_changed
+signal deck_changed(dice_deck:Array[Dictionary],discard_deck:Array[Dictionary])
 
-@onready var player_hand = $player_hand
+@onready var player_hand = $player_hand_container
 @onready var dice_layer = $dice_layer
-@onready var action_slots = $action_slots
+@onready var action_slots = $action_slot_container
 @onready var enemy_spawns = $enemy_spawns
 @onready var enemy_layer = $enemy_layer
 @onready var status_grid = $player_layer/player/status_conditions
 @onready var charm_grid = $battle_charm/PanelContainer/ScrollContainer/charm_display
 @onready var dice_lib = preload("res://Resources/dice_library.tres")
 #var enemy_lib #= preload("res://Resources/enemies/enemy_library.tres")
+@onready var action_slot_prefab = preload("res://Prefabs/game_ui/action_slot.tscn")
+@onready var player_hand_slot_prefab = preload("res://Prefabs/game_ui/player_hand_slot.tscn")
 @export var ui_item_description:ColorRect
 
 var current_dice_deck:Array[Dictionary]
@@ -20,6 +23,7 @@ var game_manager = GameManager
 
 var status_conditions:Array[Status_Library.StatusCondition]
 var status_timeout:Array[int]
+signal status_changed(status_conditions:Array[Status_Library.StatusCondition])
 
 var current_enemy_dmg:int
 
@@ -36,6 +40,7 @@ var trap_disarmed:bool = false
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
 @onready var ui_shield = $player_layer/player/VBoxContainer/ui_shield/ui_text
 @onready var ui_damage = $player_ui/ui_damage
+@onready var cancel_item_button = $player_ui/cancel_item_button
 #calc
 @onready var ui_calc_hp = $player_layer/player/calc_hp
 @onready var ui_calc_defend = $player_layer/player/calc_defend
@@ -43,29 +48,25 @@ var trap_disarmed:bool = false
 var can_attack:bool = true
 var enemy_count:int
 
+var action_up_timers:Array[int]
 
 #Staticly set battle need to get ready for map generation
 func setup_dice_batle(input_data:Dictionary):
-	#enemy_lib = preload("res://Resources/enemies/enemy_library.tres")
 	current_dice_deck = game_manager.player_resource.getset_dice_deck("get", null)
-	#print("setting up deck: ", current_dice_deck)
-#	battle_data = [
-#		enemy_lib.get_enemy_resource("snake"),
-#		enemy_lib.get_enemy_resource("wizard"),
-#		enemy_lib.get_enemy_resource("ice_wolf")]
-
 		
 	battle_data = input_data["enemies"]
 	if battle_data[0].enemy_name == "trap":
-		#print("ITS A TRAP!!!")
 		is_trap_battle = true
 	
 	
 	reward = input_data["reward"]
+#	for ui_slot in action_slots.get_children():
+#		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
+#		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
 	
-	for ui_slot in action_slots.get_children():
-		ui_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
-		ui_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
+	#show player GUI
+	setup_player_gui()
+	show_player_menu()
 	
 	#setup player
 	update_vitals()
@@ -74,13 +75,18 @@ func setup_dice_batle(input_data:Dictionary):
 	
 	
 	
+	
+	
 	setup_enemies()
 	update_player_target(enemy_layer.get_child(0))
-	set_player_hand()
+	call_deferred("set_player_hand")
 
 
 func show_charms():
 	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory,"battle_charm")
+	
+func show_player_menu():
+	$player_ui.setup_player_menu()
 
 func setup_enemies():
 	if !is_trap_battle:
@@ -103,15 +109,87 @@ func setup_enemies():
 		#setup enemy using enemy library enemy data
 	else:
 		var next_enemy = game_manager.enemy_lib.trap_prefab.instantiate()
-		next_enemy.position = enemy_spawns.get_child(0).position
+		next_enemy.position = enemy_spawns.get_child(0).position - Vector2(0,20)
 		enemy_layer.add_child(next_enemy)
 		next_enemy.setup_enemy(game_manager.enemy_lib.trap_enemy_resource)
 
-func set_player_hand():
-	#print("current dice deck: ", current_dice_deck)
-	
-	var hand_slots_not_filled = player_hand.get_children().filter(func(slot):return !slot.get_child(0).is_filled)
+func setup_player_gui():
+#	for i in 3:#Hard coded for testing ACTUAL will be from player resource
+#		var next_action_slot = action_slot_prefab.instantiate()
+#		next_action_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
+#		next_action_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
+#		action_slots.add_child(next_action_slot)
+	for i in 5:#Hard coded for testing ACTUAL will be from player resource
+		var next_player_hand_slot = player_hand_slot_prefab.instantiate()
+		player_hand.add_child(next_player_hand_slot)
+	pass
 
+func add_dice_to_hand(die_to_add:Dictionary):
+	var next_player_hand_slot = player_hand_slot_prefab.instantiate()
+	player_hand.add_child(next_player_hand_slot)
+	call_deferred("add_dice_to_new_hand_slot",next_player_hand_slot,die_to_add)
+
+func add_dice_to_new_hand_slot(next_player_hand_slot,die_to_add):
+	var next_dice = dice_lib.dice_prefab.instantiate()
+	next_dice.scale = Vector2(.7,.7)
+	next_dice.set_dice_data(die_to_add)
+	next_dice.name = die_to_add["item_name"]
+	dice_layer.add_child(next_dice)
+	print("dice going to position: ", next_player_hand_slot.global_position, " slot name: ", next_player_hand_slot.name)
+	next_dice.ui_item_description = ui_item_description
+	next_dice.global_position = next_player_hand_slot.global_position #+ Vector2(9,9)
+	next_dice.last_snap_area = next_player_hand_slot.get_child(0)
+	organize_dice()
+	
+func add_action_up_slot():
+	var next_action_slot = action_slot_prefab.instantiate()
+	next_action_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
+	next_action_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
+	action_slots.add_child(next_action_slot)
+	action_up_timers.append(3)
+	
+	
+func reset_action_slots():
+	for slot in action_slots.get_children():
+		slot.queue_free()
+	for i in game_manager.player_resource.action_size + action_up_timers.size():
+		var next_action_slot = action_slot_prefab.instantiate()
+		next_action_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
+		next_action_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
+		action_slots.add_child(next_action_slot)
+
+func action_timer_stepper():
+	for action_timer_index in action_up_timers.size():
+		if action_up_timers[action_timer_index]> 0:
+			action_up_timers[action_timer_index] -= 1
+		if action_up_timers[action_timer_index] <= 0:
+			action_up_timers.remove_at(action_up_timers.find(action_up_timers[action_timer_index]))
+	print("action up timers now: ", action_up_timers)
+
+func organize_dice():
+	for die in dice_layer.get_children():
+		die.go_to_last_snap()
+
+func rehand_dice():
+	for slot in action_slots.get_children():
+		if slot.get_child(0).is_filled:
+			var moving_dice = slot.get_child(0).filled_node
+			var move_to
+			for player_slot in player_hand.get_children():
+				if !player_slot.get_child(0).is_filled:
+					move_to = player_slot.get_child(0)
+			moving_dice.snap_area = move_to
+			moving_dice.go_to_last_snap()
+			move_to.is_filled = true
+			move_to.filler(moving_dice)
+
+func set_player_hand():
+	#SETS ACTIONS SLOTSVVV
+	reset_action_slots()
+	print("total hand size right now: ", player_hand.get_children())
+	var hand_slots_not_filled = player_hand.get_children().filter(func(slot):return !slot.get_child(0).is_filled)
+	print("not filled player slot check: ", hand_slots_not_filled)
+	
 	for slot in hand_slots_not_filled:
 		if current_dice_deck.size() < 1:
 			shuffle_deck()
@@ -130,8 +208,9 @@ func set_player_hand():
 			next_dice.name = next_dice_data["item_name"]
 			dice_layer.add_child(next_dice)
 			next_dice.ui_item_description = ui_item_description
-			next_dice.global_position = slot.global_position + dice_lib.die_offset
+			next_dice.global_position = slot.global_position + Vector2(9,9)
 			next_dice.last_snap_area = slot.get_child(0)
+			#next_dice.go_to_last_snap()
 		else:
 			var next_dice = dice_lib.dice_prefab.instantiate()
 			next_dice.scale = Vector2(.7,.7)
@@ -146,10 +225,11 @@ func set_player_hand():
 			next_dice.name = next_dice_data["item_name"]
 			dice_layer.add_child(next_dice)
 			next_dice.ui_item_description = ui_item_description
-			next_dice.global_position = slot.global_position + dice_lib.die_offset
+			next_dice.global_position = slot.global_position + Vector2(9,9)
 			next_dice.last_snap_area = slot.get_child(0)
+			
 	
-	
+	deck_changed.emit(current_dice_deck,discard)
 	display_player_calc()
 
 func shuffle_deck():
@@ -164,9 +244,6 @@ func use_dice(dice_array:Array[Dice]):
 		if !die == null:
 			var dice_data = die.dice_data
 			
-			#print("using ", dice_data["item_name"])
-			#Send Attack Data
-			
 			
 			if dice_lib.default_checker(dice_data):
 				discard.append({
@@ -178,6 +255,12 @@ func use_dice(dice_array:Array[Dice]):
 			die.queue_free()
 		
 	set_player_hand()
+
+
+func discard_dice(die_to_discard):
+	discard.append(die_to_discard.dice_data)
+	die_to_discard.queue_free()
+
 
 func trap_check(input):
 	
@@ -199,6 +282,7 @@ func trap_check(input):
 func _on_submit_button_down():
 	if can_attack:
 		can_attack = false
+		action_timer_stepper()
 		$player_ui/submit_button.modulate = Color.SADDLE_BROWN
 		var send_dice:Array[Dice]
 		for slot in action_slots.get_children():
@@ -210,12 +294,16 @@ func _on_submit_button_down():
 				send_dice.append(null)
 				
 		
-		#LLO 6/1
+		
 		if is_trap_battle:
 			#CHECK FOR TRAP KEY HERE SINCE I HAVE ALL DICE here
 			trap_check(send_dice)
 		
-		use_dice(send_dice)
+		
+		clean_up_player_hand()
+		#^^^^THIS IS WERE RESETTING THE HAND GUI should go^^^^
+		call_deferred("use_dice",send_dice)
+		#use_dice(send_dice)
 		
 		do_positive_statuses()#does positive statuses
 		print("sending attack: ", player_attack)
@@ -232,6 +320,8 @@ func _on_submit_button_down():
 		
 		vitals_changed.emit()
 		await get_tree().create_timer(.7).timeout
+		
+		
 		#do_status_effects()
 		#clean_up_statuses()
 		take_enemy_turn()
@@ -240,6 +330,21 @@ func _on_submit_button_down():
 		#print("total enemy attack: ", current_enemy_dmg)
 	else:
 		print("not player turn yet...")
+
+func clean_up_player_hand():
+	if player_hand.get_children().size() >= game_manager.player_resource.hand_size:
+		print("more filled than hand size")
+		for child in player_hand.get_children():
+			if player_hand.get_children().size() > game_manager.player_resource.hand_size:
+				if !child.get_child(0).is_filled:
+					child.reparent(game_manager,true)
+					child.queue_free()
+					#await child.tree_exited
+		call_deferred("organize_dice")
+	else:
+		print("less filled than hand size")
+		pass
+
 
 func calc_enemy_dmg():
 	var enemy_calc_attack:int
@@ -286,18 +391,19 @@ func calc_player_attack():
 	var calculator_reflect:int
 	var calculator_defend:int
 	var calculator_heal:int
+	var calculator_ls_heal:int
 	var calculator_gold:int
 	var calculator_statuses:Array[Status_Library.StatusCondition]
 	var calculator_elements:Array[Dice.DamageElement]
 	var calculator_element_dmg:Array[int]
 	var all_dice_bonus:bool = false
-	var action_slots_node = $action_slots
+	#var action_slots_node = $action_slot_container
 	
-	action_slots_node.modulate = Color.WHITE
-	#LLO Adding Same Type Attack Bonus
-	if action_slot_dice.size() == 3 && action_slot_dice.all(func(element): return element.dice_data["type"] == action_slot_dice[0].dice_data["type"]):
+	action_slots.modulate = Color.WHITE
+	#Size needed for some reason
+	if action_slot_dice.size() == action_slots.get_children().size() && action_slot_dice.all(func(element): return element.dice_data["type"] == action_slot_dice[0].dice_data["type"]):
 		all_dice_bonus = true
-		action_slots_node.modulate = Color.GOLD
+		action_slots.modulate = Color.GOLD
 	print("all dice bonus is now: ", all_dice_bonus)
 		
 		
@@ -306,25 +412,28 @@ func calc_player_attack():
 		if die.up_face >= 1:
 			#print("calculating next die: ", die.name)
 			var die_data = die.dice_data
+			var upgraded_player_attack = game_manager.player_resource.attack * die.up_face
+			var upgraded_player_heal = game_manager.player_resource.heal_power * die.up_face
+			var upgraded_player_defend = game_manager.player_resource.defend * die.up_face
 			#still need to calculate enemy resistantses/weaknesses
 
 			match die_data["type"]:
 				Dice.DiceType.ATTACK:
 					if all_dice_bonus:
-						calculator_damage += game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
+						calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
 					else:
-						calculator_damage += game_manager.player_resource.attack
+						calculator_damage += upgraded_player_attack
 				Dice.DiceType.DEFEND:
 					if all_dice_bonus:
-						calculator_defend += game_manager.player_resource.defend * game_manager.player_resource.all_dice_bonus
+						calculator_defend += upgraded_player_defend * game_manager.player_resource.all_dice_bonus
 					else:
-						calculator_defend += game_manager.player_resource.defend
+						calculator_defend += upgraded_player_defend
 				Dice.DiceType.REROLL:
 					pass
 				Dice.DiceType.BLEED:
 					if calculator_statuses.find(Status_Library.StatusCondition.BLEED) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.BLEED)
-					var base_dmg = (game_manager.player_resource.attack*.75)
+					var base_dmg = (upgraded_player_attack*.75)
 						
 					if all_dice_bonus:
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.BLEED]:
@@ -338,45 +447,47 @@ func calc_player_attack():
 							calculator_damage += base_dmg
 				Dice.DiceType.HEAL:
 					if all_dice_bonus:
-						calculator_heal += game_manager.player_resource.heal_power * game_manager.player_resource.all_dice_bonus
+						calculator_heal += upgraded_player_heal * game_manager.player_resource.all_dice_bonus
 					else:
-						calculator_heal += game_manager.player_resource.heal_power
+						calculator_heal += upgraded_player_heal
 				Dice.DiceType.GOLD:
 					if all_dice_bonus:
 						calculator_damage +=  2
-						calculator_gold += 2
+						calculator_gold += 2 + die.up_face - 1
 					else:
 						calculator_damage += 1 
-						calculator_gold += 1
+						calculator_gold += 1 + die.up_face - 1
 				Dice.DiceType.REFLECT:
 					if all_dice_bonus:
-						calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
-						calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
+						for i in die.up_face:
+							calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
+							calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
 					else:
-						calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
+						for i in die.up_face:
+							calculator_statuses.append(Status_Library.StatusCondition.REFLECT)
 				Dice.DiceType.LIFESTEAL:
-					var base_dmg = game_manager.player_resource.attack
+					var base_dmg = upgraded_player_attack
 					if all_dice_bonus:
 						calculator_damage += base_dmg * game_manager.player_resource.all_dice_bonus
-						if player_target.current_enemy_resource.health > base_dmg:
-							calculator_heal += base_dmg
+						if upgraded_player_heal > base_dmg:
+							calculator_ls_heal += base_dmg
 						else:
-							calculator_heal += player_target.current_enemy_resource.health
+							calculator_ls_heal += upgraded_player_heal
 					else:
 						calculator_damage += base_dmg
 						#need to take enemy HP into account
-						if player_target.current_enemy_resource.health > base_dmg/2:
-							calculator_heal += base_dmg/2
+						if upgraded_player_heal > base_dmg/2:
+							calculator_ls_heal += base_dmg/2
 						else:
-							calculator_heal += player_target.current_enemy_resource.health
+							calculator_ls_heal += upgraded_player_heal
 				Dice.DiceType.POISON:
-					var base_dmg = (game_manager.player_resource.attack /2)
+					var base_dmg = (upgraded_player_attack /2)
 					if all_dice_bonus:
 						calculator_statuses.append(Status_Library.StatusCondition.POISON)
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.POISON]:
 							calculator_damage += (base_dmg/2) * game_manager.player_resource.all_dice_bonus
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.POISON]:
-							calculator_damage += game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
+							calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
 						else:
 							calculator_damage += base_dmg * game_manager.player_resource.all_dice_bonus
 					else:
@@ -390,7 +501,8 @@ func calc_player_attack():
 						else:
 							calculator_damage += base_dmg
 				Dice.DiceType.CURE:
-					#I want to add a full heal when used
+					#6/6 Need to come back after I fix Status conditions
+					#I want to add a full heal when die face is over 1
 					if calculator_statuses.find(Status_Library.StatusCondition.CURE) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.CURE)
 				Dice.DiceType.DISARM:
@@ -423,7 +535,7 @@ func calc_player_attack():
 				#--------------------------------------------------------
 				Dice.DiceType.FIRE:
 					var element_dmg:int
-					var base_dmg = (game_manager.player_resource.attack*.5)
+					var base_dmg = (upgraded_player_attack*.5)
 					#calculator_damage += (game_manager.player_resource.attack /2)
 					if all_dice_bonus:
 						if calculator_statuses.find(Status_Library.StatusCondition.BURN) == -1:
@@ -431,14 +543,14 @@ func calc_player_attack():
 							
 							
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.FIRE]:
-							calculator_damage += (game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus)/2
-							element_dmg= (game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus)/2
+							calculator_damage += (upgraded_player_attack * game_manager.player_resource.all_dice_bonus)/2
+							element_dmg= (upgraded_player_attack * game_manager.player_resource.all_dice_bonus)/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.FIRE]:
-							calculator_damage += game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
-							element_dmg= game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
+							calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
+							element_dmg= upgraded_player_attack * game_manager.player_resource.all_dice_bonus
 						else:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 					else:
 						if calculator_statuses.find(Status_Library.StatusCondition.BURN) == -1:
 							calculator_statuses.append(Status_Library.StatusCondition.BURN)
@@ -448,8 +560,8 @@ func calc_player_attack():
 							calculator_damage += base_dmg/2
 							element_dmg= base_dmg/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.FIRE]:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 						else:
 							calculator_damage += base_dmg
 							element_dmg= base_dmg
@@ -460,27 +572,27 @@ func calc_player_attack():
 					else:
 						var index = calculator_elements.find(Dice.DamageElement.FIRE)
 						calculator_element_dmg[index] += element_dmg
-				Dice.DiceType.ICE:
+				Dice.DiceType.ICE:#need to add % chance to freeze
 					var element_dmg:int
-					var base_dmg = (game_manager.player_resource.attack*.5)
+					var base_dmg = (upgraded_player_attack*.5)
 					
 					if all_dice_bonus:
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.ICE]:
-							calculator_damage += (game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus)/2
-							element_dmg= (game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus)/2
+							calculator_damage += (upgraded_player_attack * game_manager.player_resource.all_dice_bonus)/2
+							element_dmg= (upgraded_player_attack * game_manager.player_resource.all_dice_bonus)/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.ICE]:
-							calculator_damage += game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
-							element_dmg= game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
+							calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
+							element_dmg= upgraded_player_attack * game_manager.player_resource.all_dice_bonus
 						else:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 					else:
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.ICE]:
 							calculator_damage += base_dmg/2
 							element_dmg= base_dmg/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.ICE]:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 						else:
 							calculator_damage += base_dmg
 							element_dmg= base_dmg
@@ -492,26 +604,32 @@ func calc_player_attack():
 					else:
 						var index = calculator_elements.find(Dice.DamageElement.ICE)
 						calculator_element_dmg[index] += element_dmg
+						
+					#chance to freeze
+					if game_manager.rng.randi_range(1,20) > 1:#18:
+						if calculator_statuses.find(Status_Library.StatusCondition.FROZEN) == -1:
+							calculator_statuses.append(Status_Library.StatusCondition.FROZEN)
+						
 				Dice.DiceType.LIGHTNING:
 					var element_dmg:int
-					var base_dmg:int = (game_manager.player_resource.attack*.5)
+					var base_dmg:int = (upgraded_player_attack*.5)
 					if all_dice_bonus:
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.LIGHTNING]:
-							calculator_damage += game_manager.player_resource.attack/2
-							element_dmg=game_manager.player_resource.attack/2
+							calculator_damage += upgraded_player_attack/2
+							element_dmg=upgraded_player_attack/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.LIGHTNING]:
-							calculator_damage += game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
-							element_dmg= game_manager.player_resource.attack * game_manager.player_resource.all_dice_bonus
+							calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
+							element_dmg= upgraded_player_attack * game_manager.player_resource.all_dice_bonus
 						else:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 					else:
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.LIGHTNING]:
 							calculator_damage += base_dmg/2
 							element_dmg= base_dmg/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.LIGHTNING]:
-							calculator_damage += game_manager.player_resource.attack
-							element_dmg= game_manager.player_resource.attack
+							calculator_damage += upgraded_player_attack
+							element_dmg= upgraded_player_attack
 						else:
 							calculator_damage += base_dmg
 							element_dmg= base_dmg
@@ -526,11 +644,17 @@ func calc_player_attack():
 						var index = calculator_elements.find(Dice.DamageElement.LIGHTNING)
 						calculator_element_dmg[index] += element_dmg
 						
+						
+	if player_target != null:
+		print("checking enemy hp: ", player_target.current_enemy_resource.health, " against calc ls heal: ", calculator_ls_heal)
+		if calculator_ls_heal > player_target.current_enemy_resource.health:
+			calculator_ls_heal = player_target.current_enemy_resource.health
 	player_attack = {
 	"damage":calculator_damage,
 	"reflect":calculator_reflect,
 	"shield":calculator_defend,
 	"heal":calculator_heal,
+	"ls_heal":calculator_ls_heal,
 	"gold":calculator_gold,
 	"status_conditions":calculator_statuses,
 	"elements":calculator_elements,
@@ -544,15 +668,16 @@ func calc_player_attack():
 
 func display_player_calc():
 	update_damage()
+	var player_heal = player_attack["heal"] + player_attack["ls_heal"]
 	
-	if player_attack["heal"] > 0:
-		ui_calc_hp.text = "+"+var_to_str(player_attack["heal"])
-	else:
-		ui_calc_hp.text = var_to_str(player_attack["heal"])
+	if player_heal > 0:
+		ui_calc_hp.text = "+"+var_to_str(player_heal)
+#	else:
+#		ui_calc_hp.text = var_to_str(player_attack["heal"])
 	if player_attack["shield"] >0:
 		ui_calc_defend.text = "+"+var_to_str(player_attack["shield"])
-	else:
-		ui_calc_defend.text = var_to_str(player_attack["shield"])
+#	else:
+#		ui_calc_defend.text = var_to_str(player_attack["shield"])
 	
 	
 	
@@ -561,7 +686,7 @@ func display_player_calc():
 		ui_calc_defend.visible = false
 	else:
 		ui_calc_defend.visible = true
-	if player_attack["heal"] == 0:
+	if player_heal <= 0:
 		ui_calc_hp.visible = false
 	else:
 		ui_calc_hp.visible = true
@@ -615,6 +740,7 @@ func hit_player(attack_data:Dictionary):
 	damage_player(attack_data["damage"],attack_data["from_enemy"])
 	
 
+
 func damage_player(amount:int, from_enemy):
 	if game_manager.player_resource.reflect > 0:#if player has reflect
 		#hit enemy back for amount
@@ -660,6 +786,7 @@ func reset_player_attack():
 	"shield":0,
 	"heal":0,
 	"gold":0,
+	"ls_heal":0,
 	"status_conditions":[],
 	"elements":[],
 	"element_damage":[]
@@ -714,6 +841,7 @@ func add_status_conditions(value):
 			
 		print(name, " adding statuses is now: ",  status_conditions)
 		print(name, " adding status timeout is now: ",  status_timeout)
+		status_changed.emit(status_conditions)
 		
 func do_status_effects():
 	var condition_index:int
@@ -758,10 +886,9 @@ func do_status_effects():
 		else:
 			#var remove_index = status_conditions.find(status)
 			#print("condition index sanity check it : ",condition_index)
-			status_conditions.pop_at(condition_index)
-			status_timeout.pop_at(condition_index)
-			status_conditions.insert(condition_index,-1)
-			status_timeout.insert(condition_index,0)
+			status_conditions.remove_at(condition_index)
+			status_timeout.remove_at(condition_index)
+			status_changed.emit(status_conditions)
 			
 			
 			#print(name, ": statuses is now: ",  status_conditions)
@@ -864,6 +991,9 @@ func summary_complete():
 	$"../choice_creator".poi_manager()
 	queue_free()
 
+func start_fate_fragment(choice:bool):
+	for slot in player_hand.get_children():
+		slot.get_child(0).start_fate_fragment(choice)
 
 
 
