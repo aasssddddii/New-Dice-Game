@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4am0ujnmucqq"
-path="res://.godot/imported/salvage tool.png-9ccec0e8cf6607aa42e66e64ad1a7519.ctex"
+uid="uid://drch51bnvnh27"
+path="res://.godot/imported/smokescreen.png-0443642e04bc91e854f7f22e42a1bdd0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/shop/items/salvage tool.png"
-dest_files=["res://.godot/imported/salvage tool.png-9ccec0e8cf6607aa42e66e64ad1a7519.ctex"]
+source_file="res://Sprites/status_conditions/smokescreen.png"
+dest_files=["res://.godot/imported/smokescreen.png-0443642e04bc91e854f7f22e42a1bdd0.ctex"]
 
 [params]
 

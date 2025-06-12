@@ -15,6 +15,8 @@ func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
 	
 	
 	active_trade_side = trade_side
+	if active_trade_side == "battle" || active_trade_side == "battle_deck" || active_trade_side == "battle_discard":
+		ui_shop = $"../../../../.."
 	
 	item_data = input_data
 	current_sprite = load(input_data["texture"])
@@ -158,7 +160,7 @@ func update_quantity():
 	var quantity_label = $quantity
 	#print("parent inventory: ", get_parent().get_inventory())
 	var quantity = get_parent().get_inventory().count(item_data)
-	print("Quantity Check: ", quantity)
+	#print("Quantity Check: ", quantity)
 	
 	if quantity > 0:
 		quantity_label.text = var_to_str(quantity)

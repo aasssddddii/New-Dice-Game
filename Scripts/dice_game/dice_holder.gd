@@ -1,5 +1,6 @@
 extends Area2D
 @onready var discard_button = $"../discard_button"
+@onready var dictated_button = $"../dictated_button"
 @onready var dice_game = $"../../.."
 @export var is_filled:bool = false
 
@@ -23,7 +24,13 @@ func filler(node:Node):
 func start_fate_fragment(discarding:bool):
 	if filled_node != null:
 		discard_button.visible = discarding
-	
+		
+		
+func start_dictated_fate(changing:bool):
+	if filled_node != null:
+		dictated_button.visible = changing
+		
+		
 func _on_label_button_down():#ONLY WORKS FOR FATE FRAGMENT DICE RN
 	var dice_game = $"../../.."
 	#DISCARD DICE
@@ -38,3 +45,13 @@ func _on_label_button_down():#ONLY WORKS FOR FATE FRAGMENT DICE RN
 	dice_game.current_dice_deck.remove_at(dice_game.current_dice_deck.find(pick_die))
 	dice_game.cancel_item_button.release_limbo_item()
 		
+
+
+func _on_dictated_button_button_down():
+	var dice_game = $"../../.."
+	#Change dice Face to max value
+	filled_node.set_face_to_highest()
+	
+	#close fate choice
+	dice_game.start_dictated_fate(false)
+	dice_game.cancel_item_button.release_limbo_item()

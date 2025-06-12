@@ -83,7 +83,7 @@ var rage_buff_data:Dictionary = {
 	"item_name":"ite_rage",
 	"texture":"res://Sprites/shop/items/damage potion.png",
 	"price":50,
-	"use_type":2,
+	"use_type":1,
 	"long_name":"rage potion",
 	"description":"Give player attack stat boost for 3 battles"
 	}
@@ -103,7 +103,7 @@ var heal_power_potion_data:Dictionary = {
 	"price":0,
 	"use_type":2,
 	"long_name":"heal power potion",
-	"description":"this potion buffs your heal power for 3 battles"
+	"description":"this potion buffs your heal power for 3 turns"
 	}
 var shield_power_potion_data:Dictionary = {
 	"item_code":2,
@@ -112,7 +112,7 @@ var shield_power_potion_data:Dictionary = {
 	"price":0,
 	"use_type":2,
 	"long_name":"shield power potion",
-	"description":"this potion buffs your shiled power for 3 battles"
+	"description":"this potion buffs your shiled power for 3 turns"
 	}
 var trap_disarmer_data:Dictionary = {
 	"item_code":2,
@@ -222,6 +222,15 @@ var aegis_coin_data:Dictionary = {
 	"long_name":"aegis coin",
 	"description":"nullifies all damage for one turn"
 	}
+#var salvage_tool_data:Dictionary = {
+#	"item_code":2,
+#	"item_name":"ite_salt",
+#	"texture":"res://Sprites/shop/items/salvage tool.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"salvage tool",
+#	"description":"zero face dice still provide 1 instead of zero"
+#	}
 var action_up_data:Dictionary = {
 	"item_code":2,
 	"item_name":"ite_actu",

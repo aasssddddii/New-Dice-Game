@@ -24,7 +24,7 @@ class_name Player_Resource
 #@export var boss_keys:int
 
 #@export var next_wish:GameManager.WishType = GameManager.WishType.NONE
-
+@export var default_max_health:int
 @export var default_health:int
 @export var default_attack:int
 @export var default_defend:int
@@ -36,9 +36,11 @@ class_name Player_Resource
 @export var battle_wins:int
 @export var game_level:int
 
+var health_modifier:int
+
 func reset_values():
-	print("player resource ressetting values")
-	max_health = default_health
+	print("player resource resetting values")
+	max_health = default_max_health
 	health = default_health
 	attack = default_attack
 	defend = default_defend
@@ -50,6 +52,13 @@ func reset_values():
 	hand_size = 5
 	action_size = 3
 	print("new health now ", health)
+	
+#hp up stuff
+func hpup_health(hp_up_amount:int):
+	health_modifier = hp_up_amount
+	max_health += (20*health_modifier)
+	health += (20*health_modifier)
+	pass
 	
 func battle_reset():
 	shield = default_shield
@@ -121,6 +130,204 @@ var inventory:Array[Dictionary] = [
 	"description":"nullifies all damage for one turn"
 	},
 	{
+	"item_code":2,
+	"item_name":"ite_cocc",
+	"texture":"res://Sprites/shop/items/coconut candy.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"coconut candy",
+	"description":"doubles values of submit dice"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_cocc",
+	"texture":"res://Sprites/shop/items/coconut candy.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"coconut candy",
+	"description":"doubles values of submit dice"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_cocc",
+	"texture":"res://Sprites/shop/items/coconut candy.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"coconut candy",
+	"description":"doubles values of submit dice"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_cocc",
+	"texture":"res://Sprites/shop/items/coconut candy.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"coconut candy",
+	"description":"doubles values of submit dice"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_dicf",
+	"texture":"res://Sprites/shop/items/dictated fate.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"dictated fate dice",
+	"description":"set one dice to its highest value"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_rage",
+	"texture":"res://Sprites/shop/items/damage potion.png",
+	"price":50,
+	"use_type":2,
+	"long_name":"rage potion",
+	"description":"Give player attack stat boost for 3 battles"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_disd",
+	"texture":"res://Sprites/shop/items/disarm dust.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"disarm dust",
+	"description":"disarms targeted enemy for 3 turns"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_help",
+	"texture":"res://Sprites/shop/items/health potion.png",
+	"price":0,
+	"use_type":2,
+	"long_name":"heal power potion",
+	"description":"this potion buffs your heal power for 3 battles"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_onet",
+	"texture":"res://Sprites/shop/items/one arm tie.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"one-arm tie",
+	"description":"makes targeted enemy take one less action per turn"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_rewi",
+	"texture":"res://Sprites/shop/items/rewind.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"rewind",
+	"description":"reroll all dice in hand"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_rewi",
+	"texture":"res://Sprites/shop/items/rewind.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"rewind",
+	"description":"reroll all dice in hand"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_rewi",
+	"texture":"res://Sprites/shop/items/rewind.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"rewind",
+	"description":"reroll all dice in hand"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_ship",
+	"texture":"res://Sprites/shop/items/shield potion.png",
+	"price":0,
+	"use_type":2,
+	"long_name":"shield power potion",
+	"description":"this potion buffs your shiled power for 3 turns"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_smok",
+	"texture":"res://Sprites/shop/items/smokescreen.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"smokescreen",
+	"description":"adds possibility for enemy to miss attacks"
+	},
+		{
+	"item_code":2,
+	"item_name":"ite_smok",
+	"texture":"res://Sprites/shop/items/smokescreen.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"smokescreen",
+	"description":"adds possibility for enemy to miss attacks"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_smok",
+	"texture":"res://Sprites/shop/items/smokescreen.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"smokescreen",
+	"description":"adds possibility for enemy to miss attacks"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_smok",
+	"texture":"res://Sprites/shop/items/smokescreen.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"smokescreen",
+	"description":"adds possibility for enemy to miss attacks"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_smok",
+	"texture":"res://Sprites/shop/items/smokescreen.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"smokescreen",
+	"description":"adds possibility for enemy to miss attacks"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_wead",
+	"texture":"res://Sprites/shop/items/weakness dust.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"weakness dust",
+	"description":"makes targeted enemy's attacks weaker"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_wead",
+	"texture":"res://Sprites/shop/items/weakness dust.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"weakness dust",
+	"description":"makes targeted enemy's attacks weaker"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_trad",
+	"texture":"res://Sprites/shop/items/trap disarmer.png",
+	"price":0,
+	"use_type":1,
+	"long_name":"trap disarmer",
+	"description":"disarms traps completing the key and rendering it useless"
+	},
+	{
+	"item_code":2,
+	"item_name":"ite_cure",
+	"texture":"res://Sprites/shop/items/cure potion.png",
+	"price":20,
+	"use_type":1,
+	"long_name":"cure potion",
+	"description":" this potion cures all negative status effects when used"
+	},
+	{
 	"item_code":0,
 	"item_name":"fir_dice",
 	"texture":"res://Sprites/Dice/one fire dice.png",
@@ -179,88 +386,93 @@ var inventory:Array[Dictionary] = [
 var dice_deck:Array[Dictionary] = [
 	{
 	"item_code":0,
-	"item_name":"ice_dice",
-	"texture":"res://Sprites/Dice/one ice dice.png",
-	"none_texture":"res://Sprites/Dice/none ice dice.png",
-	"two_texture":"res://Sprites/Dice/2 ice dice.png",
-	"three_texture":"res://Sprites/Dice/3 ice dice.png",
-	"four_texture":"res://Sprites/Dice/4 ice dice.png",
-	"price":25,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.ICE,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
-	"element":Dice.DamageElement.ICE,
-	"long_name":"Ice Dice",
-	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"ice_dice",
-	"texture":"res://Sprites/Dice/one ice dice.png",
-	"none_texture":"res://Sprites/Dice/none ice dice.png",
-	"two_texture":"res://Sprites/Dice/2 ice dice.png",
-	"three_texture":"res://Sprites/Dice/3 ice dice.png",
-	"four_texture":"res://Sprites/Dice/4 ice dice.png",
-	"price":25,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.ICE,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
-	"element":Dice.DamageElement.ICE,
-	"long_name":"Ice Dice",
-	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"ice_dice",
-	"texture":"res://Sprites/Dice/one ice dice.png",
-	"none_texture":"res://Sprites/Dice/none ice dice.png",
-	"two_texture":"res://Sprites/Dice/2 ice dice.png",
-	"three_texture":"res://Sprites/Dice/3 ice dice.png",
-	"four_texture":"res://Sprites/Dice/4 ice dice.png",
-	"price":25,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.ICE,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
-	"element":Dice.DamageElement.ICE,
-	"long_name":"Ice Dice",
-	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"ice_dice",
-	"texture":"res://Sprites/Dice/one ice dice.png",
-	"none_texture":"res://Sprites/Dice/none ice dice.png",
-	"two_texture":"res://Sprites/Dice/2 ice dice.png",
-	"three_texture":"res://Sprites/Dice/3 ice dice.png",
-	"four_texture":"res://Sprites/Dice/4 ice dice.png",
-	"price":25,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.ICE,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
-	"element":Dice.DamageElement.ICE,
-	"long_name":"Ice Dice",
-	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"ice_dice",
-	"texture":"res://Sprites/Dice/one ice dice.png",
-	"none_texture":"res://Sprites/Dice/none ice dice.png",
-	"two_texture":"res://Sprites/Dice/2 ice dice.png",
-	"three_texture":"res://Sprites/Dice/3 ice dice.png",
-	"four_texture":"res://Sprites/Dice/4 ice dice.png",
-	"price":25,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.ICE,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
-	"element":Dice.DamageElement.ICE,
-	"long_name":"Ice Dice",
-	"description":"deal half your attack as ice type damage to an enemy, has a 20% chance to freeze"
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
@@ -400,54 +612,57 @@ var dice_deck:Array[Dictionary] = [
 	},
 	{
 	"item_code":0,
-	"item_name":"poi_dice",
-	"texture":"res://Sprites/Dice/one poison dice.png",
-	"none_texture":"res://Sprites/Dice/none poison dice.png",
-	"two_texture":"res://Sprites/Dice/2 poison dice.png",
-	"three_texture":"res://Sprites/Dice/3 poison dice.png",
-	"four_texture":"res://Sprites/Dice/4 poison dice.png",
-	"price":25,
+	"item_name":"def_dice",
+	"texture":"res://Sprites/Dice/defend dice.png",
+	"none_texture":"res://Sprites/Dice/defend dice template.png",
+	"two_texture":"res://Sprites/Dice/defend dice 2.png",
+	"three_texture":"res://Sprites/Dice/defend dice 3.png",
+	"four_texture":"res://Sprites/Dice/defend dice 4.png",
+	"price":20,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.POISON,
-	"effect":Status_Library.StatusCondition.POISON,
-	"element":Dice.DamageElement.POISON,
-	"long_name":"Poison Dice",
-	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
+	"animation_target":"self",
+	"type":Dice.DiceType.DEFEND,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Defence Dice",
+	"description":"Basic Defence Dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"poi_dice",
-	"texture":"res://Sprites/Dice/one poison dice.png",
-	"none_texture":"res://Sprites/Dice/none poison dice.png",
-	"two_texture":"res://Sprites/Dice/2 poison dice.png",
-	"three_texture":"res://Sprites/Dice/3 poison dice.png",
-	"four_texture":"res://Sprites/Dice/4 poison dice.png",
-	"price":25,
+	"item_name":"def_dice",
+	"texture":"res://Sprites/Dice/defend dice.png",
+	"none_texture":"res://Sprites/Dice/defend dice template.png",
+	"two_texture":"res://Sprites/Dice/defend dice 2.png",
+	"three_texture":"res://Sprites/Dice/defend dice 3.png",
+	"four_texture":"res://Sprites/Dice/defend dice 4.png",
+	"price":20,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.POISON,
-	"effect":Status_Library.StatusCondition.POISON,
-	"element":Dice.DamageElement.POISON,
-	"long_name":"Poison Dice",
-	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
+	"animation_target":"self",
+	"type":Dice.DiceType.DEFEND,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Defence Dice",
+	"description":"Basic Defence Dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"poi_dice",
-	"texture":"res://Sprites/Dice/one poison dice.png",
-	"none_texture":"res://Sprites/Dice/none poison dice.png",
-	"two_texture":"res://Sprites/Dice/2 poison dice.png",
-	"three_texture":"res://Sprites/Dice/3 poison dice.png",
-	"four_texture":"res://Sprites/Dice/4 poison dice.png",
-	"price":25,
+	"item_name":"def_dice",
+	"texture":"res://Sprites/Dice/defend dice.png",
+	"none_texture":"res://Sprites/Dice/defend dice template.png",
+	"two_texture":"res://Sprites/Dice/defend dice 2.png",
+	"three_texture":"res://Sprites/Dice/defend dice 3.png",
+	"four_texture":"res://Sprites/Dice/defend dice 4.png",
+	"price":20,
 	"upgrade_level":0,
-	"animation_target":"target",
-	"type":Dice.DiceType.POISON,
-	"effect":Status_Library.StatusCondition.POISON,
-	"element":Dice.DamageElement.POISON,
-	"long_name":"Poison Dice",
-	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
+	"animation_target":"self",
+	"type":Dice.DiceType.DEFEND,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Defence Dice",
+	"description":"Basic Defence Dice"
 	}
 ]
 

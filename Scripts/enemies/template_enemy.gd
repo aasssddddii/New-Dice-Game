@@ -42,7 +42,10 @@ var trap_key:Array[Dice.DiceType] = []
 
 
 
+
 var ui_heal_added:bool = false
+
+var arm_ties:int = 0
 
 func setup_enemy(resource:Resource):
 	current_enemy_resource = resource.duplicate()
@@ -70,10 +73,10 @@ func setup_enemy(resource:Resource):
 #	"element_damage":Array
 #	}
 func hit_enemy(attack_data:Dictionary):
-	print("hitting enemy- ", name, " with attack: ", attack_data)
+	#print("hitting enemy- ", name, " with attack: ", attack_data)
 	
 	#deal Damage
-	deal_damage(attack_data["damage"])
+	deal_damage(attack_data["damage"],false)
 	
 
 	
@@ -88,17 +91,22 @@ func update_vitals():
 	ui_health.text = var_to_str(current_enemy_resource.health)
 	ui_shield.text = var_to_str(current_enemy_resource.shield)
 
-func deal_damage(amount:int):
-	var enemy_shield = current_enemy_resource.shield
-	if  enemy_shield > amount:
-		print("dealing ", amount ," damage to shield")
-		current_enemy_resource.shield -= amount
+func deal_damage(amount:int, direct_damage:bool):
+	if !direct_damage:
+		var enemy_shield = current_enemy_resource.shield
+		if  enemy_shield > amount:
+			#print("dealing ", amount ," damage to shield")
+			current_enemy_resource.shield -= amount
+		else:
+			amount -= enemy_shield
+			current_enemy_resource.shield = 0
+			#print("dealing ", amount ," damage to enemy shield overrun")
+			current_enemy_resource.health -= amount
 	else:
-		amount -= enemy_shield
-		current_enemy_resource.shield = 0
-		print("dealing ", amount ," damage to enemy shield overrun")
 		current_enemy_resource.health -= amount
 	
+	
+	#Kill check
 	if current_enemy_resource.health <= 0:
 		var left_enemies:Array[Enemy]
 		var dice_game = $"../.."
@@ -115,6 +123,7 @@ func deal_damage(amount:int):
 	vitals_changed.emit()
 
 func setup_next_attack():
+	arm_ties = 0
 	if !dice_battle_node.is_trap_battle:#Regular battle
 		attack_pattern.clear()
 		reset_ui_turn()
@@ -170,30 +179,34 @@ func get_status_dmg():
 
 func update_action_pattern(status:Status_Library.StatusCondition):
 	if status != null:
-		print("sanity check on status value: ", status, " vs ", Status_Library.StatusCondition.FROZEN)
+		#print("sanity check on status value: ", status, " vs ", Status_Library.StatusCondition.FROZEN)
 		if status == 5:
 			attack_pattern.clear()
 			reset_ui_turn()
 			for attack in current_enemy_resource.attacks:
-				print("SANITY TEST III")
+				#print("SANITY TEST III")
 				attack_pattern.append(enemy_resource.TurnActions.NONE)
 		elif status == Status_Library.StatusCondition.DISARM:
 			var turn_index:int
-			print("attack pattern before disarm: ", attack_pattern)
+			#print("attack pattern before disarm: ", attack_pattern)
 			for attack in attack_pattern:
 				if attack == enemy_resource.TurnActions.ATTACK:
-					print("this attack should be changed!!! at index: ", turn_index)
+					#print("this attack should be changed!!! at index: ", turn_index)
 					attack_pattern.remove_at(turn_index)
 					attack_pattern.insert(turn_index,enemy_resource.TurnActions.NONE)
 				turn_index +=1
 			reset_ui_turn()
-			print("attack pattern after disarm: ", attack_pattern)
+			#print("attack pattern after disarm: ", attack_pattern)
 		display_turn_actions(attack_pattern)
 		ui_calc_turn()
 
+func use_armtie():
+	attack_pattern.remove_at(attack_pattern.find(attack_pattern.pick_random()))
+	reset_ui_turn()
+	display_turn_actions(attack_pattern)
 
-func display_turn_actions(attack_pattern:Array[enemy_resource.TurnActions]):
-	for turn in attack_pattern:
+func display_turn_actions(input_pattern:Array[enemy_resource.TurnActions]):
+	for turn in input_pattern:
 		var next_turn_ui = enemy_ui_turn.instantiate()
 		match turn:
 			enemy_resource.TurnActions.ATTACK:
@@ -222,7 +235,7 @@ func set_trap_key():
 		
 		ui_turns.add_child(next_turn_ui)
 		
-	print("TRAP KEY CODE IS: ", trap_key)
+	#print("TRAP KEY CODE IS: ", trap_key)
 
 func only_one(input_array):
 	var output_array:Array[Dictionary]
@@ -249,13 +262,17 @@ func ui_calc_turn():
 		var calc_shield:int
 		attack_calc = 0
 		
+		var enemy_attack = current_enemy_resource.attack
+		if status_conditions.has(Status_Library.StatusCondition.ATKDEBUFF):
+			enemy_attack /= 2
+		
 		#VVVV Maybe change this to a function that creates an attack Dictionary like player
 		for attack in attack_pattern:
-			if name == "wizard":
-				print(name, " attack pattern check, ", attack_pattern)
+#			if name == "wizard":
+#				print(name, " attack pattern check, ", attack_pattern)
 			match attack:
 				enemy_resource.TurnActions.ATTACK:
-					attack_calc += current_enemy_resource.attack
+					attack_calc += enemy_attack
 					pass
 				enemy_resource.TurnActions.DEFEND:
 					calc_shield += current_enemy_resource.defend
@@ -273,11 +290,11 @@ func ui_calc_turn():
 						#heal_amount += current_enemy_resource.heal_power
 						#print(name, " is targeting enemy: ",target_enemy.name, " heal amount ", heal_amount, " heal power sanity check ",current_enemy_resource.heal_power)
 						if target_enemy != self:
-							print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
+							#print("heal target = ", target_enemy.name, " setting enemy heal to ",current_enemy_resource.heal_power)
 							target_enemy.manage_heal_amount("add",current_enemy_resource.heal_power) 
 							#^^^^ NEEDS to be limited so that it does not keep adding to infinity when clicked
 						else:
-							print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
+							#print("heal target = ", name, " setting self heal to ",current_enemy_resource.heal_power)
 							heal_amount += current_enemy_resource.heal_power
 						ui_heal_added = true
 					pass
@@ -302,7 +319,7 @@ func ui_calc_turn():
 		else:
 			calc_ui_attack.visible = false
 		
-		print(name,"attack calc: ", attack_calc ," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
+		#print(name,"attack calc: ", attack_calc ," heal calc: ", heal_calc, " heal amount sanity check ", heal_amount)
 	else:
 		attack_calc = trap_countdown
 		calc_ui_attack.text = var_to_str(attack_calc)
@@ -330,7 +347,7 @@ func manage_heal_amount(choice:String,value):
 		"add":
 			heal_amount += value
 
-	print(name, " enemy heal now: ", heal_amount)
+	#print(name, " enemy heal now: ", heal_amount)
 	ui_calc_turn()
 	
 
@@ -352,14 +369,17 @@ func do_status_effects():
 	print(name, ": statuses is now: ",  status_conditions)
 	print(name, ": status timeout is now: ",  status_timeouts)
 	var condition_index:int
-	for status in status_conditions:
+	for status in status_conditions.duplicate():
 		#minus 1 from timeout 
 		if status_timeouts[condition_index] > 1 && (status != Status_Library.StatusCondition.FROZEN && status != Status_Library.StatusCondition.STUN):
 			status_timeouts[condition_index] -=1
 			if status != -1:
 				var status_ref = game_manager.status_lib.get_status_data(status)
-				deal_damage(status_ref["damage"])
-				print(name, " is taking damage from status DMG: ", status_ref["damage"])
+				if status_ref["name"] == "bleed" || status_ref["name"] == "poison":
+					deal_damage(status_ref["damage"],true)
+				else:
+					deal_damage(status_ref["damage"],false)
+				#print(name, " is taking damage from status DMG: ", status_ref["damage"])
 				if status_ref["name"] != "disarm":
 					await turn_tween("status").finished
 				self_modulate = Color.WHITE
@@ -372,14 +392,19 @@ func do_status_effects():
 		else:
 			if status != -1:
 				var status_ref = game_manager.status_lib.get_status_data(status)
-				deal_damage(status_ref["damage"])
-				print(name, " is taking damage from status DMG: ", status_ref["damage"])
+				if status_ref["name"] == "bleed" || status_ref["name"] == "poison":
+					deal_damage(status_ref["damage"],true)
+				else:
+					deal_damage(status_ref["damage"],false)
+				#print(name, " is taking damage from status DMG: ", status_ref["damage"])
 				if status_ref["name"] != "disarm" && status_ref["name"] != "stun" && status_ref["name"] != "frozen":
 					await turn_tween("status").finished
 				self_modulate = Color.WHITE			
 			status_conditions.remove_at(condition_index)
 			status_timeouts.remove_at(condition_index)
 			status_changed.emit(status_conditions)
+			condition_index-=1
+		
 		condition_index+=1
 	
 	
@@ -438,11 +463,18 @@ func do_attack_pattern():
 	for action in attack_pattern:
 		match action:
 			enemy_resource.TurnActions.ATTACK:
-				send_attack["damage"] += current_enemy_resource.attack
+				var enemy_attack = current_enemy_resource.attack
+				if status_conditions.has(Status_Library.StatusCondition.ATKDEBUFF):
+					enemy_attack /= 2
+				send_attack["damage"] += enemy_attack
 				if current_enemy_resource.basic_attack_damage_type != 6:#NONe DMG type
 					match current_enemy_resource.basic_attack_damage_type:
 						Dice.DamageElement.POISON:
 							send_attack["status_effect"] = Status_Library.StatusCondition.POISON
+						Dice.DamageElement.BLEED:
+							send_attack["status_effect"] = Status_Library.StatusCondition.BLEED
+						Dice.DamageElement.FIRE:
+							send_attack["status_effect"] = Status_Library.StatusCondition.BURN
 						Dice.DamageElement.NONE:
 							pass
 						_:
@@ -467,7 +499,7 @@ func do_attack_pattern():
 	setup_next_attack()
 
 func heal_enemy():
-	print("Healing enemy ", name, " current heal ", (heal_amount-get_status_dmg()))
+	#print("Healing enemy ", name, " current heal ", (heal_amount-get_status_dmg()))
 	
 	if current_enemy_resource.health < current_enemy_resource.max_health:
 		current_enemy_resource.health += heal_amount 

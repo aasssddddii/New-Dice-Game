@@ -149,13 +149,13 @@ func use_map_item(item_data):
 
 
 func use_battle_item(item_data):
-	var dice_battle = $"../../.."
-	inventory_data.remove_at(inventory_data.find(item_data))
-	game_manager.player_resource.inventory.remove_at(game_manager.player_resource.inventory.find(item_data))
+	var dice_battle = $"../../../.."
+
 	match item_data["item_name"]:
 		"hea_potion":
 			game_manager.player_resource.manage_health("add",game_manager.player_resource.max_health *.25)
 			dice_battle.update_vitals()
+			remove_item(item_data)
 		"ite_bomb":
 			#print("using Bomb")
 			for enemy in dice_battle.get_node_or_null("enemy_layer").get_children():
@@ -163,12 +163,14 @@ func use_battle_item(item_data):
 					"damage":30,
 					"status_conditions":[]
 				})
+			remove_item(item_data)
 		"ite_mims":
 			#get enemy attack dice
 			var send_dice_data = dice_battle.player_target.get_attack_dice_data()
 			send_dice_data["is_temp"] = true
 			#add to player hand
 			dice_battle.add_dice_to_hand(send_dice_data)
+			remove_item(item_data)
 		"ite_fatf":
 			#bring all dice to hand
 			dice_battle.rehand_dice()
@@ -176,16 +178,76 @@ func use_battle_item(item_data):
 			dice_battle.start_fate_fragment(true)
 			#dice data in limbo
 			dice_battle.cancel_item_button.setup_limbo_item(item_data)
+			remove_item(item_data)
 		"ite_actu":
 			#add action slot
 			dice_battle.add_action_up_slot()
 			#profit??
-			pass
+			remove_item(item_data)
 		"ite_aegc":
 			#add status conditon to player
 			dice_battle.add_status_conditions(Status_Library.StatusCondition.PROTECT)
+			remove_item(item_data)
+		"ite_cocc":
+			dice_battle.coconut_doubler +=1
+			dice_battle.calc_player_attack()
+			remove_item(item_data)
+		"ite_rage":
+			dice_battle.add_status_conditions(Status_Library.StatusCondition.ATKBUFF)
+			dice_battle.calc_player_attack() 
+			remove_item(item_data)
+		"ite_dicf":
+			#bring all dice to hand
+			dice_battle.rehand_dice()
+			#start selection
+			dice_battle.start_dictated_fate(true)
+			#dice data in limbo
+			dice_battle.cancel_item_button.setup_limbo_item(item_data)
+			remove_item(item_data)
+		"ite_disd":
+			dice_battle.player_target.hit_enemy({
+					"damage":0,
+					"status_conditions":[Status_Library.StatusCondition.DISARM]
+				})
+			remove_item(item_data)
+		"ite_help":
+			dice_battle.add_status_conditions(Status_Library.StatusCondition.HEALBUFF)
+			dice_battle.calc_player_attack()
+			remove_item(item_data)
+		"ite_onet":
+			dice_battle.player_target.use_armtie()
+			remove_item(item_data)
+		"ite_rewi":
+			#reroll all dice in hand
+			dice_battle.rewind()
+			remove_item(item_data)
+		"ite_ship":
+			dice_battle.add_status_conditions(Status_Library.StatusCondition.DEFBUFF)
+			dice_battle.calc_player_attack()
+			remove_item(item_data)
+		"ite_smok":
+			dice_battle.add_status_conditions(Status_Library.StatusCondition.SMOKE)
+			remove_item(item_data)
+		"ite_wead":
+			dice_battle.player_target.hit_enemy({
+					"damage":0,
+					"status_conditions":[Status_Library.StatusCondition.ATKDEBUFF]
+				})
+			dice_battle.player_target.ui_calc_turn()
+			remove_item(item_data)
+		"ite_trad":
+			if dice_battle.is_trap_battle:
+				print("I can disarm this")
+				dice_battle.disarm_trap()
+				remove_item(item_data)
+		"ite_cure":
+			dice_battle.cure_negative_effects()
+			remove_item(item_data)
 		_:
 			print("item is not usable on battle/ not coded YET")
 			
 	setup_inventory(inventory_data,trade_side)
-
+	
+func remove_item(item_data):
+	inventory_data.remove_at(inventory_data.find(item_data))
+	game_manager.player_resource.inventory.remove_at(game_manager.player_resource.inventory.find(item_data))

@@ -112,23 +112,32 @@ offset_bottom = 733.0
 scale = Vector2(0.7, 0.7)
 theme_override_constants/side_margin = 20
 
-[node name="deck" type="GridContainer" parent="player_ui/display_menu"]
+[node name="ScrollContainer3" type="ScrollContainer" parent="player_ui/display_menu"]
+layout_mode = 2
+
+[node name="deck" type="GridContainer" parent="player_ui/display_menu/ScrollContainer3"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10
 columns = 3
 script = ExtResource("7_72rp6")
 
-[node name="discard" type="GridContainer" parent="player_ui/display_menu"]
+[node name="ScrollContainer2" type="ScrollContainer" parent="player_ui/display_menu"]
 visible = false
+layout_mode = 2
+
+[node name="discard" type="GridContainer" parent="player_ui/display_menu/ScrollContainer2"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10
 columns = 3
 script = ExtResource("7_72rp6")
 
-[node name="items" type="GridContainer" parent="player_ui/display_menu"]
+[node name="ScrollContainer" type="ScrollContainer" parent="player_ui/display_menu"]
 visible = false
+layout_mode = 2
+
+[node name="items" type="GridContainer" parent="player_ui/display_menu/ScrollContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 10

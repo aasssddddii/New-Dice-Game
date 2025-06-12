@@ -31,4 +31,20 @@ theme_override_constants/outline_size = 9
 text = "x"
 flat = true
 
+[node name="dictated_button" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 31.0
+offset_top = 107.0
+offset_right = 71.0
+offset_bottom = 157.0
+focus_mode = 0
+theme = ExtResource("3_lsvpt")
+theme_override_colors/font_color = Color(0, 1, 0.239216, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 9
+text = "O"
+flat = true
+
 [connection signal="button_down" from="discard_button" to="dholder_hand" method="_on_label_button_down"]
+[connection signal="button_down" from="dictated_button" to="dholder_hand" method="_on_dictated_button_button_down"]

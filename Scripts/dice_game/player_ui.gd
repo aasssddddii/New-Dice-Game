@@ -2,15 +2,17 @@ extends Node2D
 
 var game_manager = GameManager
 
+#@export var ui_item_description:ColorRect
+
 @onready var dice_battle = $".."
 @onready var item_inventory = $item_background
 @onready var battle_item_grid = $item_background/battle_item_container
 
 @onready var display_menu = $display_menu
 
-@onready var deck_display_menu = $display_menu/deck
-@onready var discard_display_menu = $display_menu/discard
-@onready var items_display_menu = $display_menu/items
+@onready var deck_display_menu = $display_menu/ScrollContainer3/deck
+@onready var discard_display_menu = $display_menu/ScrollContainer2/discard
+@onready var items_display_menu = $display_menu/ScrollContainer/items
 
 func _ready():
 	dice_battle.deck_changed.connect(update_decks)
@@ -29,12 +31,12 @@ func setup_player_menu():
 
 
 func setup_deck():
-	print("current dice deck: ",dice_battle.current_dice_deck)
+	#print("current dice deck: ",dice_battle.current_dice_deck)
 	deck_display_menu.setup_inventory(dice_battle.current_dice_deck,"battle_deck")
 	pass
-func setup_discard():
-	
-	pass
+#func setup_discard():
+#
+#	pass
 func setup_item_inventory():
 	items_display_menu.setup_inventory(game_manager.player_resource.getset_inventory("get_battle",null),"battle")
 

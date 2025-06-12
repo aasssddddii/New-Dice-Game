@@ -16,7 +16,9 @@ enum StatusCondition{
 	CURE,#11
 	DISARM,#12
 	PROTECT,#13
-	NONE#14
+	HEALBUFF,#14
+	SMOKE,#15
+	NONE#16
 }
 
 var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn")
@@ -126,7 +128,22 @@ var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn
 	"turns":1,
 	"damage":0
 }
-
+@export var heal_buff_data:Dictionary = {
+	"name":"heal power buff",
+	"is_positive":true,
+	"texture":"res://Sprites/status_conditions/heal_buff.png",
+	"status_condition":StatusCondition.HEALBUFF,
+	"turns":3,
+	"damage":0
+}
+@export var smokescreen_data:Dictionary = {
+	"name":"smokescreen",
+	"is_positive":true,
+	"texture":"res://Sprites/status_conditions/smokescreen.png",
+	"status_condition":StatusCondition.SMOKE,
+	"turns":2,
+	"damage":0
+}
 
 
 func get_status_data(status_condition:StatusCondition):
@@ -157,6 +174,10 @@ func get_status_data(status_condition:StatusCondition):
 			return burn_status_data
 		StatusCondition.PROTECT:
 			return coin_status_data
+		StatusCondition.HEALBUFF:
+			return heal_buff_data
+		StatusCondition.SMOKE:
+			return smokescreen_data
 		_:
 			print("Error on status library - Status not implemented")
 

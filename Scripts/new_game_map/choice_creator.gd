@@ -27,7 +27,7 @@ var poi_rotation:Array[POI_PHASE] = [
 	]
 #var poi_rotation:Array[POI_PHASE] = [POI_PHASE.TEST]#for testing trap battles
 var current_poi_phase:POI_PHASE
-var current_poi_index:int =1#Testing
+var current_poi_index:int =9#Testing
 var battle_count_in_current_phase:int
 var battle_count_max_in_phase:int
 
@@ -161,7 +161,7 @@ func setup_poi(input_data):
 			#Generate enemies
 			var enemies:Array[Resource]
 			
-			for i in gamemanager.rng.randi_range(1,1):#(1,3):
+			for i in gamemanager.rng.randi_range(3,3):#(1,3):
 				enemies.append(gamemanager.enemy_lib.get_random_enemy())
 			#give selection image
 			var send_img = ""

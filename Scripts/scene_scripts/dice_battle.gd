@@ -48,6 +48,9 @@ var trap_disarmed:bool = false
 var can_attack:bool = true
 var enemy_count:int
 
+var coconut_doubler:int = 0
+var heal_power_up:int = 0
+
 var action_up_timers:Array[int]
 
 #Staticly set battle need to get ready for map generation
@@ -164,7 +167,7 @@ func action_timer_stepper():
 			action_up_timers[action_timer_index] -= 1
 		if action_up_timers[action_timer_index] <= 0:
 			action_up_timers.remove_at(action_up_timers.find(action_up_timers[action_timer_index]))
-	print("action up timers now: ", action_up_timers)
+	#print("action up timers now: ", action_up_timers)
 
 func organize_dice():
 	for die in dice_layer.get_children():
@@ -186,9 +189,9 @@ func rehand_dice():
 func set_player_hand():
 	#SETS ACTIONS SLOTSVVV
 	reset_action_slots()
-	print("total hand size right now: ", player_hand.get_children())
+	#print("total hand size right now: ", player_hand.get_children())
 	var hand_slots_not_filled = player_hand.get_children().filter(func(slot):return !slot.get_child(0).is_filled)
-	print("not filled player slot check: ", hand_slots_not_filled)
+	#print("not filled player slot check: ", hand_slots_not_filled)
 	
 	for slot in hand_slots_not_filled:
 		if current_dice_deck.size() < 1:
@@ -236,7 +239,9 @@ func shuffle_deck():
 	current_dice_deck += discard
 	#print("adding discard: ", discard)
 	discard.clear()
-	print("current deck after shuffle: ", current_dice_deck)
+	
+	current_dice_deck.shuffle()
+	#print("current deck after shuffle: ", current_dice_deck)
 
 func use_dice(dice_array:Array[Dice]):
 	#Send Player Attack Data Here
@@ -245,13 +250,7 @@ func use_dice(dice_array:Array[Dice]):
 			var dice_data = die.dice_data
 			
 			
-			if dice_lib.default_checker(dice_data):
-				discard.append({
-					"default":true,
-					"item_name":dice_data["item_name"]
-				})
-			else:
-				discard.append(dice_data)
+			discard.append(dice_data)
 			die.queue_free()
 		
 	set_player_hand()
@@ -272,11 +271,15 @@ func trap_check(input):
 			dice_sequence.append(Dice.DiceType.NONE)
 	
 	if dice_sequence == enemy_layer.get_child(0).trap_key:
-		print("TRAP DISARMED")
+		#print("TRAP DISARMED")
 		trap_disarmed = true
 		end_battle(true)
-	print("used dice: ",dice_sequence, " check against key: ", enemy_layer.get_child(0).trap_key)
+	#print("used dice: ",dice_sequence, " check against key: ", enemy_layer.get_child(0).trap_key)
 
+func disarm_trap():
+	#print("TRAP DISARMED")
+	trap_disarmed = true
+	end_battle(true)
 
 #Player ENDS turn here
 func _on_submit_button_down():
@@ -306,7 +309,7 @@ func _on_submit_button_down():
 		#use_dice(send_dice)
 		
 		do_positive_statuses()#does positive statuses
-		print("sending attack: ", player_attack)
+		#print("sending attack: ", player_attack)
 		#evaluate player specific data
 		
 #		game_manager.player_resource.gold += player_attack["gold"]
@@ -316,24 +319,26 @@ func _on_submit_button_down():
 #		game_manager.player_resource.health += player_attack["heal"]
 		manage_positive_player_attack(player_attack["heal"],player_attack["shield"],player_attack["gold"])
 		player_target.hit_enemy(player_attack)
+		coconut_doubler = 0
 		reset_player_attack()
 		
 		vitals_changed.emit()
 		await get_tree().create_timer(.7).timeout
 		
-		
-		#do_status_effects()
+
+		do_status_effects()
 		#clean_up_statuses()
 		take_enemy_turn()
 		current_enemy_dmg = calc_enemy_dmg()
 		calc_player_attack()
 		#print("total enemy attack: ", current_enemy_dmg)
+
 	else:
 		print("not player turn yet...")
 
 func clean_up_player_hand():
 	if player_hand.get_children().size() >= game_manager.player_resource.hand_size:
-		print("more filled than hand size")
+		#print("more filled than hand size")
 		for child in player_hand.get_children():
 			if player_hand.get_children().size() > game_manager.player_resource.hand_size:
 				if !child.get_child(0).is_filled:
@@ -341,9 +346,9 @@ func clean_up_player_hand():
 					child.queue_free()
 					#await child.tree_exited
 		call_deferred("organize_dice")
-	else:
-		print("less filled than hand size")
-		pass
+#	else:
+#		print("less filled than hand size")
+#		pass
 
 
 func calc_enemy_dmg():
@@ -404,19 +409,27 @@ func calc_player_attack():
 	if action_slot_dice.size() == action_slots.get_children().size() && action_slot_dice.all(func(element): return element.dice_data["type"] == action_slot_dice[0].dice_data["type"]):
 		all_dice_bonus = true
 		action_slots.modulate = Color.GOLD
-	print("all dice bonus is now: ", all_dice_bonus)
+	#print("all dice bonus is now: ", all_dice_bonus)
+	#Rage potion
+	var atk_buff:int = 0
+	if status_conditions.has(Status_Library.StatusCondition.ATKBUFF):
+		atk_buff = game_manager.player_resource.attack * status_conditions.count(Status_Library.StatusCondition.ATKBUFF)
+	var heal_buff:int = 0
+	if status_conditions.has(Status_Library.StatusCondition.HEALBUFF):
+		heal_buff = game_manager.player_resource.heal_power * status_conditions.count(Status_Library.StatusCondition.HEALBUFF)
 		
-		
+	var defend_buff:int = 0
+	if status_conditions.has(Status_Library.StatusCondition.DEFBUFF):
+		defend_buff = game_manager.player_resource.defend * status_conditions.count(Status_Library.StatusCondition.DEFBUFF)
 	#print("calculating value based on slot data: ", action_slot_dice)
 	for die in action_slot_dice:
 		if die.up_face >= 1:
 			#print("calculating next die: ", die.name)
 			var die_data = die.dice_data
-			var upgraded_player_attack = game_manager.player_resource.attack * die.up_face
-			var upgraded_player_heal = game_manager.player_resource.heal_power * die.up_face
-			var upgraded_player_defend = game_manager.player_resource.defend * die.up_face
-			#still need to calculate enemy resistantses/weaknesses
-
+			var upgraded_player_attack = (game_manager.player_resource.attack + atk_buff) * die.up_face
+			var upgraded_player_heal = (game_manager.player_resource.heal_power + heal_buff) * die.up_face
+			var upgraded_player_defend = (game_manager.player_resource.defend + defend_buff) * die.up_face
+			
 			match die_data["type"]:
 				Dice.DiceType.ATTACK:
 					if all_dice_bonus:
@@ -646,9 +659,13 @@ func calc_player_attack():
 						
 						
 	if player_target != null:
-		print("checking enemy hp: ", player_target.current_enemy_resource.health, " against calc ls heal: ", calculator_ls_heal)
+		#print("checking enemy hp: ", player_target.current_enemy_resource.health, " against calc ls heal: ", calculator_ls_heal)
 		if calculator_ls_heal > player_target.current_enemy_resource.health:
 			calculator_ls_heal = player_target.current_enemy_resource.health
+			
+	for i in coconut_doubler:
+		calculator_damage*=2
+		
 	player_attack = {
 	"damage":calculator_damage,
 	"reflect":calculator_reflect,
@@ -692,7 +709,7 @@ func display_player_calc():
 		ui_calc_hp.visible = true
 
 func update_damage():
-	print("sanity check player damage: ",player_attack["damage"])
+	#print("sanity check player damage: ",player_attack["damage"])
 	if player_attack["damage"] > 0:
 		ui_damage.text = var_to_str(player_attack["damage"])
 		ui_damage.visible = true
@@ -720,7 +737,7 @@ func take_enemy_turn():
 #		enemy.setup_next_attack()
 		
 		
-	do_status_effects()
+	#do_status_effects()
 	
 	current_enemy_dmg = calc_enemy_dmg()
 	calc_player_attack()
@@ -731,19 +748,26 @@ func take_enemy_turn():
 
 
 func hit_player(attack_data:Dictionary):
-	print("player takes ", attack_data["damage"]," damage")
-	print("adding status effect to player: ", attack_data["status_effect"])
-	
-	if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
-		add_status_conditions(attack_data["status_effect"])
-	
-	damage_player(attack_data["damage"],attack_data["from_enemy"])
-	
+	#print("player takes ", attack_data["damage"]," damage")
+	#print("adding status effect to player: ", attack_data["status_effect"])
+	if !status_conditions.has(Status_Library.StatusCondition.PROTECT):
+		if status_conditions.has(Status_Library.StatusCondition.SMOKE):
+			if game_manager.rng.randi_range(1,20) > (5 * (1*status_conditions.count(Status_Library.StatusCondition.SMOKE))):#attack goes through check
+				if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
+					add_status_conditions(attack_data["status_effect"])
+				
+				damage_player(attack_data["damage"],attack_data["from_enemy"],false)
+		else:
+			if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
+				add_status_conditions(attack_data["status_effect"])
+			
+			damage_player(attack_data["damage"],attack_data["from_enemy"],false)
+		
 
 
-func damage_player(amount:int, from_enemy):
+func damage_player(amount:int, from_enemy, direct_damage:bool):
 	if game_manager.player_resource.reflect > 0:#if player has reflect
-		#hit enemy back for amount
+		#hit enemy back Reflect
 		var reflect_amount:int
 		var current_reflect:int = game_manager.player_resource.reflect
 		if from_enemy != null:
@@ -753,19 +777,23 @@ func damage_player(amount:int, from_enemy):
 			else:
 				game_manager.player_resource.reflect = 0
 				reflect_amount = game_manager.player_resource.reflect
-			from_enemy.deal_damage(reflect_amount)
-		
-	if game_manager.player_resource.shield > 0:#if player has shield
-		if game_manager.player_resource.shield > amount:
-			game_manager.player_resource.shield -= amount
-		else:
-			amount -= game_manager.player_resource.shield
-			game_manager.player_resource.shield = 0
-			game_manager.player_resource.health -= amount
+			from_enemy.deal_damage(reflect_amount, false)
 	
+	if !direct_damage:
+		#if player has shield
+		if game_manager.player_resource.shield > 0:
+			if game_manager.player_resource.shield > amount:
+				game_manager.player_resource.shield -= amount
+			else:
+				amount -= game_manager.player_resource.shield
+				game_manager.player_resource.shield = 0
+				game_manager.player_resource.health -= amount
+		else:
+			game_manager.player_resource.health -= amount
 	else:
 		game_manager.player_resource.health -= amount
 	
+	#Kill check
 	if game_manager.player_resource.health <= 0:
 		end_battle(false)
 	
@@ -800,7 +828,7 @@ func update_player_target(new_target:Enemy):
 	player_target.show_arrow(true)
 	#player_target.manage_current_player_dmg("set",player_attack["damage"])
 	calc_player_attack()
-	print("current target is: ", player_target.name)
+	#print("current target is: ", player_target.name)
 
 func do_positive_statuses():#also does positive effects
 	var manip_statuses:Array[Status_Library.StatusCondition] = player_attack["status_conditions"].duplicate()
@@ -829,55 +857,52 @@ func add_status_conditions(value):
 		var status_ref = game_manager.status_lib.get_status_data(value)
 		status_conditions.append(value)
 		status_timeout.append(status_ref["turns"])
-		
-#		print("statuses is now: ",  status_conditions)
-#		print("status timeout is now: ",  status_timeouts)
-		
+
 		if spawned_statuses.find(value) == -1:
 			spawned_statuses.append(value)
 			var next_ui_status = game_manager.status_lib.status_prefab.instantiate()
 			status_grid.add_child(next_ui_status)
 			next_ui_status.setup_status(status_ref)
 			
-		print(name, " adding statuses is now: ",  status_conditions)
-		print(name, " adding status timeout is now: ",  status_timeout)
+		print(name, " adding statuses is now after ADD: ",  status_conditions)
+		print(name, " adding status timeout is now after ADD: ",  status_timeout)
 		status_changed.emit(status_conditions)
 		
 func do_status_effects():
 	var condition_index:int
-	for status in status_conditions:
+	for status in status_conditions.duplicate():
 		#do status stuff ADD DMG Here
-		match status:
-			Status_Library.StatusCondition.BLEED:
-				pass
-			Status_Library.StatusCondition.REFLECT:
-				pass
-			Status_Library.StatusCondition.DISARM:
-				pass
-			Status_Library.StatusCondition.STUN:
-				pass
-			Status_Library.StatusCondition.POISON:
-				pass
-			Status_Library.StatusCondition.FROZEN:
-				pass
-			Status_Library.StatusCondition.ATKBUFF:
-				pass
-			Status_Library.StatusCondition.ATKDEBUFF:
-				pass
-			Status_Library.StatusCondition.DEFBUFF:
-				pass
-			Status_Library.StatusCondition.DEFDEBUFF:
-				pass
-			Status_Library.StatusCondition.CURE:
-				pass
-			Status_Library.StatusCondition.BURN:
-				pass
-				
-				
-				
+#		match status:
+#			Status_Library.StatusCondition.BLEED:
+#				pass
+#			Status_Library.StatusCondition.REFLECT:
+#				pass
+#			Status_Library.StatusCondition.DISARM:
+#				pass
+#			Status_Library.StatusCondition.STUN:
+#				pass
+#			Status_Library.StatusCondition.POISON:
+#				pass
+#			Status_Library.StatusCondition.FROZEN:
+#				pass
+#			Status_Library.StatusCondition.ATKBUFF:
+#				pass
+#			Status_Library.StatusCondition.ATKDEBUFF:
+#				pass
+#			Status_Library.StatusCondition.DEFBUFF:
+#				pass
+#			Status_Library.StatusCondition.DEFDEBUFF:
+#				pass
+#			Status_Library.StatusCondition.CURE:
+#				pass
+#			Status_Library.StatusCondition.BURN:
+#				pass
 		if status != -1:
 			var status_ref = game_manager.status_lib.get_status_data(status)
-			damage_player(status_ref["damage"],null)
+			if status_ref["name"] == "bleed" || status_ref["name"] == "poison":
+				damage_player(status_ref["damage"],null, true)
+			else:
+				damage_player(status_ref["damage"],null, false)
 		#minus 1 from timeout 
 		if status_timeout[condition_index] > 1:
 			status_timeout[condition_index] -=1
@@ -885,50 +910,51 @@ func do_status_effects():
 			pass
 		else:
 			#var remove_index = status_conditions.find(status)
-			#print("condition index sanity check it : ",condition_index)
+			print("removing condition at condition index sanity check it : ",condition_index)
 			status_conditions.remove_at(condition_index)
 			status_timeout.remove_at(condition_index)
 			status_changed.emit(status_conditions)
-			
-			
-			#print(name, ": statuses is now: ",  status_conditions)
-			#print(name, ": status timeout is now: ",  status_timeout)
+			condition_index-=1
 		condition_index+=1
-	
+	print(name, ": statuses is now after DO: ",  status_conditions)
+	print(name, ": status timeout is now after DO: ",  status_timeout)
 	update_statuses()
-	clean_up_statuses()
+	#clean_up_statuses()
 	
 	
-func clean_up_statuses():
-	#var status_index:int
-	var clean_status:Array[Status_Library.StatusCondition]
-	var clean_timeout:Array[int]
+#func clean_up_statuses():
+#	#var status_index:int
+#	var clean_status:Array[Status_Library.StatusCondition]
+#	var clean_timeout:Array[int]
+#
+#	for status in status_conditions:
+#		print("sanity check status = ", status)
+#		if status != -1:
+#			clean_status.append(status)
+#			clean_timeout.append(status_timeout[status_conditions.find(status)])
+#
+#	status_conditions = clean_status
+#	status_timeout = clean_timeout
 	
-	for status in status_conditions:
-		print("sanity check status = ", status)
-		if status != -1:
-			clean_status.append(status)
-			clean_timeout.append(status_timeout[status_conditions.find(status)])
-	
-	status_conditions = clean_status
-	status_timeout = clean_timeout
-	
-	print(name, ": statuses is now: ",  status_conditions)
-	print(name, ": status timeout is now: ",  status_timeout)
+	#print(name, ": statuses is now: ",  status_conditions)
+	#print(name, ": status timeout is now: ",  status_timeout)
 	
 func update_statuses():
 	for status_container in status_grid.get_children():
 		status_container.update_status()
 		
 func cure_negative_effects():
-	for status in status_conditions:
+	for status in status_conditions.duplicate():
 		var status_ref = game_manager.status_lib.get_status_data(status)
 		if !status_ref["is_positive"]:
 			var status_index = status_conditions.find(status)
-			status_conditions[status_index] = -1
-			status_timeout[status_index] = 0
+			status_conditions.remove_at(status_index)
+			status_timeout.remove_at(status_index)
+			print("removing status at: ", status_index)
+			print(name, ": statuses is now: ",  status_conditions)
+			print(name, ": status timeout is now: ",  status_timeout)
 			
-	clean_up_statuses()
+	update_statuses()
 
 func end_battle(win:bool):
 	if win && !is_trap_battle:
@@ -991,9 +1017,18 @@ func summary_complete():
 	$"../choice_creator".poi_manager()
 	queue_free()
 
+func close_item_selections():
+	start_fate_fragment(false)
+	start_dictated_fate(false)
+
 func start_fate_fragment(choice:bool):
 	for slot in player_hand.get_children():
 		slot.get_child(0).start_fate_fragment(choice)
 
+func start_dictated_fate(choice:bool):
+	for slot in player_hand.get_children():
+		slot.get_child(0).start_dictated_fate(choice)
 
-
+func rewind():
+	for die in dice_layer.get_children():
+		die.roll()

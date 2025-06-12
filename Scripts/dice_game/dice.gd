@@ -103,14 +103,14 @@ func get_current_snap_area():
 func go_to_last_snap():
 	#print("test")
 	if snap_area:
-		print("snap_area: ", snap_area.name)
+		#print("snap_area: ", snap_area.name)
 		if snap_area.name != "inventory":
 			global_position = snap_area.global_position + offset
 		else:
 			get_parent().add_item_to_grid(dice_data)
 			queue_free()
 	else:
-		print("last_snap_area: ", last_snap_area.name)
+		#print("last_snap_area: ", last_snap_area.name)
 		if last_snap_area.name != "inventory":
 			global_position = last_snap_area.global_position + offset
 		else:
@@ -128,7 +128,7 @@ func setup_event_data(data:Dictionary):
 	dice_data = data
 	name = dice_data["item_name"]
 	texture_normal = load(dice_data["texture"])
-	print("trying to set snap area: ", get_current_snap_area())
+	#print("trying to set snap area: ", get_current_snap_area())
 	is_grabbing = true
 
 func roll():
@@ -152,6 +152,21 @@ func roll():
 	
 	
 
+func set_face_to_highest():
+	up_face = game_manager.dice_lib.upgrade_tier[dice_data["upgrade_level"]].back()
+	match up_face:
+		0:
+			texture_normal = load(dice_data["none_texture"])
+		1:
+			texture_normal = load(dice_data["texture"])
+		2:
+			texture_normal = load(dice_data["two_texture"])
+		3:
+			texture_normal = load(dice_data["three_texture"])
+		4:
+			texture_normal = load(dice_data["four_texture"])
+		_:
+			print("not implemented in faces: dice.gd")
 
 
 func _on_button_down():
@@ -165,7 +180,7 @@ func _on_button_down():
 		
 	if $"../..".name == "Dice_Battle":
 		var dice_battle = $"../.."
-		dice_battle.start_fate_fragment(false)
+		dice_battle.close_item_selections()
 		dice_battle.cancel_item_button.give_player_limbo_item()
 
 
@@ -181,7 +196,7 @@ func _on_button_up():
 		global_position = snap_area.global_position + offset
 		snap_area.filler(self)
 		is_grabbing = false
-		print("snap_area name: ", snap_area.name)
+		#print("snap_area name: ", snap_area.name)
 	else:
 		go_to_last_snap()
 
