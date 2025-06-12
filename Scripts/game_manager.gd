@@ -26,7 +26,12 @@ var rng = RandomNumberGenerator.new()
 func _ready():
 	player_resource = load("res://Resources/player_resource.tres")
 	player_resource.reset_values()
-
+	var hpup_charm_amount = player_resource.getset_charm_inventory("check",item_lib.hp_up_data)
+	if typeof(hpup_charm_amount) == TYPE_INT:
+		player_resource.max_health += (20*hpup_charm_amount)
+		player_resource.health += (20*hpup_charm_amount)
+		
+		
 func default_checker(input_data):
 	if dice_lib.all_dice[input_data["item_name"]] == input_data:
 		return true

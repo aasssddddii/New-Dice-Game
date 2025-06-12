@@ -690,6 +690,22 @@ var charm_inventory:Array[Dictionary] = [
 	}
 ]
 
+
+func getset_charm_inventory(choice:String,input_data):
+	match choice:
+		"get":
+			return charm_inventory.duplicate(true)
+		"check":
+			if charm_inventory.any(func(charm): return charm["item_name"] == "cha_hpup"):
+				return  charm_inventory.count({"item_code":4,"item_name":"cha_hpup","texture":"res://Sprites/charms/HP up.png","long_name":"+max hp","description":"increases current max hp"})
+			else:
+				return false
+		_:
+			print("no:Player_Resoure")
+	
+	
+	
+
 func getset_dice_deck(choice:String,input_data):
 	match choice:
 		"get":
