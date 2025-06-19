@@ -320,11 +320,171 @@ var attack_shields_data:Dictionary = {
 	"long_name":"Offensive Defence",
 	"description":"all attack will also provide one shield stack"
 }
-
+var shields_attack_data:Dictionary = {
+	"item_code":4,
+	"item_name":"cha_shla",
+	"texture":"res://Sprites/charms/shields_attack.png",
+	"long_name":"Faux defences",
+	"description":"all defend dice will also provide one attack stack"
+}
+var salvage_tool_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_salv",
+	"texture": "res://Sprites/charms/salvage tool.png",
+	"long_name": "Salvage Tool",
+	"description": "used zero dice still provides something instead of 0"
+}
+var shield_up_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_shie",
+	"texture": "res://Sprites/charms/Shield up.png",
+	"long_name": "Shield UP",
+	"description": "buffs your shield power in battle"
+}
+var heal_up_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_heal",
+	"texture": "res://Sprites/charms/heal power up.png",
+	"long_name": "Heal power UP",
+	"description": "buffs your heal power in battle"
+}
+var fire_resist_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_fire",
+	"texture": "res://Sprites/charms/fire resist.png",
+	"long_name": "Fire resist",
+	"description": "A charm that provides some resistance to fire damage"
+}
+var lightning_resist_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_ligh",
+	"texture":"res://Sprites/charms/lightning resist.png" ,
+	"long_name": "Lightning resist",
+	"description": "A charm that provides some resistance to Lightning damage"
+}
+var ice_resist_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_icer",
+	"texture": "res://Sprites/charms/ice resist.png",
+	"long_name": "Ice resist",
+	"description": "A charm that provides some resistance to Ice damage"
+}
+var bleed_resist_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_blee",
+	"texture": "res://Sprites/charms/bleed resist.png",
+	"long_name": "bleed resist",
+	"description": "A charm that provides some resistance to bleed damage"
+}
+var poison_resist_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_pois",
+	"texture": "res://Sprites/charms/poison resist.png",
+	"long_name": "poison resist",
+	"description": "A charm that provides some resistance to poison damage"
+}
+var Cornicopia_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_corn",
+	"texture": "res://Sprites/charms/extra draw charm.png",
+	"long_name": "Cornicopia",
+	"description": "Chance to +1 Draw dice in dice battle"
+}
+var meditate_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_medi",
+	"texture": "res://Sprites/charms/meditate.png",
+	"long_name": "Meditate",
+	"description": "Heal on attack with no dice"
+}
+var golden_die_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_gold",
+	"texture": "res://Sprites/charms/extra gold .png",
+	"long_name": "Golden Die",
+	"description": "gain extra gold per battle"
+}
+var medic_inspiration_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_medc",
+	"texture": "res://Sprites/charms/cure dice heal.png",
+	"long_name": "Medic inspiration",
+	"description": "Cure Dice also Heal more stacks heals more"
+}
+var piercing_chain_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_pier",
+	"texture": "res://Sprites/charms/piercing chain.png",
+	"long_name": "Piercing Chain",
+	"description": "attacks deals damage to shield and Health"
+}
+var thorns_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_thor",
+	"texture": "res://Sprites/charms/thorns charm.png",
+	"long_name": "Thorns",
+	"description": "when hit deals a portion of damage to that enemy"
+}
+var toxic_orb_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_toxi",
+	"texture": "res://Sprites/charms/toxic_orb.png",
+	"long_name": "Toxic orb",
+	"description": "poison damage you deal heals you"
+}
+var mega_buff_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_mega",
+	"texture": "res://Sprites/charms/debuff damage.png",
+	"long_name": "Mega Debuff",
+	"description": "Debuff Dice Deal Damage, more stacks deals more damage"
+}
+var investment_prorgative_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_inve",
+	"texture": "res://Sprites/charms/skill buff upgrade.png",
+	"long_name": "Investment prorgative",
+	"description": "skill upgrades will give more amount per upgrade"
+}
+var vampiric_thread_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_vamp",
+	"texture": "res://Sprites/charms/vamperic thread.png",
+	"long_name": "Vampiric Thread",
+	"description": "Heal on enemy kill, Heal amount increases with stacks."
+}
+var iron_root_data:Dictionary = {
+	"item_code": 4,
+	"item_name": "cha_iron",
+	"texture": "res://Sprites/charms/iron root.png",
+	"long_name": "Iron Root Charm",
+	"description": "+2 Max HP on battle clear when full, but heals +2 otherwise"
+}
 var all_charms:Dictionary = {
 	"cha_hpup":hp_up_data,
 	"cha_coupon":shop_coupon_data,
-	"cha_atks":attack_shields_data
+	"cha_atks":attack_shields_data,
+	"cha_salv":salvage_tool_data,
+	"cha_shie":shield_up_data,
+	"cha_heal":heal_up_data,
+	"cha_fire":fire_resist_data,
+	"cha_ligh":lightning_resist_data,
+	"cha_icer":ice_resist_data,
+	"cha_blee":bleed_resist_data,
+	"cha_pois":poison_resist_data,
+	"cha_corn":Cornicopia_data,
+	"cha_medi":meditate_data,
+	"cha_gold":golden_die_data,
+	"cha_medc":medic_inspiration_data,
+	"cha_pier":piercing_chain_data,
+	"cha_thor":thorns_data,
+	"cha_toxi":toxic_orb_data,
+	"cha_mega":mega_buff_data,
+	"cha_inve":investment_prorgative_data,
+	"cha_vamp":vampiric_thread_data,
+	"cha_iron":iron_root_data,
+	"cha_shla":shields_attack_data
+	
 }
 func get_charm_data(name:String):
 	return all_charms[name]

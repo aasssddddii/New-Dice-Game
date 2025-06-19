@@ -36,7 +36,19 @@ class_name Player_Resource
 @export var battle_wins:int
 @export var game_level:int
 
+
+#charm modifiers
 var health_modifier:int
+var shop_coupon:int#do last to get ready to finalize shop
+var atk_shield:int
+var shl_attack:int
+var salvage_tool:int
+var shield_up:int
+var heal_up:int
+var cornicopia_draw:int
+var meditate:int
+var battle_gold:int
+
 
 func reset_values():
 	print("player resource resetting values")
@@ -667,27 +679,27 @@ var dice_deck:Array[Dictionary] = [
 ]
 
 var charm_inventory:Array[Dictionary] = [
-	{
-	"item_code":4,
-	"item_name":"cha_hpup",
-	"texture":"res://Sprites/charms/HP up.png",
-	"long_name":"+max hp",
-	"description":"increases current max hp"
-	},
-	{
-	"item_code":4,
-	"item_name":"cha_coupon",
-	"texture":"res://Sprites/charms/shop_coupon.png",
-	"long_name":"shop coupon",
-	"description":"provides a 5% off all shop items up to 50%"
-	},
-	{
-	"item_code":4,
-	"item_name":"cha_atks",
-	"texture":"res://Sprites/charms/attacks_shield.png",
-	"long_name":"Offensive Defence",
-	"description":"all attack will also provide one shield stack"
-	}
+#	{
+#	"item_code":4,
+#	"item_name":"cha_hpup",
+#	"texture":"res://Sprites/charms/HP up.png",
+#	"long_name":"+max hp",
+#	"description":"increases current max hp"
+#	},
+#	{
+#	"item_code":4,
+#	"item_name":"cha_coupon",
+#	"texture":"res://Sprites/charms/shop_coupon.png",
+#	"long_name":"shop coupon",
+#	"description":"provides a 5% off all shop items up to 50%"
+#	},
+#	{
+#	"item_code":4,
+#	"item_name":"cha_atks",
+#	"texture":"res://Sprites/charms/attacks_shield.png",
+#	"long_name":"Offensive Defence",
+#	"description":"all attack will also provide one shield stack"
+#	}
 ]
 
 
@@ -704,7 +716,7 @@ func getset_charm_inventory(choice:String,input_data):
 			print("no:Player_Resoure")
 	
 	
-	
+
 
 func getset_dice_deck(choice:String,input_data):
 	match choice:

@@ -26,14 +26,47 @@ var rng = RandomNumberGenerator.new()
 func _ready():
 	player_resource = load("res://Resources/player_resource.tres")
 	player_resource.reset_values()
-	var hpup_charm_amount = player_resource.getset_charm_inventory("check",item_lib.hp_up_data)
-	if typeof(hpup_charm_amount) == TYPE_INT:
-		player_resource.max_health += (20*hpup_charm_amount)
-		player_resource.health += (20*hpup_charm_amount)
+	# IDEA of how to implement charms
+	add_charm("cha_hpup")
+	add_charm("cha_shla")
+	add_charm("cha_salv")
+#	add_charm("cha_shie")
+	add_charm("cha_heal")
+	add_charm("cha_corn")
+	add_charm("cha_medi")
 		
-		
-func default_checker(input_data):
-	if dice_lib.all_dice[input_data["item_name"]] == input_data:
-		return true
-	else:
-		return false
+#func default_checker(input_data):
+#	if dice_lib.all_dice[input_data["item_name"]] == input_data:
+#		return true
+#	else:
+#		return false
+	
+#LLO 6/18 Finishing adding charm functionality
+func add_charm(charm_name:String):
+	player_resource.charm_inventory.append(item_lib.get_charm_data(charm_name))
+	match charm_name:
+		"cha_hpup":
+			player_resource.max_health += 20
+			player_resource.health += 20
+		"cha_atks":
+			player_resource.atk_shield += 1
+		"cha_shla":
+			player_resource.shl_attack +=1
+		"cha_salv":
+			player_resource.salvage_tool +=1
+		"cha_shie":
+			player_resource.shield_up +=1
+		"cha_heal":
+			player_resource.heal_up +=1
+		"cha_corn":
+			player_resource.cornicopia_draw +=1
+		"cha_medi":
+			player_resource.meditate +=1
+		"cha_gold":
+			player_resource.battle_gold +=1
+		_:
+			print("Charm not setup yet: game_manager.gd")
+	
+	
+	
+	
