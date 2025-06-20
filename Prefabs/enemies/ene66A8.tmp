@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3o6pxge6txkt"]
+
+[ext_resource type="Script" path="res://Scripts/enemies/template_enemy.gd" id="1_2su1g"]
+[ext_resource type="Texture2D" uid="uid://bcm7fqqni5ed4" path="res://Sprites/enemies/bat_enemy.png" id="1_a3wxr"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_aduwl"]
+[ext_resource type="Texture2D" uid="uid://bptx871bkg5r2" path="res://Sprites/dice_game_ui/target_arrow.png" id="4_0da1b"]
+[ext_resource type="Script" path="res://Scripts/dice_game/status_condition_manager.gd" id="4_lumt0"]
+
+[node name="enemy_template" type="TextureButton"]
+offset_right = 128.0
+offset_bottom = 128.0
+texture_normal = ExtResource("1_a3wxr")
+script = ExtResource("1_2su1g")
+
+[node name="ui_current" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 15.0
+offset_right = 192.0
+offset_bottom = 109.0
+
+[node name="ui_health" type="Label" parent="ui_current"]
+self_modulate = Color(1, 0.34902, 0.360784, 1)
+layout_mode = 2
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "0"
+
+[node name="ui_shield" type="Label" parent="ui_current"]
+self_modulate = Color(0, 0.317647, 1, 1)
+layout_mode = 2
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "0"
+
+[node name="ui_calc" type="Node2D" parent="."]
+position = Vector2(152, -25)
+
+[node name="ui_shield" type="Label" parent="ui_calc"]
+self_modulate = Color(0, 0.317647, 1, 1)
+offset_top = 102.0
+offset_right = 66.0
+offset_bottom = 147.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "+ 0"
+
+[node name="ui_attack" type="Label" parent="ui_calc"]
+modulate = Color(1, 0.239216, 0.239216, 1)
+offset_left = -195.0
+offset_top = 40.0
+offset_right = -129.0
+offset_bottom = 85.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "0"
+
+[node name="ui_health" type="Label" parent="ui_calc"]
+modulate = Color(0, 1, 0.286275, 1)
+offset_top = 14.0
+offset_right = 66.0
+offset_bottom = 59.0
+theme = ExtResource("3_aduwl")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+text = "+ 0"
+
+[node name="status_conditions" type="GridContainer" parent="."]
+layout_direction = 3
+layout_mode = 0
+offset_left = 111.0
+offset_top = 48.0
+offset_right = 217.0
+offset_bottom = 154.0
+scale = Vector2(0.7, 0.7)
+columns = 3
+script = ExtResource("4_lumt0")
+
+[node name="ui_turns" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 19.0
+offset_top = 146.0
+offset_right = 264.0
+offset_bottom = 224.0
+scale = Vector2(0.4, 0.4)
+alignment = 1
+
+[node name="target_arrow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(65, 0)
+scale = Vector2(0.075, 0.075)
+texture = ExtResource("4_0da1b")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]

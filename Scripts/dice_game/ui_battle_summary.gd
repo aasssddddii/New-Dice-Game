@@ -22,13 +22,17 @@ func setup_summary(input_data:Dictionary):
 	ui_enemies.text = var_to_str(summary_data["enemies"])
 	if typeof(summary_data["reward"]) == TYPE_INT:#is a gold Reward
 		ui_reward.text = "gold"
-		ui_gold.text = var_to_str(summary_data["reward"])
+		ui_gold.text = var_to_str(summary_data["reward"] + summary_data["battle_gold"])
 		dice_reward_parent.get_parent().visible = false
 	else:
 		ui_reward.text = summary_data["reward"]
 		gold_label.visible = false
 		ui_gold.visible = false
 		add_dice_to_reward_grid(summary_data["dice"])
+		if summary_data["battle_gold"] >=1:
+			gold_label.visible = true
+			ui_gold.visible = true
+			ui_gold.text = var_to_str(summary_data["battle_gold"])
 			
 			
 			

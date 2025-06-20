@@ -73,13 +73,15 @@ func setup_enemy(resource:Resource):
 #	"element_damage":Array
 #	}
 func hit_enemy(attack_data:Dictionary):
-	#print("hitting enemy- ", name, " with attack: ", attack_data)
-	
-	#deal Damage
-	deal_damage(attack_data["damage"],false)
-	
-
-	
+	if game_manager.player_resource.piercing >=1:
+		var piercing_dmg = int(attack_data["damage"] / (11-game_manager.player_resource.piercing))
+		deal_damage(piercing_dmg,true)
+		attack_data["damage"]-=piercing_dmg
+		deal_damage(attack_data["damage"],false)
+		print("piercing damage: ", piercing_dmg, " rest of damage: ",attack_data["damage"])
+	else:
+		#deal Damage
+		deal_damage(attack_data["damage"],false)
 	#add Status conditions
 	if !attack_data["status_conditions"].is_empty():
 		for status in attack_data["status_conditions"]:
@@ -482,6 +484,8 @@ func do_attack_pattern():
 							
 				await turn_tween("attack").finished
 				dice_battle_node.hit_player(send_attack)
+				if game_manager.player_resource.thorns >= 1:
+					deal_damage(game_manager.player_resource.thorns*2,false)
 			enemy_resource.TurnActions.DEFEND:
 				if current_enemy_resource.shield < current_enemy_resource.max_health:
 					current_enemy_resource.shield += current_enemy_resource.defend
@@ -540,6 +544,10 @@ func kill_check():
 		if arrow.visible:
 			if !filtered_targets.is_empty():
 				$"../..".update_player_target(filtered_targets.pick_random())
+				
+				
+		if game_manager.player_resource.vamp_thread >=1:
+			$"../..".heal_player(game_manager.player_resource.heal_power * game_manager.player_resource.vamp_thread)
 		queue_free()
 
 func spring_trap():

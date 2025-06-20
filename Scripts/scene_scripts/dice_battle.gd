@@ -21,6 +21,7 @@ var discard:Array[Dictionary]
 var battle_data:Array[Resource]
 var game_manager = GameManager
 
+var battle_gold:int
 var status_conditions:Array[Status_Library.StatusCondition]
 var status_timeout:Array[int]
 signal status_changed(status_conditions:Array[Status_Library.StatusCondition])
@@ -370,6 +371,7 @@ func calc_enemy_dmg():
 
 func manage_positive_player_attack(heal:int,shield:int,gold:int):
 	game_manager.player_resource.gold += player_attack["gold"]
+	battle_gold += player_attack["gold"]
 	#print("player gained ", player_attack["gold"], " gold")
 	
 	game_manager.player_resource.shield += player_attack["shield"]
@@ -411,6 +413,7 @@ func calc_player_attack():
 	#Charm Stuff
 	var atk_check:bool
 	var shld_check:bool
+	var debuff_check:bool
 	
 	
 	action_slots.modulate = Color.WHITE
@@ -517,31 +520,47 @@ func calc_player_attack():
 				Dice.DiceType.POISON:
 					atk_check = true
 					var base_dmg = (upgraded_player_attack /2)
+					var result_dmg
 					if all_dice_bonus:
 						calculator_statuses.append(Status_Library.StatusCondition.POISON)
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.POISON]:
-							calculator_damage += (base_dmg/2) * game_manager.player_resource.all_dice_bonus
+							result_dmg = (base_dmg/2) * game_manager.player_resource.all_dice_bonus
+							calculator_damage += result_dmg
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.POISON]:
-							calculator_damage += upgraded_player_attack * game_manager.player_resource.all_dice_bonus
+							result_dmg = upgraded_player_attack * game_manager.player_resource.all_dice_bonus
+							calculator_damage += result_dmg
 						else:
+							result_dmg = base_dmg * game_manager.player_resource.all_dice_bonus
 							calculator_damage += base_dmg * game_manager.player_resource.all_dice_bonus
 					else:
 						if calculator_statuses.find(Status_Library.StatusCondition.POISON) == -1:
 							calculator_statuses.append(Status_Library.StatusCondition.POISON)
-							
 						if player_target.current_enemy_resource.resistantses[Dice.DamageElement.POISON]:
+							result_dmg = base_dmg/2
 							calculator_damage += base_dmg/2
 						elif player_target.current_enemy_resource.weaknesses[Dice.DamageElement.POISON]:
+							result_dmg = base_dmg * 1.5
 							calculator_damage += base_dmg * 1.5
 						else:
+							result_dmg = base_dmg
 							calculator_damage += base_dmg
+					#6/19 LLO getting the percentages for toxic orb heal
+					if game_manager.player_resource.toxic_orb >=1:
+						result_dmg /= (4-game_manager.player_resource.toxic_orb)
+						if result_dmg < 1:
+							calculator_heal += 1
+						else:
+							calculator_heal += result_dmg
 				Dice.DiceType.CURE:
 					#6/6 Need to come back after I fix Status conditions
 					#I want to add a full heal when die face is over 1
 					if calculator_statuses.find(Status_Library.StatusCondition.CURE) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.CURE)
+					if game_manager.player_resource.cure_heal >=1:
+						calculator_heal += game_manager.player_resource.cure_heal * game_manager.player_resource.heal_power
 				Dice.DiceType.DISARM:
 					atk_check = true
+					debuff_check = true
 					if all_dice_bonus:
 						calculator_damage += 2
 					else:
@@ -550,6 +569,7 @@ func calc_player_attack():
 						calculator_statuses.append(Status_Library.StatusCondition.DISARM)
 				Dice.DiceType.STUN:
 					atk_check = true
+					debuff_check = true
 					if all_dice_bonus:
 						calculator_damage += 2
 					else:
@@ -564,9 +584,11 @@ func calc_player_attack():
 					if calculator_statuses.find(Status_Library.StatusCondition.DEFBUFF) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.DEFBUFF)
 				Dice.DiceType.ATKDEBUFF:
+					debuff_check = true
 					if calculator_statuses.find(Status_Library.StatusCondition.ATKDEBUFF) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.ATKDEBUFF)
 				Dice.DiceType.DEFDEBUFF:
+					debuff_check = true
 					if calculator_statuses.find(Status_Library.StatusCondition.DEFDEBUFF) == -1:
 						calculator_statuses.append(Status_Library.StatusCondition.DEFDEBUFF)
 				#-------------ELEMENTAL DICE DMG-------------------------------------------
@@ -646,6 +668,7 @@ func calc_player_attack():
 						
 					#chance to freeze
 					if game_manager.rng.randi_range(1,20) > 1:#18:
+						debuff_check = true
 						if calculator_statuses.find(Status_Library.StatusCondition.FROZEN) == -1:
 							calculator_statuses.append(Status_Library.StatusCondition.FROZEN)
 				Dice.DiceType.LIGHTNING:
@@ -707,6 +730,9 @@ func calc_player_attack():
 	if shld_check:
 		var shl_attack:int = game_manager.player_resource.shl_attack
 		calculator_damage += (game_manager.player_resource.attack * shl_attack)
+	if debuff_check:
+		var mega_debuff:int = game_manager.player_resource.mega_debuff
+		calculator_damage += (game_manager.player_resource.attack*mega_debuff)
 	
 	if action_slot_dice == [] && game_manager.player_resource.meditate >=1:
 		calculator_heal += (game_manager.player_resource.meditate * game_manager.player_resource.heal_power)
@@ -810,6 +836,7 @@ func hit_player(attack_data:Dictionary):
 				add_status_conditions(attack_data["status_effect"])
 			
 			damage_player(attack_data["damage"],attack_data["from_enemy"],false)
+	
 		
 
 
@@ -847,7 +874,12 @@ func damage_player(amount:int, from_enemy, direct_damage:bool):
 	
 	vitals_changed.emit()
 
-
+func heal_player(amount:int):
+	game_manager.player_resource.health += amount
+	if game_manager.player_resource.health > game_manager.player_resource.max_health:
+		game_manager.player_resource.health = game_manager.player_resource.max_health
+		
+	vitals_changed.emit()
 func update_vitals():
 	
 	ui_hp.text = var_to_str(game_manager.player_resource.health)
@@ -888,6 +920,9 @@ func do_positive_statuses():#also does positive effects
 				Status_Library.StatusCondition.CURE:
 					#cure all negitive effects
 					cure_negative_effects()
+#					if game_manager.player_resource.cure_heal >=1:
+#						game_manager.player_resource.health += (game_manager.player_resource.cure_heal * game_manager.player_resource.heal_power)
+						
 				Status_Library.StatusCondition.REFLECT:
 					game_manager.player_resource.reflect += game_manager.player_resource.attack
 				_:
@@ -1020,12 +1055,17 @@ func end_battle(win:bool):
 				var picked_dice = game_manager.dice_lib.all_dice.values().pick_random()
 				dice_array.append(picked_dice)
 				game_manager.player_resource.getset_inventory("add",picked_dice)
+				
+		if game_manager.player_resource.battle_gold >=1:
+			game_manager.player_resource.gold += game_manager.player_resource.battle_gold
+			battle_gold += game_manager.player_resource.battle_gold
 			
 		var ui_summary = game_manager.ui_battle_summary.instantiate()
 		ui_summary.setup_summary({
 			"enemies":enemy_count,
 			"reward":reward,
-			"dice":dice_array
+			"dice":dice_array,
+			"battle_gold":battle_gold
 			})
 			
 		print("player gold is now: ", game_manager.player_resource.gold)

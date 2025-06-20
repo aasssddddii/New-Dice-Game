@@ -27,13 +27,14 @@ func _ready():
 	player_resource = load("res://Resources/player_resource.tres")
 	player_resource.reset_values()
 	# IDEA of how to implement charms
-	add_charm("cha_hpup")
-	add_charm("cha_shla")
-	add_charm("cha_salv")
-#	add_charm("cha_shie")
-	add_charm("cha_heal")
-	add_charm("cha_corn")
-	add_charm("cha_medi")
+#	add_charm("cha_hpup")
+#	add_charm("cha_shla")
+#	add_charm("cha_salv")
+#	add_charm("cha_toxi")
+	#add_charm("cha_toxi")
+	#add_charm("cha_toxi")
+	add_charm("cha_mega")
+	add_charm("cha_vamp")
 		
 #func default_checker(input_data):
 #	if dice_lib.all_dice[input_data["item_name"]] == input_data:
@@ -64,6 +65,18 @@ func add_charm(charm_name:String):
 			player_resource.meditate +=1
 		"cha_gold":
 			player_resource.battle_gold +=1
+		"cha_medc":
+			player_resource.cure_heal += 1
+		"cha_pier":
+			player_resource.piercing += 1
+		"cha_thor":
+			player_resource.thorns += 1
+		"cha_toxi":
+			player_resource.toxic_orb += 1
+		"cha_mega":
+			player_resource.mega_debuff +=1
+		"cha_vamp":
+			player_resource.vamp_thread +=1
 		_:
 			print("Charm not setup yet: game_manager.gd")
 	
