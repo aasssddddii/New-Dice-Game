@@ -54,7 +54,22 @@ var thorns:int
 var toxic_orb:int
 var mega_debuff:int
 var vamp_thread:int
+var iron_root:int
+var fire_resist:int
+var bleed_resist:int
+var poison_resist:int
+var lightning_resist:int
+var ice_resist:int
+var investment:int
 
+# skill upgrades
+var action_slot_upgrade:bool
+var sweeping_edge_upgrade:bool
+var lay_on_hands_upgrade:bool
+var swagger_upgrade:bool
+var second_skin_upgrade:bool
+var emergency_cache_upgrade:bool
+var charm_sync_upgrade:bool
 
 func reset_values():
 	print("player resource resetting values")
@@ -65,7 +80,7 @@ func reset_values():
 	shield = default_shield
 	reflect = 0
 	heal_power = default_heal_power
-	gold = 0
+	gold = 300#0
 	game_level = 0
 	hand_size = 5
 	action_size = 3
@@ -100,272 +115,26 @@ func reset_charms():
 	toxic_orb=0
 	mega_debuff=0
 	vamp_thread=0
+	iron_root=0
+	fire_resist=0
+	bleed_resist=0
+	poison_resist=0
+	lightning_resist=0
+	ice_resist=0
+	investment=0
+	
+func reset_skills():
+	action_slot_upgrade= false
+	sweeping_edge_upgrade= false
+	lay_on_hands_upgrade= false
+	swagger_upgrade= false
+	second_skin_upgrade= false
+	emergency_cache_upgrade= false
+	charm_sync_upgrade= false
 #reset value
 #var inventory:Array[Dictionary]
 var inventory:Array[Dictionary] = [
-	{
-	"item_code":2,
-	"item_name":"die_pack",
-	"texture":"res://Sprites/shop/specialty_shops/dice_pack_item.png",
-	"price":80,
-	"use_type":0,
-	"long_name":"Dice Pack",
-	"description":"Open the pack for 3 random dice"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_mims",
-	"texture":"res://Sprites/shop/items/mimic shard.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"mimic shard",
-	"description":"copy attack dice of any enemy and roll it for yourself"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_fatf",
-	"texture":"res://Sprites/shop/items/fate fragment.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"fate fragment",
-	"description":"discard one dice and draw 2"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_forc",
-	"texture":"res://Sprites/shop/items/forge core.png",
-	"price":0,
-	"use_type":0,
-	"long_name":"forge core",
-	"description":"upgrade one dice by one stage"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_actu",
-	"texture":"res://Sprites/shop/items/Action up.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"action up",
-	"description":"gives you one extra action slot for 3 turns"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_actu",
-	"texture":"res://Sprites/shop/items/Action up.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"action up",
-	"description":"gives you one extra action slot for 3 turns"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_aegc",
-	"texture":"res://Sprites/shop/items/aegis coin.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"aegis coin",
-	"description":"nullifies all damage for one turn"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_cocc",
-	"texture":"res://Sprites/shop/items/coconut candy.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"coconut candy",
-	"description":"doubles values of submit dice"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_cocc",
-	"texture":"res://Sprites/shop/items/coconut candy.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"coconut candy",
-	"description":"doubles values of submit dice"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_cocc",
-	"texture":"res://Sprites/shop/items/coconut candy.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"coconut candy",
-	"description":"doubles values of submit dice"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_cocc",
-	"texture":"res://Sprites/shop/items/coconut candy.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"coconut candy",
-	"description":"doubles values of submit dice"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_dicf",
-	"texture":"res://Sprites/shop/items/dictated fate.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"dictated fate dice",
-	"description":"set one dice to its highest value"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_rage",
-	"texture":"res://Sprites/shop/items/damage potion.png",
-	"price":50,
-	"use_type":2,
-	"long_name":"rage potion",
-	"description":"Give player attack stat boost for 3 battles"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_disd",
-	"texture":"res://Sprites/shop/items/disarm dust.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"disarm dust",
-	"description":"disarms targeted enemy for 3 turns"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_help",
-	"texture":"res://Sprites/shop/items/health potion.png",
-	"price":0,
-	"use_type":2,
-	"long_name":"heal power potion",
-	"description":"this potion buffs your heal power for 3 battles"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_onet",
-	"texture":"res://Sprites/shop/items/one arm tie.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"one-arm tie",
-	"description":"makes targeted enemy take one less action per turn"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_rewi",
-	"texture":"res://Sprites/shop/items/rewind.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"rewind",
-	"description":"reroll all dice in hand"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_rewi",
-	"texture":"res://Sprites/shop/items/rewind.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"rewind",
-	"description":"reroll all dice in hand"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_rewi",
-	"texture":"res://Sprites/shop/items/rewind.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"rewind",
-	"description":"reroll all dice in hand"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_ship",
-	"texture":"res://Sprites/shop/items/shield potion.png",
-	"price":0,
-	"use_type":2,
-	"long_name":"shield power potion",
-	"description":"this potion buffs your shiled power for 3 turns"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_smok",
-	"texture":"res://Sprites/shop/items/smokescreen.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"smokescreen",
-	"description":"adds possibility for enemy to miss attacks"
-	},
-		{
-	"item_code":2,
-	"item_name":"ite_smok",
-	"texture":"res://Sprites/shop/items/smokescreen.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"smokescreen",
-	"description":"adds possibility for enemy to miss attacks"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_smok",
-	"texture":"res://Sprites/shop/items/smokescreen.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"smokescreen",
-	"description":"adds possibility for enemy to miss attacks"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_smok",
-	"texture":"res://Sprites/shop/items/smokescreen.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"smokescreen",
-	"description":"adds possibility for enemy to miss attacks"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_smok",
-	"texture":"res://Sprites/shop/items/smokescreen.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"smokescreen",
-	"description":"adds possibility for enemy to miss attacks"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_wead",
-	"texture":"res://Sprites/shop/items/weakness dust.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"weakness dust",
-	"description":"makes targeted enemy's attacks weaker"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_wead",
-	"texture":"res://Sprites/shop/items/weakness dust.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"weakness dust",
-	"description":"makes targeted enemy's attacks weaker"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_trad",
-	"texture":"res://Sprites/shop/items/trap disarmer.png",
-	"price":0,
-	"use_type":1,
-	"long_name":"trap disarmer",
-	"description":"disarms traps completing the key and rendering it useless"
-	},
-	{
-	"item_code":2,
-	"item_name":"ite_cure",
-	"texture":"res://Sprites/shop/items/cure potion.png",
-	"price":20,
-	"use_type":1,
-	"long_name":"cure potion",
-	"description":" this potion cures all negative status effects when used"
-	},
-	{
-	"item_code":0,
+	{"item_code":0,
 	"item_name":"fir_dice",
 	"texture":"res://Sprites/Dice/one fire dice.png",
 	"none_texture":"res://Sprites/Dice/none fire dice.png",
@@ -380,45 +149,323 @@ var inventory:Array[Dictionary] = [
 	"effect":Status_Library.StatusCondition.BURN,
 	"element":Dice.DamageElement.FIRE,
 	"long_name":"Fire Dice",
-	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
-	},
-	{
-	"item_code":0,
-	"item_name":"fir_dice",
-	"texture":"res://Sprites/Dice/one fire dice.png",
-	"none_texture":"res://Sprites/Dice/none fire dice.png",
-	"two_texture":"res://Sprites/Dice/2 fire dice.png",
-	"three_texture":"res://Sprites/Dice/3 fire dice.png",
-	"four_texture":"res://Sprites/Dice/4 fire dice.png",
-	"mini_texture":"res://sprites/mini fire dice.png",
-	"price":30,
-	"upgrade_level":6,
-	"animation_target":"target",
-	"type":Dice.DiceType.FIRE,
-	"effect":Status_Library.StatusCondition.BURN,
-	"element":Dice.DamageElement.FIRE,
-	"long_name":"Fire Dice",
-	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
-	},
-	{
-	"item_code":0,
-	"item_name":"fir_dice",
-	"texture":"res://Sprites/Dice/one fire dice.png",
-	"none_texture":"res://Sprites/Dice/none fire dice.png",
-	"two_texture":"res://Sprites/Dice/2 fire dice.png",
-	"three_texture":"res://Sprites/Dice/3 fire dice.png",
-	"four_texture":"res://Sprites/Dice/4 fire dice.png",
-	"mini_texture":"res://sprites/mini fire dice.png",
-	"price":30,
-	"upgrade_level":6,
-	"animation_target":"target",
-	"type":Dice.DiceType.FIRE,
-	"effect":Status_Library.StatusCondition.BURN,
-	"element":Dice.DamageElement.FIRE,
-	"long_name":"Fire Dice",
-	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
-	}
-]
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"}
+	]
+#var inventory:Array[Dictionary] = [{
+#	"item_code":2,
+#	"item_name":"die_pack",
+#	"texture":"res://Sprites/shop/specialty_shops/dice_pack_item.png",
+#	"price":80,
+#	"use_type":0,
+#	"long_name":"Dice Pack",
+#	"description":"Open the pack for 3 random dice"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_mims",
+#	"texture":"res://Sprites/shop/items/mimic shard.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"mimic shard",
+#	"description":"copy attack dice of any enemy and roll it for yourself"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_fatf",
+#	"texture":"res://Sprites/shop/items/fate fragment.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"fate fragment",
+#	"description":"discard one dice and draw 2"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_forc",
+#	"texture":"res://Sprites/shop/items/forge core.png",
+#	"price":0,
+#	"use_type":0,
+#	"long_name":"forge core",
+#	"description":"upgrade one dice by one stage"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_actu",
+#	"texture":"res://Sprites/shop/items/Action up.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"action up",
+#	"description":"gives you one extra action slot for 3 turns"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_actu",
+#	"texture":"res://Sprites/shop/items/Action up.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"action up",
+#	"description":"gives you one extra action slot for 3 turns"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_aegc",
+#	"texture":"res://Sprites/shop/items/aegis coin.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"aegis coin",
+#	"description":"nullifies all damage for one turn"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_cocc",
+#	"texture":"res://Sprites/shop/items/coconut candy.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"coconut candy",
+#	"description":"doubles values of submit dice"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_cocc",
+#	"texture":"res://Sprites/shop/items/coconut candy.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"coconut candy",
+#	"description":"doubles values of submit dice"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_cocc",
+#	"texture":"res://Sprites/shop/items/coconut candy.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"coconut candy",
+#	"description":"doubles values of submit dice"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_cocc",
+#	"texture":"res://Sprites/shop/items/coconut candy.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"coconut candy",
+#	"description":"doubles values of submit dice"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_dicf",
+#	"texture":"res://Sprites/shop/items/dictated fate.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"dictated fate dice",
+#	"description":"set one dice to its highest value"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_rage",
+#	"texture":"res://Sprites/shop/items/damage potion.png",
+#	"price":50,
+#	"use_type":2,
+#	"long_name":"rage potion",
+#	"description":"Give player attack stat boost for 3 battles"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_disd",
+#	"texture":"res://Sprites/shop/items/disarm dust.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"disarm dust",
+#	"description":"disarms targeted enemy for 3 turns"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_help",
+#	"texture":"res://Sprites/shop/items/health potion.png",
+#	"price":0,
+#	"use_type":2,
+#	"long_name":"heal power potion",
+#	"description":"this potion buffs your heal power for 3 battles"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_onet",
+#	"texture":"res://Sprites/shop/items/one arm tie.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"one-arm tie",
+#	"description":"makes targeted enemy take one less action per turn"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_rewi",
+#	"texture":"res://Sprites/shop/items/rewind.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"rewind",
+#	"description":"reroll all dice in hand"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_rewi",
+#	"texture":"res://Sprites/shop/items/rewind.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"rewind",
+#	"description":"reroll all dice in hand"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_rewi",
+#	"texture":"res://Sprites/shop/items/rewind.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"rewind",
+#	"description":"reroll all dice in hand"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_ship",
+#	"texture":"res://Sprites/shop/items/shield potion.png",
+#	"price":0,
+#	"use_type":2,
+#	"long_name":"shield power potion",
+#	"description":"this potion buffs your shiled power for 3 turns"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_smok",
+#	"texture":"res://Sprites/shop/items/smokescreen.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"smokescreen",
+#	"description":"adds possibility for enemy to miss attacks"
+#	},
+#		{
+#	"item_code":2,
+#	"item_name":"ite_smok",
+#	"texture":"res://Sprites/shop/items/smokescreen.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"smokescreen",
+#	"description":"adds possibility for enemy to miss attacks"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_smok",
+#	"texture":"res://Sprites/shop/items/smokescreen.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"smokescreen",
+#	"description":"adds possibility for enemy to miss attacks"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_smok",
+#	"texture":"res://Sprites/shop/items/smokescreen.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"smokescreen",
+#	"description":"adds possibility for enemy to miss attacks"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_smok",
+#	"texture":"res://Sprites/shop/items/smokescreen.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"smokescreen",
+#	"description":"adds possibility for enemy to miss attacks"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_wead",
+#	"texture":"res://Sprites/shop/items/weakness dust.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"weakness dust",
+#	"description":"makes targeted enemy's attacks weaker"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_wead",
+#	"texture":"res://Sprites/shop/items/weakness dust.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"weakness dust",
+#	"description":"makes targeted enemy's attacks weaker"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_trad",
+#	"texture":"res://Sprites/shop/items/trap disarmer.png",
+#	"price":0,
+#	"use_type":1,
+#	"long_name":"trap disarmer",
+#	"description":"disarms traps completing the key and rendering it useless"
+#	},
+#	{
+#	"item_code":2,
+#	"item_name":"ite_cure",
+#	"texture":"res://Sprites/shop/items/cure potion.png",
+#	"price":20,
+#	"use_type":1,
+#	"long_name":"cure potion",
+#	"description":" this potion cures all negative status effects when used"
+#	},
+#	{
+#	"item_code":0,
+#	"item_name":"fir_dice",
+#	"texture":"res://Sprites/Dice/one fire dice.png",
+#	"none_texture":"res://Sprites/Dice/none fire dice.png",
+#	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+#	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+#	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+#	"mini_texture":"res://sprites/mini fire dice.png",
+#	"price":30,
+#	"upgrade_level":6,
+#	"animation_target":"target",
+#	"type":Dice.DiceType.FIRE,
+#	"effect":Status_Library.StatusCondition.BURN,
+#	"element":Dice.DamageElement.FIRE,
+#	"long_name":"Fire Dice",
+#	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
+#	},
+#	{
+#	"item_code":0,
+#	"item_name":"fir_dice",
+#	"texture":"res://Sprites/Dice/one fire dice.png",
+#	"none_texture":"res://Sprites/Dice/none fire dice.png",
+#	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+#	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+#	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+#	"mini_texture":"res://sprites/mini fire dice.png",
+#	"price":30,
+#	"upgrade_level":6,
+#	"animation_target":"target",
+#	"type":Dice.DiceType.FIRE,
+#	"effect":Status_Library.StatusCondition.BURN,
+#	"element":Dice.DamageElement.FIRE,
+#	"long_name":"Fire Dice",
+#	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
+#	},
+#	{
+#	"item_code":0,
+#	"item_name":"fir_dice",
+#	"texture":"res://Sprites/Dice/one fire dice.png",
+#	"none_texture":"res://Sprites/Dice/none fire dice.png",
+#	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+#	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+#	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+#	"mini_texture":"res://sprites/mini fire dice.png",
+#	"price":30,
+#	"upgrade_level":6,
+#	"animation_target":"target",
+#	"type":Dice.DiceType.FIRE,
+#	"effect":Status_Library.StatusCondition.BURN,
+#	"element":Dice.DamageElement.FIRE,
+#	"long_name":"Fire Dice",
+#	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"
+#	}]
 
 var dice_deck:Array[Dictionary] = [
 	{
@@ -430,7 +477,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -448,7 +495,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -466,7 +513,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -484,7 +531,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -502,7 +549,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -520,7 +567,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -538,7 +585,7 @@ var dice_deck:Array[Dictionary] = [
 	"three_texture":"res://Sprites/Dice/three attack face.png",
 	"four_texture":"res://Sprites/Dice/four attack face.png",
 	"price":25,
-	"upgrade_level":0,
+"upgrade_level":6,
 	"animation_target":"target",
 	"type":Dice.DiceType.ATTACK,
 	"effect":false,
@@ -735,6 +782,10 @@ var charm_inventory:Array[Dictionary] = [
 #	}
 ]
 
+var skills_inventory:Array[Dictionary] = [
+	
+]
+
 
 func getset_charm_inventory(choice:String,input_data):
 	match choice:
@@ -747,8 +798,13 @@ func getset_charm_inventory(choice:String,input_data):
 				return false
 		_:
 			print("no:Player_Resoure")
-	
-	
+
+func getset_skill_inventory(choice:String, input_data):
+	match choice:
+		"get":
+			return skills_inventory.duplicate(true)
+		_:
+			print("no:Player_Resoure")
 
 
 func getset_dice_deck(choice:String,input_data):

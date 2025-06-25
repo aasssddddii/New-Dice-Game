@@ -18,7 +18,9 @@ enum StatusCondition{
 	PROTECT,#13
 	HEALBUFF,#14
 	SMOKE,#15
-	NONE#16
+	NONE,#16
+	PLIGHTNING,#17
+	PICE#18
 }
 
 var status_prefab:PackedScene = load("res://Prefabs/game_ui/status_template.tscn")

@@ -39,7 +39,7 @@ func generate_grid():
 		#print("item: ", item)
 		var next_item = game_manager.item_prefab.instantiate()
 		add_child(next_item)
-		next_item.setup_item(item,trade_side,0)
+		next_item.setup_item(item,trade_side)
 	inventory_changed.emit(inventory_data)
 	
 func clear_grid():
@@ -81,7 +81,7 @@ func manage_grid(is_new:bool,item_data:Dictionary):
 		var next_item:Shop_Item = game_manager.item_prefab.instantiate()
 		add_child(next_item)
 		#inventory_data.append(item_data)
-		next_item.setup_item(item_data,trade_side,1)
+		next_item.setup_item(item_data,trade_side)
 		#inventory_data.append(next_item.item_data)
 		
 	

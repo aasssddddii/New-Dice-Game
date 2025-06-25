@@ -477,6 +477,10 @@ func do_attack_pattern():
 							send_attack["status_effect"] = Status_Library.StatusCondition.BLEED
 						Dice.DamageElement.FIRE:
 							send_attack["status_effect"] = Status_Library.StatusCondition.BURN
+						Dice.DamageElement.LIGHTNING:
+							send_attack["status_effect"] = Status_Library.StatusCondition.PLIGHTNING
+						Dice.DamageElement.ICE:
+							send_attack["status_effect"] = Status_Library.StatusCondition.PICE
 						Dice.DamageElement.NONE:
 							pass
 						_:

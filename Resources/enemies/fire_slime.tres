@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://c7krwb51o1gne"]
+
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_0jcqr"]
+[ext_resource type="Texture2D" uid="uid://c1vt0518rxwyw" path="res://Sprites/Dice/one fire dice.png" id="1_diu15"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_yqbji"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_e0rc5"]
+[ext_resource type="Texture2D" uid="uid://dcwh1o26s1o88" path="res://Sprites/enemies/enemy fire_slime.png" id="4_5lev5"]
+
+[resource]
+script = ExtResource("1_0jcqr")
+enemy_name = "fire slime"
+enemy_description = "fire elemental that attacks once per turn"
+max_health = 15
+health = 15
+shield = 0
+heal_power = 0
+attack = 1
+defend = 1
+attacks = 1
+reward_gold = 10
+basic_attack_damage_type = 0
+weaknesses = {
+0: false,
+1: false,
+2: false,
+3: false,
+5: false
+}
+resistantses = {
+0: true,
+1: false,
+2: false,
+3: true,
+5: false
+}
+attack_texture = ExtResource("1_diu15")
+defend_texture = ExtResource("3_e0rc5")
+blank_texture = ExtResource("2_yqbji")
+main_texture = ExtResource("4_5lev5")
+possible_turn_actions = Array[int]([0, 1, 3])

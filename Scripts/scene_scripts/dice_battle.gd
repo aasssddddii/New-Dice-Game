@@ -36,6 +36,7 @@ var reward
 
 var is_trap_battle:bool = false
 var trap_disarmed:bool = false
+var battle_over:bool = false
 
 #ui
 @onready var ui_hp = $player_layer/player/VBoxContainer/ui_hp/ui_text
@@ -824,15 +825,33 @@ func take_enemy_turn():
 func hit_player(attack_data:Dictionary):
 	#print("player takes ", attack_data["damage"]," damage")
 	#print("adding status effect to player: ", attack_data["status_effect"])
+	#VVVdecide if this is too much resistences VVV
+	match attack_data["status_effect"]:
+		Status_Library.StatusCondition.POISON:
+			if game_manager.player_resource.poison_resist >= 1:
+				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.poison_resist)
+		Status_Library.StatusCondition.BLEED:
+			if game_manager.player_resource.bleed_resist >= 1:
+				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.bleed_resist)
+		Status_Library.StatusCondition.BURN:
+			if game_manager.player_resource.fire_resist >= 1:
+				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.fire_resist)
+		Status_Library.StatusCondition.PLIGHTNING:
+			if game_manager.player_resource.lightning_resist >= 1:
+				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.lightning_resist)
+		Status_Library.StatusCondition.PICE:
+			if game_manager.player_resource.ice_resist >= 1:
+				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.ice_resist)
+			
 	if !status_conditions.has(Status_Library.StatusCondition.PROTECT):
 		if status_conditions.has(Status_Library.StatusCondition.SMOKE):
 			if game_manager.rng.randi_range(1,20) > (5 * (1*status_conditions.count(Status_Library.StatusCondition.SMOKE))):#attack goes through check
-				if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
+				if attack_data["status_effect"] != Status_Library.StatusCondition.NONE && attack_data["status_effect"] != Status_Library.StatusCondition.PLIGHTNING && attack_data["status_effect"] != Status_Library.StatusCondition.PICE:
 					add_status_conditions(attack_data["status_effect"])
 				
 				damage_player(attack_data["damage"],attack_data["from_enemy"],false)
 		else:
-			if attack_data["status_effect"] != Status_Library.StatusCondition.NONE:
+			if attack_data["status_effect"] != Status_Library.StatusCondition.NONE && attack_data["status_effect"] != Status_Library.StatusCondition.PLIGHTNING && attack_data["status_effect"] != Status_Library.StatusCondition.PICE:
 				add_status_conditions(attack_data["status_effect"])
 			
 			damage_player(attack_data["damage"],attack_data["from_enemy"],false)
@@ -952,76 +971,47 @@ func add_status_conditions(value):
 		status_changed.emit(status_conditions)
 		
 func do_status_effects():
-	var condition_index:int
-	for status in status_conditions.duplicate():
-		#do status stuff ADD DMG Here
-#		match status:
-#			Status_Library.StatusCondition.BLEED:
-#				pass
-#			Status_Library.StatusCondition.REFLECT:
-#				pass
-#			Status_Library.StatusCondition.DISARM:
-#				pass
-#			Status_Library.StatusCondition.STUN:
-#				pass
-#			Status_Library.StatusCondition.POISON:
-#				pass
-#			Status_Library.StatusCondition.FROZEN:
-#				pass
-#			Status_Library.StatusCondition.ATKBUFF:
-#				pass
-#			Status_Library.StatusCondition.ATKDEBUFF:
-#				pass
-#			Status_Library.StatusCondition.DEFBUFF:
-#				pass
-#			Status_Library.StatusCondition.DEFDEBUFF:
-#				pass
-#			Status_Library.StatusCondition.CURE:
-#				pass
-#			Status_Library.StatusCondition.BURN:
-#				pass
-		if status != -1:
-			var status_ref = game_manager.status_lib.get_status_data(status)
-			if status_ref["name"] == "bleed" || status_ref["name"] == "poison":
-				damage_player(status_ref["damage"],null, true)
+	if !battle_over:
+		var condition_index:int
+		#VVVVVMaybe change to add up all damages from statuses for effective resistance checkingVVVVV
+		for status in status_conditions.duplicate():
+			#do status stuff
+			if status != -1:
+				var status_ref = game_manager.status_lib.get_status_data(status)
+				if status_ref["name"] == "bleed" || status_ref["name"] == "poison":
+					damage_player(status_ref["damage"],null, true)
+				else:
+					var output_damage:int
+					output_damage = status_ref["damage"]
+					match status_ref["name"]:
+						"fire":
+							if game_manager.player_resource.fire_resist >=1:
+								output_damage -= output_damage/(5-game_manager.player_resource.fire_resist)
+						"bleed":
+							if game_manager.player_resource.bleed_resist >=1:
+								output_damage -= output_damage/(5-game_manager.player_resource.bleed_resist)
+						"poison":
+							if game_manager.player_resource.poison_resist >=1:
+								output_damage -= output_damage/(5-game_manager.player_resource.poison_resist)
+					damage_player(output_damage,null, false)
+			#minus 1 from timeout 
+			if status_timeout[condition_index] > 1:
+				status_timeout[condition_index] -=1
+			elif status == Status_Library.StatusCondition.REFLECT:
+				pass
 			else:
-				damage_player(status_ref["damage"],null, false)
-		#minus 1 from timeout 
-		if status_timeout[condition_index] > 1:
-			status_timeout[condition_index] -=1
-		elif status == Status_Library.StatusCondition.REFLECT:
-			pass
-		else:
-			#var remove_index = status_conditions.find(status)
-			print("removing condition at condition index sanity check it : ",condition_index)
-			status_conditions.remove_at(condition_index)
-			status_timeout.remove_at(condition_index)
-			status_changed.emit(status_conditions)
-			condition_index-=1
-		condition_index+=1
-	print(name, ": statuses is now after DO: ",  status_conditions)
-	print(name, ": status timeout is now after DO: ",  status_timeout)
-	update_statuses()
-	#clean_up_statuses()
-	
-	
-#func clean_up_statuses():
-#	#var status_index:int
-#	var clean_status:Array[Status_Library.StatusCondition]
-#	var clean_timeout:Array[int]
-#
-#	for status in status_conditions:
-#		print("sanity check status = ", status)
-#		if status != -1:
-#			clean_status.append(status)
-#			clean_timeout.append(status_timeout[status_conditions.find(status)])
-#
-#	status_conditions = clean_status
-#	status_timeout = clean_timeout
-	
-	#print(name, ": statuses is now: ",  status_conditions)
-	#print(name, ": status timeout is now: ",  status_timeout)
-	
+				#var remove_index = status_conditions.find(status)
+				print("removing condition at condition index sanity check it : ",condition_index)
+				status_conditions.remove_at(condition_index)
+				status_timeout.remove_at(condition_index)
+				status_changed.emit(status_conditions)
+				condition_index-=1
+			condition_index+=1
+		print(name, ": statuses is now after DO: ",  status_conditions)
+		print(name, ": status timeout is now after DO: ",  status_timeout)
+		update_statuses()
+
+
 func update_statuses():
 	for status_container in status_grid.get_children():
 		status_container.update_status()
@@ -1040,6 +1030,7 @@ func cure_negative_effects():
 	update_statuses()
 
 func end_battle(win:bool):
+	battle_over = true
 	if win && !is_trap_battle:
 		#print("game continues: ", reward)
 		#set player inventory
@@ -1059,6 +1050,20 @@ func end_battle(win:bool):
 		if game_manager.player_resource.battle_gold >=1:
 			game_manager.player_resource.gold += game_manager.player_resource.battle_gold
 			battle_gold += game_manager.player_resource.battle_gold
+			
+		if game_manager.player_resource.iron_root >=1:
+			var iron_root_amount:int = (game_manager.player_resource.iron_root *2)
+			if game_manager.player_resource.health >= game_manager.player_resource.max_health:#if Max health
+				game_manager.player_resource.max_health += iron_root_amount
+				game_manager.player_resource.health += iron_root_amount
+				
+			elif game_manager.player_resource.health + iron_root_amount >= game_manager.player_resource.max_health:
+				game_manager.player_resource.health = game_manager.player_resource.max_health
+			else:
+				print("iron root amount: ", iron_root_amount)
+				print("player HP BEFORE: ", game_manager.player_resource.health)
+				game_manager.player_resource.health += iron_root_amount
+				print("player HP AFTER: ", game_manager.player_resource.health)
 			
 		var ui_summary = game_manager.ui_battle_summary.instantiate()
 		ui_summary.setup_summary({

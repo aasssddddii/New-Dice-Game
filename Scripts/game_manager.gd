@@ -34,7 +34,20 @@ func _ready():
 	#add_charm("cha_toxi")
 	#add_charm("cha_toxi")
 	add_charm("cha_mega")
-	add_charm("cha_vamp")
+	add_charm("cha_iron")
+	add_charm("cha_fire")
+	add_charm("cha_blee")
+	add_charm("cha_pois")
+	add_charm("cha_ligh")
+	add_charm("cha_icer")
+	add_charm("cha_inve")
+	add_skill("action_slot")
+	add_skill("swee_upgrade")
+	add_skill("layh_upgrade")
+	add_skill("swag_upgrade")
+	add_skill("seco_upgrade")
+#	add_skill("emer_upgrade")
+#	add_skill("char_upgrade")
 		
 #func default_checker(input_data):
 #	if dice_lib.all_dice[input_data["item_name"]] == input_data:
@@ -42,7 +55,6 @@ func _ready():
 #	else:
 #		return false
 	
-#LLO 6/18 Finishing adding charm functionality
 func add_charm(charm_name:String):
 	player_resource.charm_inventory.append(item_lib.get_charm_data(charm_name))
 	match charm_name:
@@ -77,9 +89,38 @@ func add_charm(charm_name:String):
 			player_resource.mega_debuff +=1
 		"cha_vamp":
 			player_resource.vamp_thread +=1
+		"cha_iron":
+			player_resource.iron_root +=1
+		"cha_fire":
+			player_resource.fire_resist += 1
+		"cha_blee":
+			player_resource.bleed_resist += 1
+		"cha_pois":
+			player_resource.poison_resist += 1
+		"cha_ligh":
+			player_resource.lightning_resist += 1
+		"cha_icer":
+			player_resource.ice_resist += 1
+		"cha_inve":
+			player_resource.investment += 1
 		_:
 			print("Charm not setup yet: game_manager.gd")
 	
-	
-	
+func add_skill(skill_name:String):
+	player_resource.skills_inventory.append(item_lib.get_skill_data(skill_name))
+	match skill_name:
+		"action_slot":
+			player_resource.action_slot_upgrade = true
+		"swee_upgrade":
+			player_resource.sweeping_edge_upgrade = true
+		"layh_upgrade":
+			player_resource.lay_on_hands_upgrade = true
+		"swag_upgrade":
+			player_resource.swagger_upgrade = true
+		"seco_upgrade":
+			player_resource.second_skin_upgrade = true
+		"emer_upgrade":
+			player_resource.emergency_cache_upgrade = true
+		"char_upgrade":
+			player_resource.charm_sync_upgrade = true
 	

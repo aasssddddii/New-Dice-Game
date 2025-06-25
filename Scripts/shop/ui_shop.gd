@@ -27,6 +27,8 @@ var player_side_grid_container
 var current_shop_type:level_gen.Shop_Type
 var shop_data:Dictionary
 
+var player_side_value:int
+var shop_side_value:int
 
 
 func setup_shop(input_data:Dictionary):
@@ -51,6 +53,8 @@ func create_shop():
 			shop_name = "Item Shop"
 		POI_Library.Shop_Type.COMBO:
 			shop_name = "Combo Shop"
+		POI_Library.Shop_Type.CHARM:
+			shop_name = "Charm Shop"
 	
 	for item in shop_data["inventory"]:
 		export_inventory.append(item)
@@ -74,6 +78,7 @@ func setup_player_side():#sets up player side of shop
 	
 func create_player_inventory():
 	var inventory_data = game_manager.player_resource.getset_inventory("get",null)
+	#print("SANITY CHECK inventory before coin?: ", inventory_data)
 	player_side_grid_container = create_named_grid_container(inventory_data,player_side_inventory,"Inventory","player")
 	
 
@@ -95,40 +100,115 @@ func change_item_side(item:Shop_Item):
 	match from_side:
 		"shop_side":
 			move_side = "shop_trade"
+			#if item.item_data["item_code"] != 1:
 			shop_side_grid_container.manage_inventory("remove",item_data)
 		"player_side":
-			move_side = "player_trade"
-			player_side_grid_container.manage_inventory("remove",item_data)
+			if item_data["item_name"] == "ite_pcoi":#if its the player coin
+				move_side = "player_trade"
+				print("move side: ", move_side)
+			else:
+				move_side = "player_trade"
+				player_side_grid_container.manage_inventory("remove",item_data)
 		"shop_trade":
 			move_side = "shop_side"
 			shop_side_trade.manage_inventory("remove",item_data)
 		"player_trade":
-			move_side = "player_side"
-			player_side_trade.manage_inventory("remove",item_data)
+			if item_data["item_name"] == "ite_pcoi":#if its the player coin
+				move_side = "player_side"
+				print("move side: ", move_side)
+			else:
+				move_side = "player_side"
+				player_side_trade.manage_inventory("remove",item_data)
 			
 	item.get_node_or_null("..").update_grid()
 	#print("item clicked on ",item.active_trade_side," side moving to ", move_side)
 
-	
+	var need_to_subtract_gold:int
 	match move_side:
 		"shop_side":
 			shop_side_grid_container.add_item_to_grid(item_data)
 		"player_side":
-			player_side_grid_container.add_item_to_grid(item_data)
+			if item_data["item_code"] == 5:
+				#calculate how much gold to put back in player inventory
+				var gold_to_go_to_player:int
+				if shop_side_value < item_data["coin_amount"] && shop_side_value != 0:
+					print("SANITY shop_side value: ", shop_side_value)
+					gold_to_go_to_player = item_data["coin_amount"]-shop_side_value
+					item_data["coin_amount"]-=gold_to_go_to_player
+					item.update_quantity()
+					
+					var sending_coin = {
+					"item_code":5,
+					"item_name":"ite_pcoi",
+					"texture":"res://Sprites/shop/items/player_gold.png",
+					"price":0,
+					"use_type":1,
+					"coin_amount":gold_to_go_to_player,
+					"long_name":"player coin",
+					"description":"allows player to pay for shop items with gold"
+					}
+					player_side_grid_container.add_item_to_grid(sending_coin)
+				else:
+					#RETURN ALL GOLD TO PLAYER HERE and queue free gold item
+					player_side_grid_container.add_item_to_grid(item_data)
+					player_side_trade.manage_inventory("remove",item_data)
+					item.queue_free()
+					pass
+					
+			else:
+				player_side_grid_container.add_item_to_grid(item_data)
 		"shop_trade":
 			shop_side_trade.add_item_to_grid(item_data)
 		"player_trade":
-			player_side_trade.add_item_to_grid(item_data)
+			#maybe do something here for player coin
+			if item_data["item_code"] == 5:
+				#Calculate the gold neded from the trade side
+				var player_trade_gold_item
+				for item_node in player_side_trade.get_children():
+					if item_node.item_data["item_code"]==5:
+						player_trade_gold_item = item_node
+						
+				var gold_in_player_side:int
+				if player_trade_gold_item != null:
+					gold_in_player_side = player_trade_gold_item.item_data["coin_amount"]
+					
+				print("player side value: ",player_side_value )
+				print("SANITY is coin amount bigger: ",item_data["coin_amount"] - shop_side_value - gold_in_player_side >= 0 && gold_in_player_side < shop_side_value - player_side_value && item_data["coin_amount"] >= shop_side_value)
+				if item_data["coin_amount"] - shop_side_value - gold_in_player_side >= 0 && gold_in_player_side < shop_side_value - player_side_value && item_data["coin_amount"] >= shop_side_value:
+					need_to_subtract_gold = shop_side_value - gold_in_player_side - player_side_value
+					
+					var sending_coin:Dictionary = {
+						"item_code":5,
+						"item_name":"ite_pcoi",
+						"texture":"res://Sprites/shop/items/player_gold.png",
+						"price":0,
+						"use_type":1,
+						"coin_amount":need_to_subtract_gold,
+						"long_name":"player coin",
+						"description":"allows player to pay for shop items with gold"
+						}
+					if shop_side_value > 0 && gold_in_player_side < shop_side_value - player_side_value:
+						player_side_trade.add_item_to_grid(sending_coin)
+			else:
+				player_side_trade.add_item_to_grid(item_data)
+			
+			if need_to_subtract_gold > 0:
+				item_data["coin_amount"] -= need_to_subtract_gold
+				item.update_quantity()
+				
+				
 	update_trade_values()
 			
 	
 func update_trade_values():
-	var player_side_value:int
-	var shop_side_value:int
+	player_side_value=0
+	shop_side_value=0
 	#calculate player side
+	print("player trade inventory: " ,player_side_trade.inventory_data)
 	for item in player_side_trade.inventory_data:
-		print("player item price: " , item["price"]/2)
 		player_side_value += item["price"]/2
+		if item["item_code"] == 5:
+			player_side_value += item["coin_amount"]
 		
 	for item in shop_side_trade.inventory_data:
 		shop_side_value += item["price"]
@@ -170,13 +250,8 @@ func _on_button_button_down():#SUBMIT button
 				for item_data in combo_inventory:
 					match item_data["item_code"]:
 						0:#Dice
-							if game_manager.dice_lib.all_dice[item_data["item_name"]] == item_data:
-								print("defualt dice detected")
-								converted_inventory.append({
-									"item_code":0,
-									"default":true,
-									"item_name":item_data["item_name"]
-									})
+							print("item data: ", item_data)
+							pass
 						1:#Skills
 							print("item data: ", item_data)
 							pass
@@ -187,9 +262,36 @@ func _on_button_button_down():#SUBMIT button
 				game_manager.player_resource.getset_inventory("set",converted_inventory)
 		POI_Library.Shop_Type.SKILL:
 			print("SKILL Evaluatiing: ", shop_side_trade.inventory_data)
-			#broken due to not alowing dice deck to be sold VVV
-			#game_manager.player_resource.getset_dice_deck("set",player_side_inventory.get_node_or_null("Dice Deck/GridContainer").inventory_data)
-			pass
+			var investment_boost:int = game_manager.player_resource.investment
+			#give player skills goes hereVVV
+			for skill in shop_side_trade.inventory_data:
+				match skill["item_name"]:
+					"atk_upgrade":
+						game_manager.player_resource.attack += 2 + investment_boost
+					"def_upgrade":
+						game_manager.player_resource.defend += 2 + investment_boost
+					"hel_upgrade":
+						game_manager.player_resource.heal_power += 2 + investment_boost
+			
+			
+			#set player gold amount to gold in shop here VVV
+			var player_shop_grid = get_node_or_null("player_side/Inventory/GridContainer")
+			var player_shop_inventory
+			if player_shop_grid != null:
+				player_shop_inventory = player_shop_grid.inventory_data
+				#print("player side inventory on submit: ", player_shop_inventory)
+				var inventory_index:int
+				for item in player_shop_inventory:
+					if item["item_code"] == 5:
+						game_manager.player_resource.gold = item["coin_amount"]
+						#delete gold item from inventory here VVV
+						player_shop_inventory.remove_at(inventory_index)
+						inventory_index-=1
+						
+					inventory_index+=1
+				#Set player inventory hereVVV
+				game_manager.player_resource.getset_inventory("set",player_shop_inventory)
+
 #		POI_Library.Shop_Type.UPGRADE:
 #			pass
 		POI_Library.Shop_Type.ITEM:#need specialiced way to give player payed for items + Dice

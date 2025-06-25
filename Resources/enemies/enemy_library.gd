@@ -8,6 +8,7 @@ var trap_prefab = load("res://Prefabs/enemies/trap_template.tscn")
 var bat_enemy_resource:Resource = preload("res://Resources/enemies/bat.tres")
 var wolf_enemy_resource:Resource = preload("res://Resources/enemies/wolf.tres")
 var slime_enemy_resource:Resource = preload("res://Resources/enemies/slime.tres")
+var fire_slime_enemy_resource:Resource = preload("res://Resources/enemies/fire_slime.tres")
 var snake_enemy_resource:Resource = preload("res://Resources/enemies/snake.tres")
 var ice_wolf_enemy_resource:Resource = preload("res://Resources/enemies/ice_wolf.tres")
 var wizard_enemy_resource:Resource = preload("res://Resources/enemies/wizard.tres")
@@ -31,7 +32,7 @@ var trap_enemy_resource:Resource = preload("res://Resources/enemies/trap.tres")
 #	"wizard":wizard_enemy_resource,
 #}
 var all_enemies:Dictionary = {
-	"snake":snake_enemy_resource,
+	"ice_wolf":ice_wolf_enemy_resource,
 }
 var all_minibosses:Dictionary = {
 	"minotaur":minotaur_enemy_resource

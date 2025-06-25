@@ -5,6 +5,7 @@ enum Shop_Type{
 	DICE,
 	SKILL,
 	ITEM,
+	CHARM,
 	COMBO
 }
 enum Event_Type{

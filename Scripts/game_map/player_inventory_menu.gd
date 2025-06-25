@@ -18,6 +18,8 @@ var game_manager = GameManager
 @onready var deck_inventory_grid = $content/deck/inventory_grid/ScrollContainer/GridContainer
 #charm grid
 @onready var charm_grid = $content/charm/PanelContainer/ScrollContainer/GridContainer
+#skill grid
+@onready var skill_grid = $content/charm/SkillContainer/ScrollContainer/GridContainer
 #upgrade grids
 @onready var upgrade_deck_grid = $content/upgrade/deck_grid/ScrollContainer/GridContainer
 @onready var upgrade_inventory_grid = $content/upgrade/inventory_grid/ScrollContainer/GridContainer
@@ -77,6 +79,7 @@ func setup_deck_inventory():
 	
 func open_charm():
 	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory,"charm")
+	skill_grid.setup_inventory(game_manager.player_resource.skills_inventory,"skill")
 	
 #close stats menu
 func _on_close_button_down():

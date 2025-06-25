@@ -11,7 +11,7 @@ var active_trade_side:String = ""
 @onready var ui_shop = $"../../../.."
 
 # Maybe REMOVE Quantity
-func setup_item(input_data:Dictionary,trade_side:String,quantity:int):
+func setup_item(input_data:Dictionary,trade_side:String):
 	
 	
 	active_trade_side = trade_side
@@ -160,9 +160,17 @@ func update_quantity():
 	var quantity_label = $quantity
 	#print("parent inventory: ", get_parent().get_inventory())
 	var quantity = get_parent().get_inventory().count(item_data)
-	#print("Quantity Check: ", quantity)
+	if item_data["item_name"] == "ite_pcoi" :#&& active_trade_side == "player":
+		quantity = item_data["coin_amount"]
+		
+	#VVV Needs to be refined to include the items put up on the player side
+#	if item_data["item_name"] == "ite_pcoi" && active_trade_side == "player_trade":
+#		quantity = ui_shop.shop_side_value
 	
-	if quantity > 0:
+#	if item_data["item_code"] == 1 && active_trade_side == "shop":#if skill and in shop
+#		quantity_label.visible = false
+	
+	if quantity > 0 || item_data["item_code"] == 5:#player coin added for testing here
 		quantity_label.text = var_to_str(quantity)
 	else:
 		queue_free()
@@ -190,7 +198,12 @@ func _on_mouse_entered():
 		"dice_altar":
 			ui_shop.ui_item_description.setup_description(item_data)
 		"charm":
-			var inventory_description_location:Node2D = $"../../../../../../description_locations/charm"
+			#print("active trade side: ",active_trade_side)
+			var inventory_description_location:Node2D
+			if active_trade_side == "skill":
+				inventory_description_location = $"../../../../../../description_locations/skills"
+			else:
+				inventory_description_location = $"../../../../../../description_locations/charm"
 			ui_shop.ui_item_description.relocate(inventory_description_location)
 			ui_shop.ui_item_description.setup_description(item_data)
 		"battle_charm":

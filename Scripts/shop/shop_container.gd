@@ -16,6 +16,21 @@ func setup_inventory(input_data:Array[Dictionary],setup_side:String):
 	
 	inventory_data = input_data.duplicate(true)
 	trade_side = setup_side #"deck_inventory"
+	#check for player inventory side
+	#print("trade side: ", trade_side)
+	if trade_side == "player":
+		#add coin item
+		inventory_data.append({
+	"item_code":5,
+	"item_name":"ite_pcoi",
+	"texture":"res://Sprites/shop/items/player_gold.png",
+	"price":0,
+	"use_type":1,
+	"coin_amount":game_manager.player_resource.gold,
+	"long_name":"player coin",
+	"description":"allows player to pay for shop items with gold"
+	})
+	
 	generate_grid()
 	
 #func scrub_default_dice(input_data:Array[Dictionary]):
@@ -41,7 +56,7 @@ func generate_grid():
 		#print("item: ", item)
 		var next_item = game_manager.item_prefab.instantiate()
 		add_child(next_item)
-		next_item.setup_item(item,trade_side,0)
+		next_item.setup_item(item,trade_side)
 	inventory_changed.emit(inventory_data)
 	
 func clear_grid():
@@ -53,12 +68,18 @@ func update_grid():
 		child.update_quantity()
 
 func add_item_to_grid(input_data:Dictionary):
-	if inventory_data.find(input_data) != -1:
+	if inventory_data.find(input_data) != -1 && input_data["item_code"]!=5:
 		print("Shop sanity FOUND in moving inventory")
 		manage_grid(false,input_data)
 	else:
-		print("Shop sanity did NOT find in moving inventory")
-		manage_grid(true,input_data)
+		if input_data["item_code"]==5:
+			if !get_children().any(func(item): return item.item_data["item_code"] == 5):
+				manage_grid(true,input_data)
+			else:
+				manage_grid(false,input_data)
+		else:
+			print("Shop sanity did NOT find in moving inventory")
+			manage_grid(true,input_data)
 
 func remove_from_grid(item_data:Dictionary):
 	if inventory_data.find(item_data) != -1:
@@ -68,7 +89,21 @@ func remove_from_grid(item_data:Dictionary):
 	generate_grid()
 
 func manage_grid(is_new:bool,item_data:Dictionary):
-	manage_inventory("add",item_data)
+	if item_data["item_code"] != 5:
+		manage_inventory("add",item_data)
+	else:
+		var player_coin_in_trade_node
+		if get_children().any(func(item): return item.item_data["item_code"] == 5) && !is_new:
+			for item_node in get_children():
+				if item_node.item_data["item_code"] == 5:
+					player_coin_in_trade_node = item_node
+					break
+			
+			player_coin_in_trade_node.item_data["coin_amount"] += item_data["coin_amount"]
+			player_coin_in_trade_node.update_quantity()
+		else:
+			manage_inventory("add",item_data)
+	
 	if !is_new:
 		var item_found:bool = false
 		for item in get_children():
@@ -83,7 +118,7 @@ func manage_grid(is_new:bool,item_data:Dictionary):
 		var next_item:Shop_Item = game_manager.item_prefab.instantiate()
 		add_child(next_item)
 		#inventory_data.append(item_data)
-		next_item.setup_item(item_data,trade_side,1)
+		next_item.setup_item(item_data,trade_side)
 		#inventory_data.append(next_item.item_data)
 		
 	
@@ -95,14 +130,19 @@ func manage_inventory(choice:String,input_data):
 	match choice:
 		"add":
 			if typeof(input_data) == TYPE_DICTIONARY:
-				inventory_data.append(input_data)
+#				if input_data["item_name"]=="ite_pcoi":
+#					pass
+#				else:
+					inventory_data.append(input_data)
 			else:
 				print("error on item data")
 		"remove":
-			print("inventory BEFORE Sanity: ", inventory_data)
+			#print("inventory BEFORE Sanity: ", inventory_data)
 			if inventory_data.find(input_data) != -1:
 				inventory_data.remove_at(inventory_data.find(input_data))
-				print("inventory AFTER Sanity: ", inventory_data)
+				#print("inventory AFTER Sanity: ", inventory_data)
+			elif input_data["item_name"]=="ite_pcoi":
+				pass
 			else:
 				print("error on item data cannot find in inventory")
 				

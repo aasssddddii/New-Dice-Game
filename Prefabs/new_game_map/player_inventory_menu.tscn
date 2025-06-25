@@ -28,14 +28,13 @@ script = ExtResource("1_7imj8")
 [node name="content" type="Node2D" parent="."]
 
 [node name="charm" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
-visible = false
 script = ExtResource("2_h8ajs")
 ui_item_description = NodePath("../../ui_item_desciption")
 
 [node name="PanelContainer" type="PanelContainer" parent="content/charm"]
-offset_left = 634.0
+offset_left = 67.6924
 offset_top = 182.0
-offset_right = 1122.0
+offset_right = 555.692
 offset_bottom = 565.0
 scale = Vector2(1.5, 1.5)
 
@@ -59,6 +58,34 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 45
 text = "charms"
+
+[node name="SkillContainer" type="PanelContainer" parent="content/charm"]
+offset_left = 876.923
+offset_top = 182.0
+offset_right = 1364.92
+offset_bottom = 565.0
+scale = Vector2(1.5, 1.5)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="content/charm/SkillContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="content/charm/SkillContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+script = ExtResource("10_cy6va")
+
+[node name="skill_title" type="Label" parent="content/charm"]
+offset_left = 936.923
+offset_top = 62.0
+offset_right = 1409.92
+offset_bottom = 148.0
+theme = ExtResource("11_phdiu")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 45
+text = "skills"
 
 [node name="stats" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
 visible = false
@@ -375,6 +402,7 @@ text = "-"
 horizontal_alignment = 1
 
 [node name="upgrade" type="Node2D" parent="content" node_paths=PackedStringArray("ui_item_description")]
+visible = false
 script = ExtResource("2_h8ajs")
 ui_item_description = NodePath("../../ui_item_desciption")
 
@@ -488,7 +516,10 @@ position = Vector2(992, 208)
 position = Vector2(198, 208)
 
 [node name="charm" type="Node2D" parent="description_locations"]
-position = Vector2(109.231, 208)
+position = Vector2(990.769, 208)
+
+[node name="skills" type="Node2D" parent="description_locations"]
+position = Vector2(118.462, 208)
 
 [connection signal="mouse_entered" from="content/stats/stats_container/health" to="." method="_on_health_mouse_entered"]
 [connection signal="mouse_exited" from="content/stats/stats_container/health" to="." method="_on_health_mouse_exited"]
