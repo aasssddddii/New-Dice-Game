@@ -161,7 +161,7 @@ func setup_poi(input_data):
 			#Generate enemies
 			var enemies:Array[Resource]
 			
-			for i in gamemanager.rng.randi_range(1,1):#(1,3):
+			for i in gamemanager.rng.randi_range(3,3):#(1,3):
 				enemies.append(gamemanager.enemy_lib.get_random_enemy())
 			#give selection image
 			var send_img = ""
@@ -189,8 +189,9 @@ func setup_poi(input_data):
 #			"shop_type":Shop_Type.DICE,
 #			"inventory":[]
 #			}
+			# LLO 6/26 Making shop Dynamic
 			#Hard Coded SHop type need to change to dynamic VVV
-			output_data["shop_type"] = gamemanager.poi_lib.Shop_Type.SKILL
+			output_data["shop_type"] = gamemanager.poi_lib.Shop_Type.CHARM
 			
 			
 			var input_inventory = create_shop(output_data["shop_type"])
@@ -298,9 +299,33 @@ func create_shop(shop_type:POI_Library.Shop_Type):
 			for i in gamemanager.rng.randi_range(3,20):#NEED to change to be dependent on how far the player is in the game
 				var next_item = gamemanager.item_lib.all_items.values().pick_random()
 				shop_inventory.append(next_item)
-#		Shop_Type.COMBO:
-#			pass
-	
+		gamemanager.poi_lib.Shop_Type.CHARM:
+			for i in gamemanager.rng.randi_range(3,20):#NEED to change to be dependent on max charms
+				var next_item = gamemanager.item_lib.all_charms.values().pick_random()
+				shop_inventory.append(next_item)
+			pass
+		gamemanager.poi_lib.Shop_Type.COMBO:
+			for i in gamemanager.rng.randi_range(3,20):#NEED to change to be dependent on max charms
+				var next_item = gamemanager.item_lib.all_charms.values().pick_random()
+				shop_inventory.append(next_item)
+			for i in gamemanager.rng.randi_range(3,20):#NEED to change to be dependent on how far the player is in the game
+				var next_item = gamemanager.item_lib.all_items.values().pick_random()
+				shop_inventory.append(next_item)
+			for i in gamemanager.rng.randi_range(3,20):#NEED to change to be dependent on how far the player is in the game
+				var next_dice = gamemanager.dice_lib.all_dice.values().pick_random()
+				shop_inventory.append(next_dice)
+			for i in gamemanager.rng.randi_range(3,10):
+				shop_inventory.append(gamemanager.item_lib.all_basic_skills.values().pick_random())
+			for i in gamemanager.rng.randi_range(3,3):#(1,3):
+				var available_skills = gamemanager.item_lib.all_skill_upgrades.values().duplicate(true)
+				var picked_skill_upgrade = available_skills.pick_random()
+				while (gamemanager.player_resource.skills_inventory.has(picked_skill_upgrade) || shop_inventory.has(picked_skill_upgrade)) && available_skills != []:
+					available_skills.remove_at(available_skills.find(picked_skill_upgrade))
+					print("removing skill: ", picked_skill_upgrade, " skills left after removal: ", available_skills)
+					picked_skill_upgrade = available_skills.pick_random()
+				if picked_skill_upgrade != null:
+					shop_inventory.append(picked_skill_upgrade)
+				
 	#print("next shop inventory: ", shop_inventory)
 	return shop_inventory.duplicate()
 

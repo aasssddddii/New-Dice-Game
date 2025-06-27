@@ -189,6 +189,21 @@ func change_item_side(item:Shop_Item):
 						}
 					if shop_side_value > 0 && gold_in_player_side < shop_side_value - player_side_value:
 						player_side_trade.add_item_to_grid(sending_coin)
+				elif (item_data["coin_amount"] < shop_side_value && player_side_value <=0) || gold_in_player_side + item_data["coin_amount"] < shop_side_value:
+					need_to_subtract_gold = item_data["coin_amount"]
+					
+					var sending_coin:Dictionary = {
+						"item_code":5,
+						"item_name":"ite_pcoi",
+						"texture":"res://Sprites/shop/items/player_gold.png",
+						"price":0,
+						"use_type":1,
+						"coin_amount":need_to_subtract_gold,
+						"long_name":"player coin",
+						"description":"allows player to pay for shop items with gold"
+						}
+					#if gold_in_player_side + item_data["coin_amount"] < shop_side_value:
+					player_side_trade.add_item_to_grid(sending_coin)
 			else:
 				player_side_trade.add_item_to_grid(item_data)
 			
@@ -243,64 +258,22 @@ func _on_close_button_down():
 
 
 func _on_button_button_down():#SUBMIT button
-	match shop_data["shop_type"]:
-		POI_Library.Shop_Type.DICE:#VVV Change from dice deck to inventory when ready , May be in creation function
-				var combo_inventory = player_side_inventory.get_node_or_null("Inventory/GridContainer").inventory_data + shop_side_trade.inventory_data
-				var converted_inventory:Array[Dictionary]
-				for item_data in combo_inventory:
-					match item_data["item_code"]:
-						0:#Dice
-							print("item data: ", item_data)
-							pass
-						1:#Skills
-							print("item data: ", item_data)
-							pass
-						2:#Items
-							print("item data: ", item_data)
-							pass
-						
-				game_manager.player_resource.getset_inventory("set",converted_inventory)
-		POI_Library.Shop_Type.SKILL:
-			print("SKILL Evaluatiing: ", shop_side_trade.inventory_data)
-			var investment_boost:int = game_manager.player_resource.investment
-			#give player skills goes hereVVV
-			for skill in shop_side_trade.inventory_data:
-				match skill["item_name"]:
-					"atk_upgrade":
-						game_manager.player_resource.attack += 2 + investment_boost
-					"def_upgrade":
-						game_manager.player_resource.defend += 2 + investment_boost
-					"hel_upgrade":
-						game_manager.player_resource.heal_power += 2 + investment_boost
-			
-			
-			#set player gold amount to gold in shop here VVV
-			var player_shop_grid = get_node_or_null("player_side/Inventory/GridContainer")
-			var player_shop_inventory
-			if player_shop_grid != null:
-				player_shop_inventory = player_shop_grid.inventory_data
-				#print("player side inventory on submit: ", player_shop_inventory)
-				var inventory_index:int
-				for item in player_shop_inventory:
-					if item["item_code"] == 5:
-						game_manager.player_resource.gold = item["coin_amount"]
-						#delete gold item from inventory here VVV
-						player_shop_inventory.remove_at(inventory_index)
-						inventory_index-=1
-						
-					inventory_index+=1
-				#Set player inventory hereVVV
-				game_manager.player_resource.getset_inventory("set",player_shop_inventory)
-
-#		POI_Library.Shop_Type.UPGRADE:
-#			pass
-		POI_Library.Shop_Type.ITEM:#need specialiced way to give player payed for items + Dice
-			print("ITEM Evaluatiing: ", shop_side_trade.inventory_data)
-			var combo_inventory = game_manager.player_resource.getset_inventory("get",null) + shop_side_trade.inventory_data
-			game_manager.player_resource.getset_inventory("set",combo_inventory)
-			
-			
-	
-	
-
+	for purchased_item in shop_side_trade.inventory_data:
+		match purchased_item["item_code"]:
+			0,2:#dice,items
+				game_manager.player_resource.getset_inventory("add",purchased_item)
+			1:#skills
+				game_manager.add_skill(purchased_item["item_name"])
+			4:#charms
+				game_manager.add_charm(purchased_item["item_name"])
+		
+	var player_shop_grid = get_node_or_null("player_side/Inventory/GridContainer")
+	var player_shop_inventory = player_shop_grid.inventory_data
+	var inventory_index:int
+	for item in player_shop_inventory:
+		if item["item_code"] == 5:
+			game_manager.player_resource.gold = item["coin_amount"]
+			#delete gold item from inventory here VVV
+			player_shop_inventory.remove_at(inventory_index)
+			inventory_index-=1
 	close_shop()

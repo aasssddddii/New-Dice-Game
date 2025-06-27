@@ -66,7 +66,7 @@ var second_skin_data:Dictionary = {
 	"texture": "res://Sprites/shop/skill upgrade/second skin.png",
 	"price":20,
 	"long_name": "Second Skin",
-	"description": "The first hit of each battle deals half damage."
+	"description": "The first hit of each battle deals no damage."
 }
 var emergency_cache_data:Dictionary = {
 	"item_code": 1,
@@ -372,6 +372,7 @@ var hp_up_data:Dictionary = {
 	"item_name":"cha_hpup",
 	"texture":"res://Sprites/charms/HP up.png",
 	"max":-1,
+	"price":10,
 	"long_name":"+max hp",
 	"description":"increases current max hp"
 }
@@ -380,6 +381,7 @@ var shop_coupon_data:Dictionary = {
 	"item_name":"cha_coupon",
 	"texture":"res://Sprites/charms/shop_coupon.png",
 	"max":10,
+	"price":10,
 	"long_name":"shop coupon",
 	"description":"provides a 5% off all shop items up to 50%"
 }
@@ -388,6 +390,7 @@ var attack_shields_data:Dictionary = {
 	"item_name":"cha_atks",
 	"texture":"res://Sprites/charms/attacks_shield.png",
 	"max":-1,
+	"price":10,
 	"long_name":"Offensive Defence",
 	"description":"all attack will also provide one shield stack"
 }
@@ -396,6 +399,7 @@ var shields_attack_data:Dictionary = {
 	"item_name":"cha_shla",
 	"texture":"res://Sprites/charms/shields_attack.png",
 	"max":-1,
+	"price":10,
 	"long_name":"Faux defences",
 	"description":"all defend dice will also provide one attack stack"
 }
@@ -404,6 +408,7 @@ var salvage_tool_data:Dictionary = {
 	"item_name": "cha_salv",
 	"texture": "res://Sprites/charms/salvage tool.png",
 	"max":-1,
+	"price":10,
 	"long_name": "Salvage Tool",
 	"description": "used zero dice still provides something instead of 0"
 }
@@ -412,6 +417,7 @@ var shield_up_data:Dictionary = {
 	"item_name": "cha_shie",
 	"texture": "res://Sprites/charms/Shield up.png",
 	"max":-1,
+	"price":10,
 	"long_name": "Shield UP",
 	"description": "buffs your shield power in battle"
 }
@@ -420,6 +426,7 @@ var heal_up_data:Dictionary = {
 	"item_name": "cha_heal",
 	"texture": "res://Sprites/charms/heal power up.png",
 	"max":-1,
+	"price":10,
 	"long_name": "Heal power UP",
 	"description": "buffs your heal power in battle"
 }
@@ -428,6 +435,7 @@ var fire_resist_data:Dictionary = {
 	"item_name": "cha_fire",
 	"texture": "res://Sprites/charms/fire resist.png",
 	"max":3,
+	"price":10,
 	"long_name": "Fire resist",
 	"description": "A charm that provides some resistance to fire damage"
 }
@@ -436,6 +444,7 @@ var lightning_resist_data:Dictionary = {
 	"item_name": "cha_ligh",
 	"texture":"res://Sprites/charms/lightning resist.png" ,
 	"max":3,
+	"price":10,
 	"long_name": "Lightning resist",
 	"description": "A charm that provides some resistance to Lightning damage"
 }
@@ -444,6 +453,7 @@ var ice_resist_data:Dictionary = {
 	"item_name": "cha_icer",
 	"texture": "res://Sprites/charms/ice resist.png",
 	"max":3,
+	"price":10,
 	"long_name": "Ice resist",
 	"description": "A charm that provides some resistance to Ice damage"
 }
@@ -452,6 +462,7 @@ var bleed_resist_data:Dictionary = {
 	"item_name": "cha_blee",
 	"texture": "res://Sprites/charms/bleed resist.png",
 	"max":3,
+	"price":10,
 	"long_name": "bleed resist",
 	"description": "A charm that provides some resistance to bleed damage"
 }
@@ -460,6 +471,7 @@ var poison_resist_data:Dictionary = {
 	"item_name": "cha_pois",
 	"texture": "res://Sprites/charms/poison resist.png",
 	"max":3,
+	"price":10,
 	"long_name": "poison resist",
 	"description": "A charm that provides some resistance to poison damage"
 }
@@ -468,6 +480,7 @@ var Cornicopia_data:Dictionary = {
 	"item_name": "cha_corn",
 	"texture": "res://Sprites/charms/extra draw charm.png",
 	"max":3,
+	"price":10,
 	"long_name": "Cornicopia",
 	"description": "Chance to +1 Draw dice in dice battle"
 }
@@ -476,6 +489,7 @@ var meditate_data:Dictionary = {
 	"item_name": "cha_medi",
 	"texture": "res://Sprites/charms/meditate.png",
 	"max":-1,
+	"price":10,
 	"long_name": "Meditate",
 	"description": "Heal on attack with no dice"
 }
@@ -484,6 +498,7 @@ var golden_die_data:Dictionary = {
 	"item_name": "cha_gold",
 	"texture": "res://Sprites/charms/extra gold .png",
 	"max":-1,
+	"price":10,
 	"long_name": "Golden Die",
 	"description": "gain extra gold per battle"
 }
@@ -492,6 +507,7 @@ var medic_inspiration_data:Dictionary = {
 	"item_name": "cha_medc",
 	"texture": "res://Sprites/charms/cure dice heal.png",
 	"max":1,
+	"price":10,
 	"long_name": "Medic inspiration",
 	"description": "Cure Dice also Heal more stacks heals more"
 }
@@ -500,6 +516,7 @@ var piercing_chain_data:Dictionary = {
 	"item_name": "cha_pier",
 	"texture": "res://Sprites/charms/piercing chain.png",
 	"max":3,
+	"price":10,
 	"long_name": "Piercing Chain",
 	"description": "attacks deals damage to shield and Health"
 }
@@ -508,6 +525,7 @@ var thorns_data:Dictionary = {
 	"item_name": "cha_thor",
 	"texture": "res://Sprites/charms/thorns charm.png",
 	"max":3,
+	"price":10,
 	"long_name": "Thorns",
 	"description": "when hit deals a portion of damage to that enemy"
 }
@@ -516,6 +534,7 @@ var toxic_orb_data:Dictionary = {
 	"item_name": "cha_toxi",
 	"texture": "res://Sprites/charms/toxic_orb.png",
 	"max":1,
+	"price":10,
 	"long_name": "Toxic orb",
 	"description": "poison damage you deal heals you"
 }
@@ -524,6 +543,7 @@ var mega_buff_data:Dictionary = {
 	"item_name": "cha_mega",
 	"texture": "res://Sprites/charms/debuff damage.png",
 	"max":1,
+	"price":10,
 	"long_name": "Mega Debuff",
 	"description": "Debuff Dice Deal Damage, more stacks deals more damage"
 }
@@ -532,6 +552,7 @@ var investment_prorgative_data:Dictionary = {
 	"item_name": "cha_inve",
 	"texture": "res://Sprites/charms/skill buff upgrade.png",
 	"max":-1,
+	"price":10,
 	"long_name": "Investment prorgative",
 	"description": "skill upgrades will give more amount per upgrade"
 }
@@ -540,6 +561,7 @@ var vampiric_thread_data:Dictionary = {
 	"item_name": "cha_vamp",
 	"texture": "res://Sprites/charms/vamperic thread.png",
 	"max":3,
+	"price":10,
 	"long_name": "Vampiric Thread",
 	"description": "Heal on enemy kill, Heal amount increases with stacks."
 }
@@ -548,6 +570,7 @@ var iron_root_data:Dictionary = {
 	"item_name": "cha_iron",
 	"texture": "res://Sprites/charms/iron root.png",
 	"max":1,
+	"price":10,
 	"long_name": "Iron Root Charm",
 	"description": "+2 Max HP on battle clear when full, but heals +2 otherwise"
 }

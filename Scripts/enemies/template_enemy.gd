@@ -410,47 +410,6 @@ func do_status_effects():
 		condition_index+=1
 	
 	
-#func update_statuses():
-#	for status_container in status_grid.get_children():
-#		status_container.update_status()
-		
-		
-#func animate_status_damage(status:Status_Library.StatusCondition):
-#	#var flash_color:Color
-#	#var status_animator:AnimationPlayer = $status_animator
-#	#flash_timer.stop()
-#	match status:
-#		Status_Library.StatusCondition.POISON:
-#			flash_color = Color.GREEN
-#		Status_Library.StatusCondition.BLEED:
-#			flash_color = Color.BROWN
-#		Status_Library.StatusCondition.BURN:
-#			flash_color = Color.INDIAN_RED
-#
-#	self_modulate = flash_color
-#	flash_timer.start()
-#	return flash_timer
-	
-#func clean_up_statuses():
-#	#var status_index:int
-#	var clean_status:Array[Status_Library.StatusCondition]
-#	var clean_timeout:Array[int]
-#
-#	for status in status_conditions:
-#		print("sanity check status = ", status)
-#		if status != -1:
-#			clean_status.append(status)
-#			#doesnt work due to .find only getting first result May also effect player
-#			clean_timeout.append(status_timeouts[status_conditions.find(status)])
-#
-#	status_conditions = clean_status
-#	status_timeouts = clean_timeout
-#
-#	print(name, ": statuses is now: ",  status_conditions)
-#	print(name, ": status timeout is now: ",  status_timeouts)
-	
-	
-	
 var send_attack:Dictionary
 	#actually take enemy turn
 func do_attack_pattern():
@@ -544,6 +503,8 @@ func kill_check():
 		var filtered_targets = get_parent().get_children().filter(func(target):return target != self)
 		if dice_battle_node.is_trap_battle:
 			dice_battle_node.trap_disarmed = true
+			
+		dice_battle_node.swagger_action_slot = true
 		#maybe add something about adding to the player kills
 		if arrow.visible:
 			if !filtered_targets.is_empty():

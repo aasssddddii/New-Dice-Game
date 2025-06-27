@@ -71,6 +71,8 @@ var second_skin_upgrade:bool
 var emergency_cache_upgrade:bool
 var charm_sync_upgrade:bool
 
+var next_charm_sync_boost:int
+
 func reset_values():
 	print("player resource resetting values")
 	max_health = default_max_health
@@ -87,12 +89,7 @@ func reset_values():
 	reset_charms()
 	print("new health now ", health)
 	
-#hp up stuff
-func hpup_health(hp_up_amount:int):
-	health_modifier = hp_up_amount
-	max_health += (20*health_modifier)
-	health += (20*health_modifier)
-	pass
+
 	
 func battle_reset():
 	shield = default_shield
@@ -578,129 +575,129 @@ var dice_deck:Array[Dictionary] = [
 	},
 	{
 	"item_code":0,
-	"item_name":"atk_dice",
-	"texture":"res://Sprites/Dice/one attack face.png",
-	"none_texture":"res://Sprites/Dice/attack dice template.png",
-	"two_texture":"res://Sprites/Dice/two attack face.png",
-	"three_texture":"res://Sprites/Dice/three attack face.png",
-	"four_texture":"res://Sprites/Dice/four attack face.png",
-	"price":25,
-"upgrade_level":6,
-	"animation_target":"target",
-	"type":Dice.DiceType.ATTACK,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
 	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Attack Dice",
-	"description":"Basic attack dice"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"poi_dice",
-	"texture":"res://Sprites/Dice/one poison dice.png",
-	"none_texture":"res://Sprites/Dice/none poison dice.png",
-	"two_texture":"res://Sprites/Dice/2 poison dice.png",
-	"three_texture":"res://Sprites/Dice/3 poison dice.png",
-	"four_texture":"res://Sprites/Dice/4 poison dice.png",
-	"price":25,
-	"upgrade_level":6,
-	"animation_target":"target",
-	"type":Dice.DiceType.POISON,
-	"effect":Status_Library.StatusCondition.POISON,
-	"element":Dice.DamageElement.POISON,
-	"is_temp":false,
-	"long_name":"Poison Dice",
-	"description":"deals half attack as poison damage, and inflicts poison damage for 3 turns"
-	},
-	{
-	"item_code":0,
-	"item_name":"cur_dice",
-	"texture":"res://Sprites/Dice/one cure dice.png",
-	"none_texture":"res://Sprites/Dice/none cure dice.png",
-	"two_texture":"res://Sprites/Dice/2 cure dice.png",
-	"three_texture":"res://Sprites/Dice/3 cure dice.png",
-	"four_texture":"res://Sprites/Dice/4 cure dice.png",
-	"price":15,
-	"upgrade_level":6,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
 	"animation_target":"self",
-	"type":Dice.DiceType.CURE,
-	"effect":Status_Library.StatusCondition.CURE,
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Cure Dice",
-	"description":"cures you of all negative status effects"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"cur_dice",
-	"texture":"res://Sprites/Dice/one cure dice.png",
-	"none_texture":"res://Sprites/Dice/none cure dice.png",
-	"two_texture":"res://Sprites/Dice/2 cure dice.png",
-	"three_texture":"res://Sprites/Dice/3 cure dice.png",
-	"four_texture":"res://Sprites/Dice/4 cure dice.png",
-	"price":15,
-	"upgrade_level":6,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
 	"animation_target":"self",
-	"type":Dice.DiceType.CURE,
-	"effect":Status_Library.StatusCondition.CURE,
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Cure Dice",
-	"description":"cures you of all negative status effects"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"cur_dice",
-	"texture":"res://Sprites/Dice/one cure dice.png",
-	"none_texture":"res://Sprites/Dice/none cure dice.png",
-	"two_texture":"res://Sprites/Dice/2 cure dice.png",
-	"three_texture":"res://Sprites/Dice/3 cure dice.png",
-	"four_texture":"res://Sprites/Dice/4 cure dice.png",
-	"price":15,
-	"upgrade_level":6,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
 	"animation_target":"self",
-	"type":Dice.DiceType.CURE,
-	"effect":Status_Library.StatusCondition.CURE,
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Cure Dice",
-	"description":"cures you of all negative status effects"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"cur_dice",
-	"texture":"res://Sprites/Dice/one cure dice.png",
-	"none_texture":"res://Sprites/Dice/none cure dice.png",
-	"two_texture":"res://Sprites/Dice/2 cure dice.png",
-	"three_texture":"res://Sprites/Dice/3 cure dice.png",
-	"four_texture":"res://Sprites/Dice/4 cure dice.png",
-	"price":15,
-	"upgrade_level":6,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
 	"animation_target":"self",
-	"type":Dice.DiceType.CURE,
-	"effect":Status_Library.StatusCondition.CURE,
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Cure Dice",
-	"description":"cures you of all negative status effects"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
-	"item_name":"cur_dice",
-	"texture":"res://Sprites/Dice/one cure dice.png",
-	"none_texture":"res://Sprites/Dice/none cure dice.png",
-	"two_texture":"res://Sprites/Dice/2 cure dice.png",
-	"three_texture":"res://Sprites/Dice/3 cure dice.png",
-	"four_texture":"res://Sprites/Dice/4 cure dice.png",
-	"price":15,
-	"upgrade_level":6,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
 	"animation_target":"self",
-	"type":Dice.DiceType.CURE,
-	"effect":Status_Library.StatusCondition.CURE,
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
 	"element":Dice.DamageElement.NONE,
 	"is_temp":false,
-	"long_name":"Cure Dice",
-	"description":"cures you of all negative status effects"
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
+	},
+	{
+	"item_code":0,
+	"item_name":"hel_dice",
+	"texture":"res://Sprites/Dice/one heal face.png",
+	"none_texture":"res://Sprites/Dice/heal dice template.png",
+	"two_texture":"res://Sprites/Dice/2 heal face.png",
+	"three_texture":"res://Sprites/Dice/3 heal face.png",
+	"four_texture":"res://Sprites/Dice/4 heal face.png",
+	"price":10,
+	"upgrade_level":4,
+	"animation_target":"self",
+	"type":Dice.DiceType.HEAL,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Heal Dice",
+	"description":"Basic heal dice"
 	},
 	{
 	"item_code":0,
@@ -803,6 +800,13 @@ func getset_skill_inventory(choice:String, input_data):
 	match choice:
 		"get":
 			return skills_inventory.duplicate(true)
+		"add":
+			if typeof(input_data) == TYPE_ARRAY:
+				for data in input_data:
+					if typeof(data) == TYPE_DICTIONARY:
+						skills_inventory.append(data)
+			elif typeof(input_data) == TYPE_DICTIONARY:
+				skills_inventory.append(input_data)
 		_:
 			print("no:Player_Resoure")
 
@@ -889,15 +893,28 @@ func getset_inventory(choice:String,input_data):
 		_:
 			print("no:Player_Resoure")
 			
-func manage_health(choice:String,amount:int):
-	match choice:
-		"add":
-			health += amount
-			if health > max_health:
-				health = max_health
-		"add_max":
-			pass
+#func manage_health(choice:String,amount:int):
+#	match choice:
+#		"add":
+#			health += amount
+#			if health > max_health:
+#				health = max_health
+#		"add_max":
+#			pass
 	
-	
-	
+func charm_sync_health(first:bool):
+	var charm_count = charm_inventory.size()
+	if first:
+		max_health += 20*(charm_count/5)
+		health += 20*(charm_count/5)
+		next_charm_sync_boost = 5*((charm_count/5)+1)
+		print("charm count at: ", charm_count,  " next charm boost at: ", next_charm_sync_boost, " charms")
+	else:
+		if charm_count >= next_charm_sync_boost:
+			max_health += 20
+			health += 20
+			next_charm_sync_boost = 5*((charm_count/5)+1)
+			print("charm count at: ", charm_count,  " next charm boost at: ", next_charm_sync_boost, " charms")
+		else:
+			print("charm count at: ", charm_count,  " next charm boost at: ", next_charm_sync_boost, " charms")
 	

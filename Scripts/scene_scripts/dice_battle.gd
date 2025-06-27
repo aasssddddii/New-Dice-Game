@@ -53,6 +53,9 @@ var enemy_count:int
 var coconut_doubler:int = 0
 var heal_power_up:int = 0
 
+var swagger_action_slot:bool
+var second_skin:bool
+
 var action_up_timers:Array[int]
 
 #Staticly set battle need to get ready for map generation
@@ -63,6 +66,13 @@ func setup_dice_batle(input_data:Dictionary):
 	if battle_data[0].enemy_name == "trap":
 		is_trap_battle = true
 	
+	if game_manager.player_resource.second_skin_upgrade:
+		second_skin = true
+	
+	if game_manager.player_resource.emergency_cache_upgrade:
+		#give player random item
+		game_manager.player_resource.getset_inventory("add",game_manager.item_lib.all_items.values().pick_random())
+		pass
 	
 	reward = input_data["reward"]
 #	for ui_slot in action_slots.get_children():
@@ -88,7 +98,7 @@ func setup_dice_batle(input_data:Dictionary):
 
 
 func show_charms():
-	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory,"battle_charm")
+	charm_grid.setup_inventory(game_manager.player_resource.charm_inventory+game_manager.player_resource.skills_inventory,"battle_charm")
 	
 func show_player_menu():
 	$player_ui.setup_player_menu()
@@ -154,11 +164,18 @@ func add_action_up_slot():
 func reset_action_slots():
 	for slot in action_slots.get_children():
 		slot.queue_free()
-	for i in game_manager.player_resource.action_size + action_up_timers.size():
+	var player_action_slot_upgrade:int
+	var swagger_slot_upgrade:int
+	if game_manager.player_resource.action_slot_upgrade:
+		player_action_slot_upgrade = 1
+	if swagger_action_slot:
+		swagger_slot_upgrade = 1
+	for i in game_manager.player_resource.action_size + action_up_timers.size()+player_action_slot_upgrade+swagger_slot_upgrade:
 		var next_action_slot = action_slot_prefab.instantiate()
 		next_action_slot.get_child(0).action_slot_filled.connect(calc_player_attack)
 		next_action_slot.get_child(0).action_slot_unfilled.connect(calc_player_attack)
 		action_slots.add_child(next_action_slot)
+	swagger_action_slot = false
 
 func action_timer_stepper():
 	for action_timer_index in action_up_timers.size():
@@ -326,7 +343,15 @@ func _on_submit_button_down():
 #		game_manager.player_resource.shield += player_attack["shield"]
 #		game_manager.player_resource.health += player_attack["heal"]
 		manage_positive_player_attack(player_attack["heal"],player_attack["shield"],player_attack["gold"])
+		var last_player_target = player_target
 		player_target.hit_enemy(player_attack)
+		if game_manager.player_resource.sweeping_edge_upgrade:
+			#hit other enemies 
+			print("enemies to hit: ",enemy_layer.get_children() )
+			for next_enemy in enemy_layer.get_children():
+				if next_enemy != last_player_target:
+					next_enemy.hit_enemy({"damage":player_attack["damage"]/3,"status_conditions":[]})
+		
 		coconut_doubler = 0
 		reset_player_attack()
 		
@@ -486,6 +511,8 @@ func calc_player_attack():
 						calculator_heal += upgraded_player_heal * game_manager.player_resource.all_dice_bonus
 					else:
 						calculator_heal += upgraded_player_heal
+					if game_manager.player_resource.lay_on_hands_upgrade:
+						calculator_statuses.append(Status_Library.StatusCondition.CURE)
 				Dice.DiceType.GOLD:
 					atk_check = true
 					if all_dice_bonus:
@@ -825,41 +852,47 @@ func take_enemy_turn():
 func hit_player(attack_data:Dictionary):
 	#print("player takes ", attack_data["damage"]," damage")
 	#print("adding status effect to player: ", attack_data["status_effect"])
-	#VVVdecide if this is too much resistences VVV
-	match attack_data["status_effect"]:
-		Status_Library.StatusCondition.POISON:
-			if game_manager.player_resource.poison_resist >= 1:
-				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.poison_resist)
-		Status_Library.StatusCondition.BLEED:
-			if game_manager.player_resource.bleed_resist >= 1:
-				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.bleed_resist)
-		Status_Library.StatusCondition.BURN:
-			if game_manager.player_resource.fire_resist >= 1:
-				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.fire_resist)
-		Status_Library.StatusCondition.PLIGHTNING:
-			if game_manager.player_resource.lightning_resist >= 1:
-				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.lightning_resist)
-		Status_Library.StatusCondition.PICE:
-			if game_manager.player_resource.ice_resist >= 1:
-				attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.ice_resist)
-			
-	if !status_conditions.has(Status_Library.StatusCondition.PROTECT):
-		if status_conditions.has(Status_Library.StatusCondition.SMOKE):
-			if game_manager.rng.randi_range(1,20) > (5 * (1*status_conditions.count(Status_Library.StatusCondition.SMOKE))):#attack goes through check
+	if second_skin:
+		second_skin = false
+	else:
+		#VVVdecide if this is too much resistences VVV
+		match attack_data["status_effect"]:
+			Status_Library.StatusCondition.POISON:
+				if game_manager.player_resource.poison_resist >= 1:
+					attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.poison_resist)
+			Status_Library.StatusCondition.BLEED:
+				if game_manager.player_resource.bleed_resist >= 1:
+					attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.bleed_resist)
+			Status_Library.StatusCondition.BURN:
+				if game_manager.player_resource.fire_resist >= 1:
+					attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.fire_resist)
+			Status_Library.StatusCondition.PLIGHTNING:
+				if game_manager.player_resource.lightning_resist >= 1:
+					attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.lightning_resist)
+			Status_Library.StatusCondition.PICE:
+				if game_manager.player_resource.ice_resist >= 1:
+					attack_data["damage"] -= attack_data["damage"]/(5-game_manager.player_resource.ice_resist)
+				
+		if !status_conditions.has(Status_Library.StatusCondition.PROTECT):
+			if status_conditions.has(Status_Library.StatusCondition.SMOKE):
+				if game_manager.rng.randi_range(1,20) > (5 * (1*status_conditions.count(Status_Library.StatusCondition.SMOKE))):#attack goes through check
+					if attack_data["status_effect"] != Status_Library.StatusCondition.NONE && attack_data["status_effect"] != Status_Library.StatusCondition.PLIGHTNING && attack_data["status_effect"] != Status_Library.StatusCondition.PICE:
+						add_status_conditions(attack_data["status_effect"])
+					
+					damage_player(attack_data["damage"],attack_data["from_enemy"],false)
+			else:
 				if attack_data["status_effect"] != Status_Library.StatusCondition.NONE && attack_data["status_effect"] != Status_Library.StatusCondition.PLIGHTNING && attack_data["status_effect"] != Status_Library.StatusCondition.PICE:
 					add_status_conditions(attack_data["status_effect"])
 				
 				damage_player(attack_data["damage"],attack_data["from_enemy"],false)
-		else:
-			if attack_data["status_effect"] != Status_Library.StatusCondition.NONE && attack_data["status_effect"] != Status_Library.StatusCondition.PLIGHTNING && attack_data["status_effect"] != Status_Library.StatusCondition.PICE:
-				add_status_conditions(attack_data["status_effect"])
-			
-			damage_player(attack_data["damage"],attack_data["from_enemy"],false)
-	
 		
+			
 
 
 func damage_player(amount:int, from_enemy, direct_damage:bool):
+#	if second_skin:
+#		amount = 0
+#		second_skin = false
 	if game_manager.player_resource.reflect > 0:#if player has reflect
 		#hit enemy back Reflect
 		var reflect_amount:int

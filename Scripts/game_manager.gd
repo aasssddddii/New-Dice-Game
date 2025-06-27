@@ -2,6 +2,7 @@ extends Node
 
 
 
+
 var player_resource
 var player_prefab = preload("res://Prefabs/game_map/player.tscn")
 @onready var status_lib:Resource = preload("res://Resources/status_library.tres")
@@ -28,6 +29,11 @@ func _ready():
 	player_resource.reset_values()
 	# IDEA of how to implement charms
 #	add_charm("cha_hpup")
+	add_charm("cha_hpup")
+	add_charm("cha_hpup")
+	add_charm("cha_hpup")
+	add_charm("cha_hpup")
+	add_charm("cha_hpup")
 #	add_charm("cha_shla")
 #	add_charm("cha_salv")
 #	add_charm("cha_toxi")
@@ -41,13 +47,15 @@ func _ready():
 	add_charm("cha_ligh")
 	add_charm("cha_icer")
 	add_charm("cha_inve")
-	add_skill("action_slot")
-	add_skill("swee_upgrade")
-	add_skill("layh_upgrade")
-	add_skill("swag_upgrade")
-	add_skill("seco_upgrade")
-#	add_skill("emer_upgrade")
-#	add_skill("char_upgrade")
+	add_charm("cha_mega")
+	add_charm("cha_iron")
+	#add_skill("action_slot")
+	#add_skill("swee_upgrade")
+	#add_skill("layh_upgrade")
+	#add_skill("swag_upgrade")
+	#add_skill("seco_upgrade")
+	#add_skill("emer_upgrade")
+	add_skill("char_upgrade")
 		
 #func default_checker(input_data):
 #	if dice_lib.all_dice[input_data["item_name"]] == input_data:
@@ -57,6 +65,8 @@ func _ready():
 	
 func add_charm(charm_name:String):
 	player_resource.charm_inventory.append(item_lib.get_charm_data(charm_name))
+	if player_resource.charm_sync_upgrade:
+		player_resource.charm_sync_health(false)
 	match charm_name:
 		"cha_hpup":
 			player_resource.max_health += 20
@@ -108,7 +118,14 @@ func add_charm(charm_name:String):
 	
 func add_skill(skill_name:String):
 	player_resource.skills_inventory.append(item_lib.get_skill_data(skill_name))
+	var investment_boost:int = player_resource.investment
 	match skill_name:
+		"atk_upgrade":
+			player_resource.attack += 2 + investment_boost
+		"def_upgrade":
+			player_resource.defend += 2 + investment_boost
+		"hel_upgrade":
+			player_resource.heal_power += 2 + investment_boost
 		"action_slot":
 			player_resource.action_slot_upgrade = true
 		"swee_upgrade":
@@ -123,4 +140,6 @@ func add_skill(skill_name:String):
 			player_resource.emergency_cache_upgrade = true
 		"char_upgrade":
 			player_resource.charm_sync_upgrade = true
+			#add amount for charm sync
+			player_resource.charm_sync_health(true)
 	
