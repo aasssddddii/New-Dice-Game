@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://du7obetkcf8tn"]
+[gd_scene load_steps=13 format=3 uid="uid://du7obetkcf8tn"]
 
 [ext_resource type="Script" path="res://Scripts/game_map/poi_scripts/dice_altar.gd" id="1_m5oxh"]
 [ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="2_na041"]
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_pupph"]
+[ext_resource type="Theme" uid="uid://dgx63tv2yl26o" path="res://Fonts/Themes/text_button.tres" id="4_68cq2"]
 [ext_resource type="FontFile" uid="uid://cw706bl4vj4uf" path="res://Fonts/Dungeon Depths.otf" id="4_wsd7w"]
 [ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="5_xpg7j"]
 [ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="6_32624"]
@@ -42,12 +43,45 @@ text = "[center]dice altar"
 offset_left = -58.0
 offset_top = 413.0
 offset_right = 520.0
-offset_bottom = 544.0
+offset_bottom = 448.0
 theme = ExtResource("3_pupph")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 bbcode_enabled = true
 text = "[center]place dice here as offering"
+
+[node name="return gold ui" type="RichTextLabel" parent="."]
+offset_left = 39.0
+offset_top = 510.0
+offset_right = 426.0
+offset_bottom = 545.0
+theme = ExtResource("4_68cq2")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+bbcode_enabled = true
+text = "[center]$0"
+
+[node name="sacrafice label" type="RichTextLabel" parent="."]
+offset_left = 590.0
+offset_top = 569.0
+offset_right = 906.0
+offset_bottom = 604.0
+theme = ExtResource("4_68cq2")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+bbcode_enabled = true
+text = "[center]total sacafices:"
+
+[node name="sacrafice_ui" type="RichTextLabel" parent="."]
+offset_left = 887.0
+offset_top = 569.0
+offset_right = 989.0
+offset_bottom = 604.0
+theme = ExtResource("4_68cq2")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+bbcode_enabled = true
+text = "[center]0"
 
 [node name="Button" type="Button" parent="."]
 visible = false

@@ -32,7 +32,12 @@ func show_submit(show:bool):
 
 func _on_button_button_down():#submit button
 	var final_inventory = $player_inventory/PanelContainer/GridContainer.inventory_data
+	var upgraded_dice:Array[Dictionary]
+	for die in dice_layer.get_children():
+		var ref_die = die.dice_data
+		ref_die["upgrade_level"] +=1
+		upgraded_dice.append(ref_die)
 	
-	game_manager.player_resource.getset_inventory("set",final_inventory+game_manager.player_resource.getset_inventory("get_item",null))
+	game_manager.player_resource.getset_inventory("set",upgraded_dice+final_inventory+game_manager.player_resource.getset_inventory("get_item",null))
 	_on_close_button_down()
 

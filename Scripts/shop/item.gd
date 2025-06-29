@@ -17,6 +17,9 @@ func setup_item(input_data:Dictionary,trade_side:String):
 	active_trade_side = trade_side
 	if active_trade_side == "battle" || active_trade_side == "battle_deck" || active_trade_side == "battle_discard":
 		ui_shop = $"../../../../.."
+		
+	elif active_trade_side == "rolloff":
+		ui_shop = $"../../../.."
 	
 	item_data = input_data
 	current_sprite = load(input_data["texture"])
@@ -75,10 +78,11 @@ func _on_button_down():#WHEN ITEM IS CLICKED DO THIS
 						game_manager.player_resource.getset_inventory("set",get_node_or_null("../../../../inventory_grid/ScrollContainer/GridContainer").inventory_data)
 		"Dice_Battle":
 			get_parent().use_battle_item(item_data)
-		"dice_altar","upgrade_altar":
+		"dice_altar","upgrade_altar","rolloff_event":
 			get_parent().remove_from_grid(item_data)
 			var temp_dice = game_manager.dice_lib.dice_prefab.instantiate()
 			var dice_layer = $"../../../../dice_layer"
+				
 			var dice_snap = $"../../../../player_inventory/inventory"
 			dice_layer.add_child(temp_dice)
 			temp_dice.ui_item_description = ui_shop.ui_item_description
@@ -151,9 +155,8 @@ func _on_button_down():#WHEN ITEM IS CLICKED DO THIS
 							print("ERROR Dice not found")
 					else:
 						print("no more upgrades left")
-#		"dice_altar":
-#			print("NO SYSTEM FOR DICE UPGRADE YET!!!")
-#			pass
+#		"rolloff_event":
+#			print("NO SYSTEM FOR ROLLOFF YET!!!")
 			
 			
 func update_quantity():
@@ -219,5 +222,8 @@ func _on_mouse_entered():
 				var inventory_description_location:Node2D = $"../../../../../../description_locations/deck_inventory"
 				ui_shop.ui_item_description.relocate(inventory_description_location)
 				ui_shop.ui_item_description.setup_description(item_data)
+		"rolloff_event":
+			ui_shop.ui_item_description.setup_description(item_data)
+			pass
 func _on_mouse_exited():
 	ui_shop.ui_item_description.close_description()

@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="riddle_lib" load_steps=2 format=3 uid="uid://pmthd08qg0s2"]
+
+[ext_resource type="Script" path="res://Resources/riddle_library.gd" id="1_jmxi1"]
+
+[resource]
+script = ExtResource("1_jmxi1")

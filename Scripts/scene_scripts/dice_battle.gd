@@ -18,7 +18,7 @@ signal deck_changed(dice_deck:Array[Dictionary],discard_deck:Array[Dictionary])
 
 var current_dice_deck:Array[Dictionary]
 var discard:Array[Dictionary]
-var battle_data:Array[Resource]
+var battle_data#:Array[Resource]
 var game_manager = GameManager
 
 var battle_gold:int
@@ -58,6 +58,9 @@ var second_skin:bool
 
 var action_up_timers:Array[int]
 
+@onready var discard_upgrade_button = $player_ui/discard_button
+var can_discard_upgrade:bool
+
 #Staticly set battle need to get ready for map generation
 func setup_dice_batle(input_data:Dictionary):
 	current_dice_deck = game_manager.player_resource.getset_dice_deck("get", null)
@@ -73,6 +76,10 @@ func setup_dice_batle(input_data:Dictionary):
 		#give player random item
 		game_manager.player_resource.getset_inventory("add",game_manager.item_lib.all_items.values().pick_random())
 		pass
+		
+	if game_manager.player_resource.discard_upgrade:
+		can_discard_upgrade = true
+	discard_upgrade_button.visible = game_manager.player_resource.discard_upgrade
 	
 	reward = input_data["reward"]
 #	for ui_slot in action_slots.get_children():
@@ -256,6 +263,8 @@ func set_player_hand():
 		add_dice_to_hand(current_dice_deck.pick_random())
 	deck_changed.emit(current_dice_deck,discard)
 	display_player_calc()
+	if can_discard_upgrade:
+		discard_upgrade_button.visible = true
 
 func shuffle_deck():
 	current_dice_deck += discard
@@ -275,7 +284,8 @@ func use_dice(dice_array:Array[Dice]):
 			discard.append(dice_data)
 			die.queue_free()
 	
-	
+	if game_manager.player_resource.discard_upgrade:
+		can_discard_upgrade = true
 	set_player_hand()
 
 
@@ -310,6 +320,7 @@ func _on_submit_button_down():
 	
 	if can_attack:
 		can_attack = false
+		
 		action_timer_stepper()
 		$player_ui/submit_button.modulate = Color.SADDLE_BROWN
 		var send_dice:Array[Dice]
@@ -365,7 +376,7 @@ func _on_submit_button_down():
 		current_enemy_dmg = calc_enemy_dmg()
 		calc_player_attack()
 		#print("total enemy attack: ", current_enemy_dmg)
-
+		
 	else:
 		print("not player turn yet...")
 
@@ -914,15 +925,16 @@ func damage_player(amount:int, from_enemy, direct_damage:bool):
 			else:
 				amount -= game_manager.player_resource.shield
 				game_manager.player_resource.shield = 0
-				game_manager.player_resource.health -= amount
+				#game_manager.player_resource.health -= amount
+				game_manager.player_resource.manage_health("subtract",amount)
 		else:
-			game_manager.player_resource.health -= amount
+			game_manager.player_resource.manage_health("subtract",amount)
 	else:
-		game_manager.player_resource.health -= amount
+		game_manager.player_resource.manage_health("subtract",amount)
 	
 	#Kill check
-	if game_manager.player_resource.health <= 0:
-		end_battle(false)
+#	if game_manager.player_resource.health <= 0:
+#		end_battle(false)
 	
 	vitals_changed.emit()
 
@@ -1127,16 +1139,16 @@ func end_battle(win:bool):
 		var ui_summary = game_manager.ui_battle_summary.instantiate()
 		ui_summary.setup_summary({
 			"enemies":1,
-			"reward":reward
-			#"dice":dice_array
+			"reward":reward,
+			"battle_gold":battle_gold
 			})
 			
 		print("player gold is now: ", game_manager.player_resource.gold)
 		add_child(ui_summary)
 #		else:
 #			print("game end")
-	else:
-		print("game end")
+#	else:
+#		game_manager.end_game()
 
 func summary_complete():
 	#SETUP FOR NEXT SELECTION
@@ -1146,6 +1158,7 @@ func summary_complete():
 func close_item_selections():
 	start_fate_fragment(false)
 	start_dictated_fate(false)
+	start_single_discard(false)
 
 func start_fate_fragment(choice:bool):
 	for slot in player_hand.get_children():
@@ -1155,6 +1168,17 @@ func start_dictated_fate(choice:bool):
 	for slot in player_hand.get_children():
 		slot.get_child(0).start_dictated_fate(choice)
 
+func start_single_discard(choice:bool):
+	for slot in player_hand.get_children():
+		slot.get_child(0).start_single_discard(choice)
+
 func rewind():
 	for die in dice_layer.get_children():
 		die.roll()
+
+
+func _on_discard_button_button_down():
+	#start discarding
+	start_single_discard(true)
+	discard_upgrade_button.visible = false
+	cancel_item_button.setup_limbo_item({"item_name":"disc_upgrade"})

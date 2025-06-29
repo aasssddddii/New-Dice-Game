@@ -17,51 +17,27 @@ var ui_battle_summary = preload("res://Prefabs/game_ui/ui_battle_summary.tscn")
 var poi_lib = preload("res://Resources/poi_library.tres")
 var level_selection_template = preload("res://Prefabs/new_game_map/level_selection_template.tscn")
 var discard_event_prefab = preload("res://Prefabs/event/dice_altar.tscn")
+var upgrade_event_prefab = preload("res://Prefabs/event/upgrade_altar.tscn")
+var fountain_event_prefab = preload("res://Prefabs/event/fountain_event.tscn")
+var well_event_prefab = preload("res://Prefabs/event/well_event.tscn")
+var riddle_event_prefab = preload("res://Prefabs/event/riddle_event.tscn")
+var riddle_lib = preload("res://Resources/riddle_library.tres")
+var rolloff_event_prefab = preload("res://Prefabs/event/rolloff_event.tscn")
 var ui_event = preload("res://Prefabs/event/ui_event.tscn")
+var rolloff_choice_prefab = preload("res://Prefabs/event/rolloff_choice_template.tscn")
+var rolloff_required_dice_prefab = preload("res://Prefabs/event/required_dice_template.tscn")
 #player menu
 var player_inventory_menu = preload("res://Prefabs/new_game_map/player_inventory_menu.tscn")
-
+var screen_in_use:bool = false
 
 var rng = RandomNumberGenerator.new()
 
 func _ready():
 	player_resource = load("res://Resources/player_resource.tres")
+	player_resource.player_dead.connect(end_game)
 	player_resource.reset_values()
-	# IDEA of how to implement charms
-#	add_charm("cha_hpup")
-	add_charm("cha_hpup")
-	add_charm("cha_hpup")
-	add_charm("cha_hpup")
-	add_charm("cha_hpup")
-	add_charm("cha_hpup")
-#	add_charm("cha_shla")
-#	add_charm("cha_salv")
-#	add_charm("cha_toxi")
-	#add_charm("cha_toxi")
-	#add_charm("cha_toxi")
-	add_charm("cha_mega")
-	add_charm("cha_iron")
-	add_charm("cha_fire")
-	add_charm("cha_blee")
-	add_charm("cha_pois")
-	add_charm("cha_ligh")
-	add_charm("cha_icer")
-	add_charm("cha_inve")
-	add_charm("cha_mega")
-	add_charm("cha_iron")
-	#add_skill("action_slot")
-	#add_skill("swee_upgrade")
-	#add_skill("layh_upgrade")
-	#add_skill("swag_upgrade")
-	#add_skill("seco_upgrade")
-	#add_skill("emer_upgrade")
-	add_skill("char_upgrade")
-		
-#func default_checker(input_data):
-#	if dice_lib.all_dice[input_data["item_name"]] == input_data:
-#		return true
-#	else:
-#		return false
+	#player_resource.health /= 2
+	
 	
 func add_charm(charm_name:String):
 	player_resource.charm_inventory.append(item_lib.get_charm_data(charm_name))
@@ -142,4 +118,8 @@ func add_skill(skill_name:String):
 			player_resource.charm_sync_upgrade = true
 			#add amount for charm sync
 			player_resource.charm_sync_health(true)
+		"disc_upgrade":
+			player_resource.discard_upgrade = true
 	
+func end_game():
+	print("game end")

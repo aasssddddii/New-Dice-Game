@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://4f7ukmf3cl5l"]
+
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="1_b2l0g"]
+[ext_resource type="Script" path="res://Scripts/new_game_map/event/rolloff_choice_template.gd" id="1_ieog8"]
+
+[node name="rolloff_choice_template" type="HBoxContainer"]
+script = ExtResource("1_ieog8")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme = ExtResource("1_b2l0g")
+text = "ui_choice_text"

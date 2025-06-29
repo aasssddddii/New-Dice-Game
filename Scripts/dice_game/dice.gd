@@ -4,26 +4,26 @@ class_name Dice
 const offset =  Vector2(-28,-28)
 var game_manager = GameManager
 enum DiceType {
-	ATTACK,
-	DEFEND,
-	REROLL,
-	BLEED,
-	HEAL,
-	GOLD,
-	REFLECT,
-	LIFESTEAL,
-	POISON,
-	CURE,
-	DISARM,
-	STUN,
-	ATKBUFF,
-	DEFBUFF,
-	ATKDEBUFF,
-	DEFDEBUFF,
-	FIRE,
-	ICE,
-	LIGHTNING,
-	NONE
+	ATTACK,#0
+	DEFEND,#1
+	REROLL,#2
+	BLEED,#3
+	HEAL,#4
+	GOLD,#5
+	REFLECT,#6
+	LIFESTEAL,#7
+	POISON,#8
+	CURE,#9
+	DISARM,#10
+	STUN,#11
+	ATKBUFF,#12
+	DEFBUFF,#13
+	ATKDEBUFF,#14
+	DEFDEBUFF,#15
+	FIRE,#16
+	ICE,#17
+	LIGHTNING,#18
+	NONE#19
 }
 enum DamageElement{
 	FIRE,
@@ -73,6 +73,17 @@ var upgrade_level:int = 0
 
 var ui_item_description
 
+func _ready():
+	area.area_entered.connect(func set_snap_area(entered_area:Area2D):
+		#print("dice has entered area: ", entered_area.name)
+		if entered_area.is_in_group("dice_snap"):
+			if !entered_area.is_filled:
+				if last_snap_area != snap_area:
+					last_snap_area = snap_area
+				snap_area = entered_area
+		)
+
+
 func _physics_process(delta):
 	if Input.is_action_just_released("mouse_click_up"):
 		is_grabbing = false
@@ -87,14 +98,6 @@ func _physics_process(delta):
 		global_position = get_global_mouse_position() + offset
 		
 func get_current_snap_area():
-	area.area_entered.connect(func set_snap_area(entered_area:Area2D):
-		#print("dice has entered area: ", entered_area.name)
-		if entered_area.is_in_group("dice_snap"):
-			if !entered_area.is_filled:
-				if last_snap_area != snap_area:
-					last_snap_area = snap_area
-				snap_area = entered_area
-		)
 	if snap_area:
 		return true
 	else:
@@ -170,6 +173,7 @@ func set_face_to_highest():
 
 
 func _on_button_down():
+	ui_item_description.close_description()
 	if get_current_snap_area():
 		snap_area.filler(self)
 	if player_bar_node != null:

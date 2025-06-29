@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://bg57jsmerajb"]
+
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="1_82i68"]
+[ext_resource type="Texture2D" uid="uid://d3br60prmlc0w" path="res://Sprites/Dice/one attack face.png" id="1_jdjc7"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_14b2m"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_sii2t"]
+[ext_resource type="Texture2D" uid="uid://cy08i4mgg1fmm" path="res://Sprites/enemies/sphynx.png" id="4_g256h"]
+
+[resource]
+script = ExtResource("1_82i68")
+enemy_name = "sphynx"
+enemy_description = "Ancient Guardian come to life to protect the treasures of a kindom long forgotten"
+max_health = 120
+health = 120
+shield = 0
+heal_power = 0
+attack = 12
+defend = 10
+attacks = 3
+reward_gold = 80
+basic_attack_damage_type = 6
+weaknesses = {
+0: false,
+1: false,
+2: false,
+3: false,
+5: false
+}
+resistantses = {
+0: true,
+1: false,
+2: true,
+3: true,
+5: true
+}
+attack_texture = ExtResource("1_jdjc7")
+defend_texture = ExtResource("3_sii2t")
+blank_texture = ExtResource("2_14b2m")
+main_texture = ExtResource("4_g256h")
+possible_turn_actions = Array[int]([0, 1, 3])

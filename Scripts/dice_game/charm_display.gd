@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends GridContainer
 
 var game_manager = GameManager
 

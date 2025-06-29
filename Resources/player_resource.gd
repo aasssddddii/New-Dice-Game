@@ -1,12 +1,12 @@
 extends Resource
 class_name Player_Resource
 
-
+signal player_dead
 
 @export var max_health:int
 @export var health:int
 @export var attack:int
-@export var magic_power:int
+#@export var magic_power:int
 @export var defend:int
 @export var shield:int
 @export var heal_power:int
@@ -70,8 +70,12 @@ var swagger_upgrade:bool
 var second_skin_upgrade:bool
 var emergency_cache_upgrade:bool
 var charm_sync_upgrade:bool
+var discard_upgrade:bool
 
 var next_charm_sync_boost:int
+
+var discarded_dice:int #= 9
+
 
 func reset_values():
 	print("player resource resetting values")
@@ -128,9 +132,42 @@ func reset_skills():
 	second_skin_upgrade= false
 	emergency_cache_upgrade= false
 	charm_sync_upgrade= false
+	discard_upgrade= false
 #reset value
 #var inventory:Array[Dictionary]
 var inventory:Array[Dictionary] = [
+	{"item_code":0,
+	"item_name":"fir_dice",
+	"texture":"res://Sprites/Dice/one fire dice.png",
+	"none_texture":"res://Sprites/Dice/none fire dice.png",
+	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+	"mini_texture":"res://sprites/mini fire dice.png",
+	"price":30,
+	"upgrade_level":6,
+	"animation_target":"target",
+	"type":Dice.DiceType.FIRE,
+	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"long_name":"Fire Dice",
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"},
+	{"item_code":0,
+	"item_name":"fir_dice",
+	"texture":"res://Sprites/Dice/one fire dice.png",
+	"none_texture":"res://Sprites/Dice/none fire dice.png",
+	"two_texture":"res://Sprites/Dice/2 fire dice.png",
+	"three_texture":"res://Sprites/Dice/3 fire dice.png",
+	"four_texture":"res://Sprites/Dice/4 fire dice.png",
+	"mini_texture":"res://sprites/mini fire dice.png",
+	"price":30,
+	"upgrade_level":6,
+	"animation_target":"target",
+	"type":Dice.DiceType.FIRE,
+	"effect":Status_Library.StatusCondition.BURN,
+	"element":Dice.DamageElement.FIRE,
+	"long_name":"Fire Dice",
+	"description":"deal fire type damage to an enemy and has a 50% chance to burn for 3 turns"},
 	{"item_code":0,
 	"item_name":"fir_dice",
 	"texture":"res://Sprites/Dice/one fire dice.png",
@@ -893,14 +930,21 @@ func getset_inventory(choice:String,input_data):
 		_:
 			print("no:Player_Resoure")
 			
-#func manage_health(choice:String,amount:int):
-#	match choice:
-#		"add":
-#			health += amount
-#			if health > max_health:
-#				health = max_health
-#		"add_max":
-#			pass
+func manage_health(choice:String,amount:int):
+	match choice:
+		"add":
+			health += amount
+			if health > max_health:
+				health = max_health
+		"add_max":
+			max_health += amount
+			health += amount
+		"subtract":
+			health -= amount
+			if health <= 0:
+				health = 0
+				player_dead.emit()
+				
 	
 func charm_sync_health(first:bool):
 	var charm_count = charm_inventory.size()

@@ -38,6 +38,24 @@ func _on_button_down():
 				POI_Library.Event_Type.DISCARD:
 					var next_event = gamemanager.discard_event_prefab.instantiate()
 					grandparent.add_child(next_event)
+				POI_Library.Event_Type.UPGRADE:
+					var next_event = gamemanager.upgrade_event_prefab.instantiate()
+					grandparent.add_child(next_event)
+				POI_Library.Event_Type.FOUNTAIN:
+					var next_event = gamemanager.fountain_event_prefab.instantiate()
+					grandparent.add_child(next_event)
+				POI_Library.Event_Type.RIDDLE:
+					var next_event = gamemanager.riddle_event_prefab.instantiate()
+					grandparent.add_child(next_event)
+					next_event.setup_riddle(gamemanager.riddle_lib.riddles.pick_random())
+				POI_Library.Event_Type.WELL:
+					var next_event = gamemanager.well_event_prefab.instantiate()
+					grandparent.add_child(next_event)
+				POI_Library.Event_Type.ROLLOFF:
+					var next_event = gamemanager.rolloff_event_prefab.instantiate()
+					grandparent.add_child(next_event)
+				_:
+					print("you forgot to add that event")
 		3,4:
 			var next_dice_battle = gamemanager.dice_battle_prefab.instantiate()
 			grandparent.add_child(next_dice_battle)

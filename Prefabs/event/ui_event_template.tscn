@@ -34,5 +34,3 @@ offset_bottom = 234.0
 scale = Vector2(0.23, 0.23)
 focus_mode = 0
 texture_normal = ExtResource("2_pmodq")
-
-[connection signal="button_down" from="player_ui/close" to="." method="_on_close_button_down"]

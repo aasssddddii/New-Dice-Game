@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfwimw5380q6c"]
+
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="1_r8tfx"]
+[ext_resource type="Script" path="res://Scripts/new_game_map/event/required_dice_template.gd" id="2_3ovrs"]
+[ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="2_jeo54"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_chaip"]
+
+[node name="required_dice_template" type="TextureRect"]
+modulate = Color(1, 1, 1, 0.721569)
+texture = ExtResource("1_r8tfx")
+script = ExtResource("2_3ovrs")
+
+[node name="dholder_requirement" type="Area2D" parent="." groups=["dice_snap"]]
+position = Vector2(50.9999, 52)
+script = ExtResource("2_jeo54")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="dholder_requirement"]
+position = Vector2(-11.9999, -14)
+shape = SubResource("RectangleShape2D_chaip")

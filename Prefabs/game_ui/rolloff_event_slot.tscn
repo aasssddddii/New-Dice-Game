@@ -1,17 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8i21y7qxk0qs"]
+[gd_scene load_steps=5 format=3 uid="uid://boglwwktvw4ay"]
 
-[ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_uhspu"]
-[ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="2_whto2"]
-[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_lsvpt"]
+[ext_resource type="Texture2D" uid="uid://b7bakf1xgyypw" path="res://Sprites/Dice_battle_assets/die circle.png" id="1_ti3qj"]
+[ext_resource type="Script" path="res://Scripts/dice_game/dice_holder.gd" id="2_v86xt"]
+[ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="3_5300q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k8q8o"]
 
 [node name="TextureRect" type="TextureRect"]
-texture = ExtResource("1_uhspu")
+texture = ExtResource("1_ti3qj")
 
 [node name="dholder_hand" type="Area2D" parent="." groups=["dice_snap"]]
 position = Vector2(50.9999, 52)
-script = ExtResource("2_whto2")
+script = ExtResource("2_v86xt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="dholder_hand"]
 shape = SubResource("RectangleShape2D_k8q8o")
@@ -24,7 +24,7 @@ offset_top = 107.0
 offset_right = 71.0
 offset_bottom = 157.0
 focus_mode = 0
-theme = ExtResource("3_lsvpt")
+theme = ExtResource("3_5300q")
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 9
@@ -39,7 +39,7 @@ offset_top = 107.0
 offset_right = 71.0
 offset_bottom = 157.0
 focus_mode = 0
-theme = ExtResource("3_lsvpt")
+theme = ExtResource("3_5300q")
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 9
@@ -54,7 +54,7 @@ offset_top = 107.0
 offset_right = 71.0
 offset_bottom = 157.0
 focus_mode = 0
-theme = ExtResource("3_lsvpt")
+theme = ExtResource("3_5300q")
 theme_override_colors/font_color = Color(0, 1, 0.239216, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 9

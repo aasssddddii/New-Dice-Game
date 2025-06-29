@@ -84,6 +84,14 @@ var charm_sync_data:Dictionary = {
 	"long_name": "Charm Sync",
 	"description": "gain Max HP for every 5 charms"
 }
+var discard_data:Dictionary = {
+	"item_code": 1,
+	"item_name": "disc_upgrade",
+	"texture": "res://Sprites/shop/skill upgrade/discard upgrade.png",
+	"price":0,
+	"long_name": "Discard Upgrade",
+	"description": "durring battle you may discard/draw one dice per turn"
+}
 var all_shop_skills:Dictionary = {
 	"atk_upgrade":attack_upgrade_data,
 	"def_upgrade":defend_upgrade_data,
@@ -111,7 +119,10 @@ var all_skill_upgrades:Dictionary = {
 	"char_upgrade":charm_sync_data
 	}
 func get_skill_data(name:String):
-	return all_shop_skills[name]
+	if name == "disc_upgrade":
+		return discard_data
+	else:
+		return all_shop_skills[name]
 
 #enum UsageType {
 #	MAP,0

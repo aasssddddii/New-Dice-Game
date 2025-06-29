@@ -40,10 +40,11 @@ func event_resolver(event_result:POI_Library.Event_Results, result_text:String):
 	setup_result(result_text)
 	print("test: ", event_result, " text: ", result_text)
 	match event_result:
+		#maybe check before subtracting health to check if player will die to slow down player death until player can read box
 		POI_Library.Event_Results.LOSSHPMINOR:
-			pass
+			game_manager.player_resource.manage_health("subtract",game_manager.player_resource.max_health/4)
 		POI_Library.Event_Results.LOSSHPMAJOR:
-			pass
+			game_manager.player_resource.manage_health("subtract",game_manager.player_resource.max_health/2)
 		POI_Library.Event_Results.STARTBATTLE:
 			start_battle_on_exit = true
 			battle_enemies = enemy_resource_converter(event_data["enemies"])
@@ -51,13 +52,13 @@ func event_resolver(event_result:POI_Library.Event_Results, result_text:String):
 			start_battle_on_exit = true
 			battle_enemies.append(game_manager.enemy_lib.trap_enemy_resource)
 		POI_Library.Event_Results.ADDHPMINOR:
-			pass
+			game_manager.player_resource.manage_health("add",game_manager.player_resource.max_health/4)
 		POI_Library.Event_Results.ADDHPMAJOR:
-			pass
+			game_manager.player_resource.manage_health("add",game_manager.player_resource.max_health/2)
 		POI_Library.Event_Results.ADDDICE:
-			pass
+			game_manager.player_resource.getset_inventory("add",game_manager.dice_lib.all_dice.values().pick_random())
 		POI_Library.Event_Results.ADDITEM:
-			pass
+			game_manager.player_resource.getset_inventory("add",game_manager.item_lib.all_items.values().pick_random())
 		POI_Library.Event_Results.NOTHING:
 			pass
 		

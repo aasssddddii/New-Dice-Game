@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://xq0naemtpvqa"]
+[gd_scene load_steps=17 format=3 uid="uid://xq0naemtpvqa"]
 
 [ext_resource type="Script" path="res://Scripts/scene_scripts/dice_battle.gd" id="1_fecdh"]
 [ext_resource type="Texture2D" uid="uid://cge74qu1scst6" path="res://Sprites/dice_game_ui/submit.png" id="4_wgehd"]
 [ext_resource type="Texture2D" uid="uid://cebow0jp0j4" path="res://icon.svg" id="5_1gupk"]
+[ext_resource type="Texture2D" uid="uid://crm7c8u7swiwm" path="res://Sprites/dice_game_ui/discard.png" id="5_kgjpy"]
 [ext_resource type="Script" path="res://Scripts/dice_game/player_ui.gd" id="5_vccpn"]
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="6_7mrag"]
 [ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="6_acft5"]
@@ -38,6 +39,15 @@ offset_bottom = 509.0
 focus_mode = 0
 theme = ExtResource("6_7mrag")
 texture_normal = ExtResource("4_wgehd")
+
+[node name="discard_button" type="TextureButton" parent="player_ui"]
+offset_left = 833.0
+offset_top = 513.0
+offset_right = 876.0
+offset_bottom = 563.0
+focus_mode = 0
+theme = ExtResource("6_7mrag")
+texture_normal = ExtResource("5_kgjpy")
 
 [node name="ui_damage" type="Button" parent="player_ui"]
 offset_left = 699.0
@@ -299,9 +309,11 @@ offset_right = 1927.0
 offset_bottom = 103.0
 scale = Vector2(0.6, 0.6)
 
-[node name="charm_display" type="HBoxContainer" parent="battle_charm/PanelContainer/ScrollContainer"]
+[node name="charm_display" type="GridContainer" parent="battle_charm/PanelContainer/ScrollContainer"]
 layout_mode = 2
+columns = 15
 script = ExtResource("14_wxpdw")
 
 [connection signal="button_down" from="player_ui/submit_button" to="." method="_on_submit_button_down"]
+[connection signal="button_down" from="player_ui/discard_button" to="." method="_on_discard_button_button_down"]
 [connection signal="button_down" from="player_ui/cancel_item_button" to="player_ui/cancel_item_button" method="_on_button_down"]

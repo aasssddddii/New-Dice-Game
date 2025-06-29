@@ -1,11 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cljg37fga8a0s"]
+[gd_scene load_steps=7 format=3 uid="uid://cljg37fga8a0s"]
 
+[ext_resource type="Script" path="res://Scripts/new_game_map/event/riddle_event.gd" id="1_i4x6j"]
 [ext_resource type="Theme" uid="uid://liuy3as2gehs" path="res://Fonts/Themes/bigger_dice_game_ui.tres" id="1_rywf7"]
-[ext_resource type="Texture2D" uid="uid://ba5fohkagawd8" path="res://Sprites/dice_game_ui/close X.png" id="2_87bs1"]
 [ext_resource type="Texture2D" uid="uid://wieq6et4ugt" path="res://Sprites/event/sphynx.png" id="3_iefc5"]
+[ext_resource type="Texture2D" uid="uid://cge74qu1scst6" path="res://Sprites/dice_game_ui/submit.png" id="3_rmo4l"]
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="4_uls7h"]
+[ext_resource type="PackedScene" uid="uid://c21j8rpl4tpqr" path="res://Prefabs/game_ui/ui_item_desciption.tscn" id="6_tb4je"]
 
 [node name="riddle_event" type="Node2D"]
+script = ExtResource("1_i4x6j")
 
 [node name="game Visuals TEMP2" type="ColorRect" parent="."]
 offset_left = -3.0
@@ -27,16 +30,15 @@ bbcode_enabled = true
 text = "[center]sphinx's riddle"
 
 [node name="player_ui" type="Node2D" parent="."]
-visible = false
 
-[node name="close" type="TextureButton" parent="player_ui"]
-offset_left = 1093.0
-offset_top = 7.0
-offset_right = 1315.0
-offset_bottom = 234.0
-scale = Vector2(0.23, 0.23)
+[node name="submit" type="TextureButton" parent="player_ui"]
+offset_left = 1062.0
+offset_top = 459.0
+offset_right = 1105.0
+offset_bottom = 502.0
+scale = Vector2(1.3, 1.3)
 focus_mode = 0
-texture_normal = ExtResource("2_87bs1")
+texture_normal = ExtResource("3_rmo4l")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(221, 366)
@@ -48,7 +50,7 @@ offset_top = 121.0
 offset_right = 1133.0
 offset_bottom = 410.0
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="ui_riddle" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_uls7h")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -59,11 +61,69 @@ autowrap_mode = 3
 [node name="TextEdit" type="TextEdit" parent="."]
 offset_left = 437.0
 offset_top = 461.0
-offset_right = 1133.0
+offset_right = 1045.0
 offset_bottom = 519.0
 theme = ExtResource("4_uls7h")
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 8
 placeholder_text = "riddle answer"
 
-[connection signal="button_down" from="player_ui/close" to="." method="_on_close_button_down"]
+[node name="riddle_result" type="ColorRect" parent="."]
+offset_left = 136.0
+offset_top = 73.0
+offset_right = 1019.0
+offset_bottom = 569.0
+color = Color(0.823529, 0.694118, 1, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="riddle_result"]
+layout_mode = 0
+offset_left = 91.0
+offset_top = 51.0
+offset_right = 791.0
+offset_bottom = 444.0
+
+[node name="ui_body" type="Label" parent="riddle_result/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_uls7h")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "ui_wish_text"
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="riddle_result/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 300
+theme_override_constants/margin_right = 300
+
+[node name="riddle_result_button" type="Button" parent="riddle_result/VBoxContainer/MarginContainer"]
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("4_uls7h")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+text = "OK"
+
+[node name="reward label" type="Label" parent="riddle_result/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("4_uls7h")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 23
+text = "reward"
+autowrap_mode = 3
+
+[node name="GridContainer" type="GridContainer" parent="riddle_result/VBoxContainer"]
+layout_mode = 2
+columns = 8
+
+[node name="ui_item_desciption" parent="." instance=ExtResource("6_tb4je")]
+visible = false
+offset_left = 414.0
+offset_top = 370.0
+offset_right = 926.0
+offset_bottom = 826.0
+scale = Vector2(0.6, 0.6)
+
+[connection signal="button_down" from="player_ui/submit" to="." method="_on_submit_button_down"]
+[connection signal="text_changed" from="TextEdit" to="." method="_on_text_edit_text_changed"]
+[connection signal="button_down" from="riddle_result/VBoxContainer/MarginContainer/riddle_result_button" to="." method="_on_riddle_result_button_button_down"]

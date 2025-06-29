@@ -18,7 +18,7 @@ enum Event_Type{
 	ROLLOFF
 }
 
-var event_type_array = [Event_Type.BASIC,Event_Type.DISCARD]
+var event_type_array = [Event_Type.ROLLOFF]#[Event_Type.BASIC,Event_Type.DISCARD,Event_Type.UPGRADE,Event_Type.FOUNTAIN,Event_Type.WELL,Event_Type.RIDDLE,Event_Type.ROLLOFF]
 
 enum Event_Results {
 	LOSSHPMINOR,
@@ -77,7 +77,7 @@ var test_poi:Dictionary = {
 var test_event_data = {
 	"title":"Bofa",
 	"body":"Deez big black balls",
-	"options":[{"yes":Event_Results.ADDHPMAJOR}, {"no":Event_Results.STARTTRAP}],
+	"options":[{"yes":Event_Results.ADDITEM}, {"no":Event_Results.STARTTRAP}],
 	"option_text":["Bofa Deez Big Black Balls Have given you grace (ADD HP MAJOR)", "Bofa Deez Nutz Slappin you in the Jaw (GANG OF WOLVES)"],
 	"bg_img":"",
 	"splash_img":"",
@@ -555,5 +555,118 @@ var aura_bloom_event = {
 	"bg_img": "",
 	"splash_img": ""
 }
-#var basic_event_array = [whispering_void_event]
-var basic_event_array = [ancient_shrine_event,whispering_void_event,gambler_spirit_event] #commented for testing
+var basic_event_array = [whispering_void_event]
+#commented for testing
+#var basic_event_array = [
+#	ancient_shrine_event,
+#	whispering_void_event,
+#	gambler_spirit_event,
+#	fallen_warrior_event,
+#	echoes_bell_event,
+#	wishing_pebble_event,
+#	empty_cage_event,
+#	cracked_mirror_event,
+#	forgotten_pack_event,
+#	bubbling_spring_event,
+#	wandering_bard_event,
+#	tooth_stone_event,
+#	hollow_tree_event,
+#	traveling_toad_event,
+#	nameless_grave_event,
+#	floating_pie_event,
+#	forgotten_doll_event,
+#	ancient_lantern_event,
+#	cursed_music_box_event,
+#	empty_pedestal_event,
+#	blood_stained_map_event,
+#	stone_of_whispers_event,
+#	goblin_tollbooth_event,
+#	snoring_boulder_event,
+#	lost_traveler_event,
+#	crate_of_screams_event,
+#	buried_satchel_event,
+#	gift_from_sky_event,
+#	old_mans_offer_event,
+#	wreckage_path_event,
+#	cursed_carnival_event,
+#	lucky_spirit_event,
+#	sacred_pool_event,
+#	travelers_camp_event,
+#	aura_bloom_event] 
+
+
+#Wish Codes
+#0:attack up
+#1:defend up
+#2:heal power up
+#3:free item
+#4:free charm
+#5:free upgrade
+#6:free dice
+#7:max hp up
+#8:free gold
+
+#Well Event stuff
+var valid_wishes = [
+  {
+	"triggers": ["attack","strength", "power", "might", "fury", "rage", "assault", "strike", "onslaught", "attack", "force"],
+	"wish_code": 0
+  },
+  {
+	"triggers": ["defend","shield", "guard", "protection", "barrier", "defense", "bulwark", "fortify", "aegis", "ward", "cover"],
+	"wish_code": 1
+  },
+  {
+	"triggers": [ "renewal", "heal", "remedy", "restore", "healing", "mend", "invigorate", "recover", "refresh", "revive"],
+	"wish_code": 2
+  },
+  {
+	"triggers": ["item", "gift", "boon", "reward", "present", "favor", "prize", "offering", "windfall", "bonus", "grant"],
+	"wish_code": 3
+  },
+  {
+	"triggers": ["trinket", "charm", "fortune", "serendipity", "blessing", "omen", "token", "favor", "talisman", "destiny"],
+	"wish_code": 4
+  },
+  {
+	"triggers": ["ascend", "enhance", "elevate", "upgrade", "improve", "advance", "amplify", "boost", "refine", "empower"],
+	"wish_code": 5
+  },
+  {
+	"triggers": ["chance", "roll", "fate", "destiny", "luck", "dice", "random", "gamble", "fortune", "spin"],
+	"wish_code": 6
+  },
+  {
+	"triggers": ["max hp", "life", "endurance", "resilience", "vigor", "vitality", "health", "constitution", "stamina", "longevity", "fortitude"],
+	"wish_code": 7
+  },
+  {
+	"triggers": ["wealth", "riches", "treasure", "gold", "fortune", "bounty", "windfall", "loot", "coins", "prosperity"],
+	"wish_code": 8
+  }
+]
+var wish_results:Dictionary = {
+	0:["Your muscles surge with power. Your attacks will strike harder!","A burning spirit awakens within. Your blows carry new strength.","You feel unstoppable. Your next attacks will devastate your foes."],
+	1:["A shimmering barrier surrounds you. Your defenses grow stronger.","You feel unbreakable. Nothing will get through your guard easily now.","An unseen shield embraces you. Incoming damage will be lessened."],
+	2:["A gentle light wraps around you. Your healing magic is now more potent.","Your touch carries new life. Healing will mend deeper wounds.","Restorative energy flows within. Your healing grows more effective."],
+	3:["A mysterious gift materializes before you. You have received a new item!","A helpful tool appears in your hand. Use it wisely.","An unexpected boon is granted. An item is yours to keep."],
+	4:["Fortune smiles upon you. A new charm has been granted!","Luck favors you with a fresh charm. Its magic is now yours.","You sense destiny aligning. A new charm has joined your collection."],
+	5:["Your gear glows with radiant energy. It has been upgraded!","A surge of magic improves your equipment. It feels stronger now.","Your tools evolve before your eyes. You've gained an upgrade!"],
+	6:["Fate lends you a hand. You receive an extra dice to aid your journey!","A new die clatters into your palm. Luck is on your side.","Chance smiles at you. Another dice joins your arsenal."],
+	7:["Vital energy floods your body. Your maximum health has increased!","You feel hardier than before. Your life force grows stronger.","Your vitality swells. Your health can now withstand more."],
+	8:["Coins rain from nowhere. Your wealth grows instantly!","Golden riches shimmer before you. Your purse feels heavier.","A treasure manifests at your feet. Your coffers overflow."]
+}
+
+var test_rolloff_event_data:Dictionary = {
+	"title":"bofa deez",
+	"body":"bofa deez nuts rubbing across your chin",
+	"choices":[{
+		"text":"accept bofa",
+		"required_dice":[5],
+		"success_result": Event_Results.ADDHPMAJOR,
+		"fail_result":Event_Results.NOTHING},
+		{"text":"refuse bofa",
+		"required_dice":[0,0,0],
+		"success_result": Event_Results.NOTHING,
+		"fail_result":Event_Results.LOSSHPMAJOR},]
+}

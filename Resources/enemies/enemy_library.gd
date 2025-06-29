@@ -22,6 +22,9 @@ var shark_enemy_resource:Resource = preload("res://Resources/enemies/shark.tres"
 #Trap
 var trap_enemy_resource:Resource = preload("res://Resources/enemies/trap.tres")
 
+#Sphynx enemy
+var sphynx_enemy_resource:Resource = preload("res://Resources/enemies/sphynx.tres")
+
 #var all_enemies:Dictionary = {
 #	#Basic Enemies VVV
 #	"bat":bat_enemy_resource,

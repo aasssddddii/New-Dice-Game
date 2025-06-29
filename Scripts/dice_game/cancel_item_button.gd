@@ -18,8 +18,11 @@ func release_limbo_item():
 	
 func give_player_limbo_item():
 	if limbo_item_data != null:
-		game_manager.player_resource.inventory.append(limbo_item_data)
-		$"../display_menu/ScrollContainer/items".setup_inventory(game_manager.player_resource.getset_inventory("get_battle",null),"battle")
+		if limbo_item_data["item_name"] != "disc_upgrade":
+			game_manager.player_resource.inventory.append(limbo_item_data)
+			$"../display_menu/ScrollContainer/items".setup_inventory(game_manager.player_resource.getset_inventory("get_battle",null),"battle")
+		else:
+			$"../..".discard_upgrade_button.visible = true
 		$"../..".close_item_selections()
 		release_limbo_item()
 
