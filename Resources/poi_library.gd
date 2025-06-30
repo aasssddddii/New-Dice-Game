@@ -657,16 +657,109 @@ var wish_results:Dictionary = {
 	8:["Coins rain from nowhere. Your wealth grows instantly!","Golden riches shimmer before you. Your purse feels heavier.","A treasure manifests at your feet. Your coffers overflow."]
 }
 
+#Rolloff Event Data VVV
+#LLO 6/29 Create more Rolloff events for the player
 var test_rolloff_event_data:Dictionary = {
 	"title":"bofa deez",
 	"body":"bofa deez nuts rubbing across your chin",
 	"choices":[{
 		"text":"accept bofa",
 		"required_dice":[5],
+		"required_result":1,
+		"success_text":"Bofa deez nuts grace you this day (add HP major)",
 		"success_result": Event_Results.ADDHPMAJOR,
-		"fail_result":Event_Results.NOTHING},
+		"success_enemies":[],
+		"fail_text":"Bofa Deez nuts ignore you (nothing)",
+		"fail_result":Event_Results.STARTBATTLE,
+		"fail_enemies":[]},
 		{"text":"refuse bofa",
 		"required_dice":[0,0,0],
-		"success_result": Event_Results.NOTHING,
-		"fail_result":Event_Results.LOSSHPMAJOR},]
+		"required_result":3,
+		"success_text":"You ignore bofa deez nuts (nothing)",
+		"success_result": Event_Results.STARTTRAP,
+		"success_enemies":[],
+		"fail_text":"Bofa Deez nuts Lash out at you (loss HP major)",
+		"fail_result":Event_Results.LOSSHPMAJOR,
+		"fail_enemies":[]},]
 }
+
+var forbidden_well_event_data:Dictionary = {
+	"title":"The Forbidden Well",
+	"body":"An ancient well whispers promises of power, but its darkness is unnerving.",
+	"choices":[
+		{
+			"text":"Draw Power",
+			"required_dice":[16, 8],
+			"required_result":2,
+			"success_text":"Dark energy flows into you. Gain a new dice.",
+			"success_result": Event_Results.ADDDICE,
+			"success_enemies":[],
+			"fail_text":"Cursed spirits erupt! You must fight.",
+			"fail_result":Event_Results.STARTBATTLE,
+			"fail_enemies":["ghost","slime"]
+		},
+		{
+			"text":"Seal Well",
+			"required_dice":[9, 4, 1],
+			"required_result":3,
+			"success_text":"Your magic seals the evil. Gain health.",
+			"success_result": Event_Results.ADDHPMINOR,
+			"success_enemies":[],
+			"fail_text":"Your spell fails and drains you.",
+			"fail_result":Event_Results.LOSSHPMINOR,
+			"fail_enemies":[]
+		},
+		{
+			"text":"Peer Inside",
+			"required_dice":[19, 19, 19],
+			"required_result":4,
+			"success_text":"You find an old item at the bottom.",
+			"success_result":Event_Results.ADDITEM,
+			"success_enemies":[],
+			"fail_text":"A monstrous slime emerges to attack you.",
+			"fail_result":Event_Results.STARTBATTLE,
+			"fail_enemies":["slime"]
+		}
+	]
+}
+
+var moonlit_clearing_event_data:Dictionary = {
+	"title":"The Moonlit Clearing",
+	"body":"A shimmering light beckons you into a clearing where strange symbols glow on stones.",
+	"choices":[
+		{
+			"text":"Read Runes",
+			"required_dice":[12, 2],
+			"required_result":2,
+			"success_text":"You unlock their power and gain an item.",
+			"success_result": Event_Results.ADDITEM,
+			"success_enemies":[],
+			"fail_text":"Magic backfires. You lose health.",
+			"fail_result":Event_Results.LOSSHPMINOR,
+			"fail_enemies":[]
+		},
+		{
+			"text":"Defile Stones",
+			"required_dice":[0, 3, 8],
+			"required_result":3,
+			"success_text":"Dark power rewards you with new dice.",
+			"success_result": Event_Results.ADDDICE,
+			"success_enemies":[],
+			"fail_text":"Forest spirits appear in rage!",
+			"fail_result":Event_Results.STARTBATTLE,
+			"fail_enemies":["fairy","wolf"]
+		},
+		{
+			"text":"Sit Quietly",
+			"required_dice":[19, 19, 19],
+			"required_result":4,
+			"success_text":"You feel rejuvenated. Gain minor HP.",
+			"success_result":Event_Results.ADDHPMINOR,
+			"success_enemies":[],
+			"fail_text":"Wild animals sniff you out!",
+			"fail_result":Event_Results.STARTBATTLE,
+			"fail_enemies":["boar","hyena"]
+		}
+	]
+}
+

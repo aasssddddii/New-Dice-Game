@@ -1,10 +1,16 @@
 extends TextureRect
+class_name RequiredDice
+
+signal dice_slot_filled
 
 var game_manager = GameManager
 
 var current_dice_type:int#DiceType coded
+var is_correct_filled_dice:bool
 
-#LLO 6/28 finish making required dice exclusive to dice type
+var dice_in_slot
+
+
 func setup_dice_requirement(input_data):
 	current_dice_type = input_data
 	
@@ -50,3 +56,26 @@ func setup_dice_requirement(input_data):
 		19:#NONE#19
 			texture = load("res://Sprites/Dice/blank dice template.png")
 	pass
+
+
+func _on_dholder_requirement_area_entered(area):
+	if area.is_in_group("dice_area"):
+		print("dice has entered area: ", area.get_parent().name)
+		
+		if area.get_parent().dice_data["type"] == current_dice_type || current_dice_type == 19:
+			print("required dice is correct")
+			dice_in_slot = area.get_parent()
+			is_correct_filled_dice = true
+			dice_slot_filled.emit()
+
+
+
+func _on_dholder_requirement_area_exited(area):
+	var dholder:Area2D = $dholder_requirement
+	if area.is_in_group("dice_area") && !dholder.has_overlapping_areas():
+		reset_dice_requirement()
+
+func reset_dice_requirement():
+		dice_in_slot = null
+		is_correct_filled_dice = false
+		dice_slot_filled.emit()

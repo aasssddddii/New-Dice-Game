@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="enemy_resource" load_steps=6 format=3 uid="uid://bwruhvd44ypgy"]
+
+[ext_resource type="Texture2D" uid="uid://d3br60prmlc0w" path="res://Sprites/Dice/one attack face.png" id="1_10mnk"]
+[ext_resource type="Texture2D" uid="uid://bxs6ptq80ndyq" path="res://Sprites/Dice/blank dice template.png" id="2_gx7rc"]
+[ext_resource type="Texture2D" uid="uid://cm1mloul0uk12" path="res://Sprites/Dice/defend dice.png" id="3_g7gx4"]
+[ext_resource type="Texture2D" uid="uid://c6byvkcw20au5" path="res://Sprites/enemies/enemy ghost.png" id="4_vjxig"]
+[ext_resource type="Script" path="res://Resources/enemies/enemy_template.gd" id="5_rqbwn"]
+
+[resource]
+script = ExtResource("5_rqbwn")
+enemy_name = "ghost"
+enemy_description = "spooky ghost that haunts you from beyond"
+max_health = 15
+health = 15
+shield = 0
+heal_power = 0
+attack = 5
+defend = 3
+attacks = 2
+reward_gold = 10
+basic_attack_damage_type = 6
+weaknesses = {
+0: false,
+1: false,
+2: true,
+3: false,
+5: false
+}
+resistantses = {
+0: true,
+1: true,
+2: false,
+3: true,
+5: true
+}
+attack_texture = ExtResource("1_10mnk")
+defend_texture = ExtResource("3_g7gx4")
+blank_texture = ExtResource("2_gx7rc")
+main_texture = ExtResource("4_vjxig")
+possible_turn_actions = Array[int]([0, 1, 3])

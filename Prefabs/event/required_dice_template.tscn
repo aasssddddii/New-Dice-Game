@@ -11,10 +11,13 @@ modulate = Color(1, 1, 1, 0.721569)
 texture = ExtResource("1_r8tfx")
 script = ExtResource("2_3ovrs")
 
-[node name="dholder_requirement" type="Area2D" parent="." groups=["dice_snap"]]
+[node name="dholder_requirement" type="Area2D" parent="." groups=["dice_snap", "required_dice"]]
 position = Vector2(50.9999, 52)
 script = ExtResource("2_jeo54")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="dholder_requirement"]
 position = Vector2(-11.9999, -14)
 shape = SubResource("RectangleShape2D_chaip")
+
+[connection signal="area_entered" from="dholder_requirement" to="." method="_on_dholder_requirement_area_entered"]
+[connection signal="area_exited" from="dholder_requirement" to="." method="_on_dholder_requirement_area_exited"]

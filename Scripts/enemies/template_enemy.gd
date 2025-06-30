@@ -504,7 +504,8 @@ func kill_check():
 		if dice_battle_node.is_trap_battle:
 			dice_battle_node.trap_disarmed = true
 			
-		dice_battle_node.swagger_action_slot = true
+		if game_manager.player_resource.swagger_upgrade:
+			dice_battle_node.swagger_action_slot = true
 		#maybe add something about adding to the player kills
 		if arrow.visible:
 			if !filtered_targets.is_empty():

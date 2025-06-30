@@ -789,6 +789,26 @@ var dice_deck:Array[Dictionary] = [
 	"is_temp":false,
 	"long_name":"Defence Dice",
 	"description":"Basic Defence Dice"
+	},
+	{
+	"item_code":0,
+	"item_name":"gld_dice",
+	"texture":"res://Sprites/Dice/one gold dice.png",
+	"none_texture":"res://Sprites/Dice/none gold dice.png",
+	"two_texture":"res://Sprites/Dice/2 gold dice.png",
+	"three_texture":"res://Sprites/Dice/3 gold dice.png",
+	"four_texture":"res://Sprites/Dice/4 gold dice.png",
+	"price":5,
+	"shop_quantity":0,
+	"inventory_quantity":0,
+	"upgrade_level":0,
+	"animation_target":"discard",
+	"type":Dice.DiceType.GOLD,
+	"effect":false,
+	"element":Dice.DamageElement.NONE,
+	"is_temp":false,
+	"long_name":"Gold Dice",
+	"description":"Gold dice, provides 1 gold upon use"
 	}
 ]
 

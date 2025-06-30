@@ -1,7 +1,7 @@
 extends TextureButton
 class_name Dice
 
-const offset =  Vector2(-28,-28)
+var offset =  Vector2(-28,-28)
 var game_manager = GameManager
 enum DiceType {
 	ATTACK,#0
@@ -82,6 +82,8 @@ func _ready():
 					last_snap_area = snap_area
 				snap_area = entered_area
 		)
+	if $"../..".name == "rolloff_event":
+		offset =  Vector2(-52,-52)
 
 
 func _physics_process(delta):
@@ -91,12 +93,25 @@ func _physics_process(delta):
 		if snap_area.name == "inventory" && !is_grabbing:
 			$"../../player_inventory/PanelContainer/GridContainer".add_item_to_grid(dice_data)
 			queue_free()
+		elif snap_area.is_in_group("required_dice") && !is_grabbing:
+			if !snap_area.get_parent().is_correct_filled_dice:#makes no sense but work as of now
+				$"../../player_inventory/PanelContainer/GridContainer".add_item_to_grid(dice_data)
+				queue_free()
+			else:
+				global_position = snap_area.global_position + offset
+			#decide if dice should stay
 		elif !is_grabbing && global_position != snap_area.global_position:
 			global_position = snap_area.global_position + offset
 		
 	if is_grabbing:
 		global_position = get_global_mouse_position() + offset
 		
+		
+
+func send_dice_to_inventory():
+	$"../../player_inventory/PanelContainer/GridContainer".add_item_to_grid(dice_data)
+	queue_free()
+	
 func get_current_snap_area():
 	if snap_area:
 		return true
@@ -195,12 +210,11 @@ func _on_button_up():
 			if is_on_dice:
 				overlap_dice.roll()
 				roll()
-#		else:
-#			print("not reroll dice or no rerolls")
+			#sets dice snap area for staying on screen VVV
 		global_position = snap_area.global_position + offset
 		snap_area.filler(self)
 		is_grabbing = false
-		#print("snap_area name: ", snap_area.name)
+			#print("snap_area name: ", snap_area.name)
 	else:
 		go_to_last_snap()
 

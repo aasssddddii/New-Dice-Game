@@ -36,7 +36,7 @@ func _ready():
 	player_resource = load("res://Resources/player_resource.tres")
 	player_resource.player_dead.connect(end_game)
 	player_resource.reset_values()
-	#player_resource.health /= 2
+	player_resource.health /= 2
 	
 	
 func add_charm(charm_name:String):

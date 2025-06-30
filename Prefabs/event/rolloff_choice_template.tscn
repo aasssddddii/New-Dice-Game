@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://4f7ukmf3cl5l"]
+[gd_scene load_steps=5 format=3 uid="uid://4f7ukmf3cl5l"]
 
 [ext_resource type="Theme" uid="uid://g7xlk0plmj00" path="res://Fonts/Themes/dice_game_ui.tres" id="1_b2l0g"]
 [ext_resource type="Script" path="res://Scripts/new_game_map/event/rolloff_choice_template.gd" id="1_ieog8"]
+[ext_resource type="Texture2D" uid="uid://cge74qu1scst6" path="res://Sprites/dice_game_ui/submit.png" id="3_p26ku"]
+[ext_resource type="Texture2D" uid="uid://crm7c8u7swiwm" path="res://Sprites/dice_game_ui/discard.png" id="4_je8rs"]
 
 [node name="rolloff_choice_template" type="HBoxContainer"]
 script = ExtResource("1_ieog8")
@@ -9,4 +11,19 @@ script = ExtResource("1_ieog8")
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
 theme = ExtResource("1_b2l0g")
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
 text = "ui_choice_text"
+
+[node name="confirm_button" type="TextureButton" parent="."]
+layout_mode = 2
+texture_normal = ExtResource("3_p26ku")
+stretch_mode = 3
+
+[node name="cancel_button" type="TextureButton" parent="."]
+layout_mode = 2
+texture_normal = ExtResource("4_je8rs")
+stretch_mode = 3
+
+[connection signal="button_down" from="confirm_button" to="." method="_on_confirm_button_button_down"]
+[connection signal="button_down" from="cancel_button" to="." method="_on_cancel_button_button_down"]

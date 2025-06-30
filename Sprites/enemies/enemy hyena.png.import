@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dcwh1o26s1o88"
-path="res://.godot/imported/enemy fire_slime.png-6fefc310e19789a2151139e554ca3cae.ctex"
+uid="uid://o0vmi0sjr6vk"
+path="res://.godot/imported/enemy hyena.png-fa7c6c06dfbcb37eb313afafc69a0aa9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/enemies/enemy fire_slime.png"
-dest_files=["res://.godot/imported/enemy fire_slime.png-6fefc310e19789a2151139e554ca3cae.ctex"]
+source_file="res://Sprites/enemies/enemy hyena.png"
+dest_files=["res://.godot/imported/enemy hyena.png-fa7c6c06dfbcb37eb313afafc69a0aa9.ctex"]
 
 [params]
 
